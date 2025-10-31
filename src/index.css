@@ -1,0 +1,12 @@
+@import "tailwindcss";
+
+body,
+html {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  @apply bg-gradient-to-br from-gray-950 via-gray-900 to-gray-800 text-slate-100 antialiased;
+  font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, sans-serif;
+}
