@@ -3,7 +3,6 @@ import {
     HomeIcon,
     ChartBarIcon,
     Cog6ToothIcon,
-    UserIcon,
     CubeIcon,
     ChevronRightIcon,
     ChevronLeftIcon,
@@ -21,7 +20,6 @@ const menuItems = [
         ],
     },
     { name: "Settings", icon: Cog6ToothIcon, href: "#" },
-    { name: "Profile", icon: UserIcon, href: "#" },
 ];
 
 function SidebarItem({ item, sidebarCollapsed, setActiveSection, activeSection }) {
@@ -57,12 +55,12 @@ function SidebarItem({ item, sidebarCollapsed, setActiveSection, activeSection }
             </button>
 
             {item.subItems && open && !sidebarCollapsed && (
-                <div className="whitespace-nowrap overflow-hidden ml-8 mt-2 space-y-1 transition-all duration-500">
+                <div className="whitespace-nowrap overflow-hidden ml-6 mt-2 space-y-1 transition-all duration-500">
                     {item.subItems.map((sub) => (
                         <button
                             key={sub.name}
                             onClick={() => setActiveSection(sub.name.toLowerCase())}
-                            className={`block rounded-lg px-3 py-2 text-sm hover:bg-white/10 transition-all ${activeSection === sub.name.toLowerCase() ? "bg-white/10" : ""}`}
+                            className={`block rounded-lg px-5 py-2 w-full text-sm text-left hover:bg-white/10 transition-all ${activeSection === sub.name.toLowerCase() ? "bg-white/10" : ""}`}
                         >
                             {sub.name}
                         </button>
@@ -90,12 +88,12 @@ function MobileSidebarItem({ item, setActiveSection, activeSection }) {
             >
                 <div className="flex items-center gap-3">
                     <Icon className="w-5 h-5" />
-                    <span className="transition-all duration-300">{item.name}</span>
+                    <span className="transition-all duration-500">{item.name}</span>
                 </div>
 
                 {item.subItems && (
                     <ChevronRightIcon
-                        className={`w-4 h-4 transition-transform duration-300 ${open ? "rotate-90" : ""
+                        className={`w-4 h-4 transition-transform duration-500 ${open ? "rotate-90" : ""
                             }`}
                     />
                 )}
