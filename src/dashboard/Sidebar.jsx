@@ -6,7 +6,9 @@ import {
     CubeIcon,
     ChevronRightIcon,
     ChevronLeftIcon,
+    ArrowRightStartOnRectangleIcon
 } from "@heroicons/react/24/outline";
+import { useNavigate } from "react-router-dom";
 
 const menuItems = [
     { name: "Overview", icon: HomeIcon, href: "#" },
@@ -120,9 +122,30 @@ function MobileSidebarItem({ item, setActiveSection, activeSection }) {
     );
 }
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export default function Sidebar({ sidebarOpen, setSidebarOpen, setActiveSection, activeSection }) {
     const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+    const navigate = useNavigate();
+
+    const handleLogout = async () => {
+        try {
+            const response = await fetch(`${API_BASE_URL}/auth/logout`, {
+                method: "POST",
+                credentials: "include",
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.message || "Logout failed");
+            }
+
+            navigate('/login');
+        } catch (err) {
+            console.error(err);
+        }
+    };
 
     return (
         <>
@@ -157,6 +180,17 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen, setActiveSection,
                             activeSection={activeSection}
                         />
                     ))}
+                    <div>
+                        <button
+                            onClick={handleLogout}
+                            className={`flex items-center justify-between w-full rounded-xl px-3 py-2 hover:bg-white/10 transition-all`}
+                        >
+                            <div className="flex item-center gap-3">
+                                <ArrowRightStartOnRectangleIcon className="w-5 h-5" />
+                                Log Out
+                            </div>
+                        </button>
+                    </div>
                 </nav>
             </aside>
 
