@@ -24,20 +24,25 @@ const menuItems = [
     { name: "Profile", icon: UserIcon, href: "#" },
 ];
 
-function SidebarItem({ item, sidebarCollapsed }) {
+function SidebarItem({ item, sidebarCollapsed, setActiveSection, activeSection }) {
     const [open, setOpen] = useState(false);
     const Icon = item.icon;
+
+    const handleClick = () => {
+        if (item.subItems) setOpen(!open);
+        else setActiveSection(item.name.toLowerCase()); // e.g., "Products" → "products"
+    };
 
     return (
         <div>
             <button
-                onClick={() => item.subItems && setOpen(!open)}
-                className="flex items-center justify-between w-full rounded-xl px-3 py-2 hover:bg-white/10 transition-all"
+                onClick={handleClick}
+                className={`flex items-center justify-between w-full rounded-xl px-3 py-2 hover:bg-white/10 transition-all ${activeSection === item.name.toLowerCase() ? "bg-white/10" : ""}`}
             >
                 <div className="flex items-center gap-3">
                     <Icon className="w-5 h-5" />
                     <span
-                        className={`whitespace-nowrap overflow-hidden transition-all duration-300 ${sidebarCollapsed ? "opacity-0 w-0" : "opacity-100 w-auto"
+                        className={`whitespace-nowrap overflow-hidden transition-all duration-500 ${sidebarCollapsed ? "opacity-0 w-0" : "opacity-100 w-auto"
                             }`}
                     >
                         {item.name}
@@ -51,34 +56,37 @@ function SidebarItem({ item, sidebarCollapsed }) {
                 )}
             </button>
 
-            {item.subItems && (
-                <div
-                    className={`ml-8 overflow-hidden transition-all duration-500 ${open && !sidebarCollapsed ? "max-h-40 opacity-100" : "max-h-0 opacity-0"
-                        }`}
-                >
+            {item.subItems && open && !sidebarCollapsed && (
+                <div className="whitespace-nowrap overflow-hidden ml-8 mt-2 space-y-1 transition-all duration-500">
                     {item.subItems.map((sub) => (
-                        <a
+                        <button
                             key={sub.name}
-                            href={sub.href}
-                            className="block rounded-lg px-3 py-2 text-sm hover:bg-white/10 transition"
+                            onClick={() => setActiveSection(sub.name.toLowerCase())}
+                            className={`block rounded-lg px-3 py-2 text-sm hover:bg-white/10 transition-all ${activeSection === sub.name.toLowerCase() ? "bg-white/10" : ""}`}
                         >
                             {sub.name}
-                        </a>
+                        </button>
                     ))}
                 </div>
             )}
         </div>
     );
 }
-function MobileSidebarItem({ item }) {
+function MobileSidebarItem({ item, setActiveSection, activeSection }) {
     const [open, setOpen] = useState(false);
     const Icon = item.icon;
+
+    const handleClick = () => {
+        if (item.subItems) setOpen(!open);
+        else setActiveSection(item.name.toLowerCase()); // e.g., "Products" → "products"
+    };
 
     return (
         <div>
             <button
-                onClick={() => item.subItems && setOpen(!open)}
-                className="flex items-center justify-between w-full rounded-xl px-3 py-2 hover:bg-white/10 transition-all duration-300"
+                onClick={handleClick}
+                className={`flex items-center justify-between w-full rounded-xl px-3 py-2 hover:bg-white/10 transition-all duration-300 
+                    ${activeSection === item.name.toLowerCase() ? "bg-white/10" : ""}`}
             >
                 <div className="flex items-center gap-3">
                     <Icon className="w-5 h-5" />
@@ -102,7 +110,8 @@ function MobileSidebarItem({ item }) {
                         <a
                             key={sub.name}
                             href={sub.href}
-                            className="block rounded-lg px-3 py-2 text-sm hover:bg-white/10 transition-all"
+                            onClick={() => { setActiveSection(sub.name.toLowerCase()) }}
+                            className={`block rounded-lg px-3 py-2 text-sm hover:bg-white/10 transition-all ${activeSection === sub.name.toLowerCase() ? "bg-white/10" : ""}`}
                         >
                             {sub.name}
                         </a>
@@ -114,7 +123,7 @@ function MobileSidebarItem({ item }) {
 }
 
 
-export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
+export default function Sidebar({ sidebarOpen, setSidebarOpen, setActiveSection, activeSection }) {
     const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
     return (
@@ -146,6 +155,8 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
                             key={item.name}
                             item={item}
                             sidebarCollapsed={sidebarCollapsed}
+                            setActiveSection={setActiveSection}
+                            activeSection={activeSection}
                         />
                     ))}
                 </nav>
@@ -172,7 +183,7 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
                             </button>
                             <nav className="flex-1 flex flex-col gap-2">
                                 {menuItems.map((item) => (
-                                    <MobileSidebarItem key={item.name} item={item} />
+                                    <MobileSidebarItem key={item.name} item={item} setActiveSection={setActiveSection} activeSection={activeSection} />
                                 ))}
                             </nav>
                         </div>
