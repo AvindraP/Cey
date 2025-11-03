@@ -187,7 +187,12 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen, setActiveSection,
                         >
                             <div className="flex item-center gap-3">
                                 <ArrowRightStartOnRectangleIcon className="w-5 h-5" />
-                                Log Out
+                                <span
+                                    className={`whitespace-nowrap overflow-hidden transition-all duration-500 ${sidebarCollapsed ? "opacity-0 w-0" : "opacity-100 w-auto"
+                                        }`}
+                                >
+                                    Log Out
+                                </span>
                             </div>
                         </button>
                     </div>
@@ -217,6 +222,17 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen, setActiveSection,
                                 {menuItems.map((item) => (
                                     <MobileSidebarItem key={item.name} item={item} setActiveSection={setActiveSection} activeSection={activeSection} />
                                 ))}
+                                <div>
+                                    <button
+                                        onClick={handleLogout}
+                                        className={`flex items-center justify-between w-full rounded-xl px-3 py-2 hover:bg-white/10 transition-all duration-300`}
+                                    >
+                                        <div className="flex items-center gap-3">
+                                            <ArrowRightStartOnRectangleIcon className="w-5 h-5" />
+                                            <span className="transition-all duration-500">Log Out</span>
+                                        </div>
+                                    </button>
+                                </div>
                             </nav>
                         </div>
                     </div>
