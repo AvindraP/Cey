@@ -1,14 +1,19 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useContext, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { AuthContext } from "../../middleware/AuthProvider";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export default function Login() {
-    const navigate = useNavigate();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
+    const location = useLocation();
+    const { setUser } = useContext(AuthContext);
+
+    const from = location.state?.from?.pathname || "/dashboard";
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -27,17 +32,29 @@ export default function Login() {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({ email, password }),
+                credentials: "include",
             });
 
-            const data = await response.json();
+            const d = response.json();
 
             if (!response.ok) {
-                throw new Error(data.message || "Login failed");
+                throw new Error(d.message || "Login failed");
             }
 
-            // Example: store token and redirect
-            localStorage.setItem("token", data.token);
-            navigate("/dashboard"); // redirect after successful login
+            // Fetch user info right after login
+            const check = await fetch(`${API_BASE_URL}/auth/check`, {
+                credentials: "include",
+            });
+
+            const data = await check.json();
+
+            if (!check.ok) {
+                throw new Error(data.message || "Auth failed");
+            }
+
+            setUser(data.user);
+
+            navigate(from, { replace: true }); // redirect after successful login
         } catch (err) {
             console.error(err);
             setError(err.message || "An error occurred. Please try again.");
@@ -92,12 +109,12 @@ export default function Login() {
                     </button>
                 </form>
 
-                {/* <p className="mt-6 text-xs text-center text-slate-400">
-          New here?{" "}
-          <a href="#signup" className="underline hover:text-slate-200">
-            Create an account
-          </a>
-        </p> */}
+                <p className="mt-6 text-xs text-center text-slate-400">
+                    Forgot Password?{" "}
+                    <a href="#resetPw" className="underline hover:text-slate-200">
+                        Reset
+                    </a>
+                </p>
             </section>
         </main>
     );
