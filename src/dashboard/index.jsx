@@ -3,6 +3,7 @@ import Sidebar from "./Sidebar";
 import Header from "./Header";
 import Overview from "./sections/Overview";
 import AddProduct from "./sections/products/AddProducst";
+import ViewProducts from "./sections/products/ViewProducts";
 
 export default function Dashboard() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -29,6 +30,7 @@ export default function Dashboard() {
         <div className="flex-1 overflow-y-auto scrollable px-4 sm:px-8 max-h-[calc(100vh-7rem)]">
           {activeSection === "overview" && <Overview />}
           {activeSection === "add product" && <AddProduct />}
+          {activeSection === "view products" && <ViewProducts />}
         </div>
       </main>
     </div>
