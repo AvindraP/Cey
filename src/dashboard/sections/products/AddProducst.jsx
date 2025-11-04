@@ -69,22 +69,9 @@ export default function AddProduct() {
     setVariations(newVariations);
   };
 
-  /* Attribute CRUD */
-  const addAttribute = () => {
-    setAttributes((prev) => [...prev, { id: crypto.randomUUID(), name: "", options: [] }]);
-  };
-
-  const updateAttributeName = (attrId, name) => {
-    setAttributes((prev) => prev.map((a) => (a.id === attrId ? { ...a, name } : a)));
-  };
-
-  const removeAttribute = (attrId) => {
-    setAttributes((prev) => prev.filter((a) => a.id !== attrId));
-  };
-
   const addOption = (attrId) => {
     setAttributes((prev) =>
-      prev.map((a) => (a.id === attrId ? { ...a, options: [...(a.options || []), { id: crypto.randomUUID(), value: "" }] } : a))
+      prev.map((a) => (a.id === attrId ? { ...a, options: [...(a.options || []), { id: crypto.randomUUID(), value: "", imageFile: null }] } : a))
     );
   };
 
@@ -105,31 +92,43 @@ export default function AddProduct() {
     setVariations((prev) => prev.map((v) => (v.id === variationId ? { ...v, [field]: value } : v)));
   };
 
-  const removeVariation = (variationId) => {
-    setVariations((prev) => prev.filter((v) => v.id !== variationId));
-  };
-
   /* Submit */
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const formData = new FormData();
 
-    // Build payload
-    const payload = {
-      product: { ...product },
-      attributes: attributes.map((a) => ({
-        id: a.id,
-        name: a.name,
-        options: a.options.map((o) => ({ id: o.id, value: o.value })),
-      })),
-      variations: variations.map((v) => ({
+    formData.append("product", JSON.stringify(product));
+    formData.append("attributes", JSON.stringify(
+      attributes.map(attr => ({
+        id: attr.id,
+        name: attr.name,
+        options: attr.options.map(opt => ({
+          id: opt.id,
+          value: opt.value,
+        })),
+      }))
+    ));
+    formData.append("variations", JSON.stringify(
+      variations.map((v) => ({
         id: v.id,
         product_id: v.product_id,
         sku: v.sku,
         price: v.price,
         stock_quantity: Number(v.stock_quantity),
         options: v.options,
-      })),
-    };
+      }))
+    ));
+
+    // Append image files (if any)
+    attributes.forEach(attr => {
+      if (attr.name.toLowerCase() === "color") {
+        attr.options.forEach(opt => {
+          if (opt.imageFile) {
+            formData.append(`color_images[${opt.id}]`, opt.imageFile);
+          }
+        });
+      }
+    });
 
     // Basic validation
     const errors = [];
@@ -144,16 +143,9 @@ export default function AddProduct() {
       return;
     }
 
-    // For the demo, we just log and show the JSON below the form
-    // console.log("Product payload", payload);
-    // setLastPayload(payload);
-
     const res = await fetch(`${API_BASE_URL}/products/addproduct`, {
       method: 'POST',
-      headers: {
-        "Content-type": "application/json",
-      },
-      body: JSON.stringify(payload),
+      body: formData,
       credentials: "include",
     });
 
@@ -173,7 +165,30 @@ export default function AddProduct() {
 
   };
 
-  // const [lastPayload, setLastPayload] = useState(null);
+  const updateOptionImage = (attrId, optId, file) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      setAttributes((prev) =>
+        prev.map((attr) =>
+          attr.id === attrId
+            ? {
+              ...attr,
+              options: attr.options.map((opt) =>
+                opt.id === optId
+                  ? {
+                    ...opt,
+                    imageFile: file, // keep raw File for backend upload
+                    previewUrl: e.target.result, // local preview
+                  }
+                  : opt
+              ),
+            }
+            : attr
+        )
+      );
+    };
+    reader.readAsDataURL(file);
+  };
 
   return (
     <div className="min-h-screen p-0">
@@ -241,17 +256,38 @@ export default function AddProduct() {
                   <h3 className="font-medium mb-2">{attr.name}</h3>
                   <div className="space-y-2">
                     {attr.options.map((opt) => (
-                      <div key={opt.id} className="flex gap-2 items-center">
-                        <input
-                          className="flex-1 border-gray-300 rounded-md shadow-sm"
-                          value={opt.value}
-                          onChange={(e) =>
-                            updateOptionValue(attr.id, opt.id, e.target.value)
-                          }
-                          placeholder={`e.g. ${
-                            attr.name === "Color" ? "Red" : "Large"
-                          }`}
-                        />
+                      <div key={opt.id} className="flex flex-col md:flex-row gap-3 items-start md:items-center border p-3 rounded-md">
+                        <div className="flex-1 w-full">
+                          <input
+                            className="w-full border-gray-300 rounded-md shadow-sm"
+                            value={opt.value}
+                            onChange={(e) => updateOptionValue(attr.id, opt.id, e.target.value)}
+                            placeholder={`e.g. ${attr.name === "Color" ? "Red" : "Large"}`}
+                          />
+                        </div>
+
+                        {/* Only show image upload for Color options */}
+                        {attr.name.toLowerCase() === "color" && (
+                          <div className="flex items-center gap-3">
+                            <input
+                              type="file"
+                              accept="image/*"
+                              onChange={(e) => {
+                                const file = e.target.files?.[0];
+                                if (file) updateOptionImage(attr.id, opt.id, file);
+                              }}
+                              className="text-sm text-gray-600"
+                            />
+                            {opt.previewUrl && (
+                              <img
+                                src={opt.previewUrl}
+                                alt={opt.value}
+                                className="w-10 h-10 rounded object-cover border"
+                              />
+                            )}
+                          </div>
+                        )}
+
                         <button
                           type="button"
                           onClick={() => removeOption(attr.id, opt.id)}
@@ -341,13 +377,6 @@ export default function AddProduct() {
           </div>
         </form>
 
-        {/* Debug / payload preview */}
-        {/* <div className="mt-8">
-          <h3 className="text-lg font-medium mb-2">Payload preview</h3>
-          <div className="bg-gray-100/10 rounded-md p-4 overflow-auto">
-            <pre className="text-xs">{JSON.stringify(lastPayload || { product, attributes, variations }, null, 2)}</pre>
-          </div>
-        </div> */}
       </div>
     </div>
   );
