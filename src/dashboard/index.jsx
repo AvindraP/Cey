@@ -2,6 +2,7 @@ import { useState } from "react";
 import Sidebar from "./Sidebar";
 import Header from "./Header";
 import Overview from "./sections/Overview";
+import AddProduct from "./sections/products/AddProducst";
 
 export default function Dashboard() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -26,6 +27,7 @@ export default function Dashboard() {
 
         {/* Dynamically load sections */}
         {activeSection === "overview" && <Overview />}
+        {activeSection === "add product" && <AddProduct />}
       </main>
     </div>
   );
