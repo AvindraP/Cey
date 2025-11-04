@@ -15,7 +15,7 @@ export default function Dashboard() {
 
 
       {/* Main content */}
-      <main className="flex-1 p-4 sm:p-8 overflow-auto relative">
+      <main className="flex-1 flex flex-col overflow-auto relative">
         {/* Background glow */}
         <div aria-hidden className="pointer-events-none fixed inset-0 -z-10">
           <div className="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-white/5 blur-3xl" />
@@ -26,8 +26,10 @@ export default function Dashboard() {
         <Header setSidebarOpen={setSidebarOpen} />
 
         {/* Dynamically load sections */}
-        {activeSection === "overview" && <Overview />}
-        {activeSection === "add product" && <AddProduct />}
+        <div className="flex-1 overflow-y-auto scrollable px-4 sm:px-8 max-h-[calc(100vh-7rem)]">
+          {activeSection === "overview" && <Overview />}
+          {activeSection === "add product" && <AddProduct />}
+        </div>
       </main>
     </div>
   );

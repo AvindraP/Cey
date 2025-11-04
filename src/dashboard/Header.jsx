@@ -2,7 +2,7 @@ import { BellAlertIcon, UserIcon } from "@heroicons/react/24/outline";
 
 export default function Header({ setSidebarOpen }) {
     return(
-        <header className="mb-6 flex items-center justify-between">
+        <header className="flex items-center justify-between p-4 sm:p-8">
           <div className="flex items-center gap-4">
             {/* Mobile hamburger menu */}
             <button
