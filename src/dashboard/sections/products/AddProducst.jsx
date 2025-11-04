@@ -142,8 +142,8 @@ export default function AddProduct() {
     }
 
     // For the demo, we just log and show the JSON below the form
-    console.log("Product payload", payload);
-    setLastPayload(payload);
+    // console.log("Product payload", payload);
+    // setLastPayload(payload);
 
     const res = await fetch(`${API_BASE_URL}/products/addproduct`, {
         method: 'POST',
@@ -162,7 +162,7 @@ export default function AddProduct() {
 
   };
 
-  const [lastPayload, setLastPayload] = useState(null);
+  // const [lastPayload, setLastPayload] = useState(null);
 
   return (
     <div className="min-h-screen p-0">
