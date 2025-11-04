@@ -24,7 +24,10 @@ export default function AddProduct() {
     sku: "",
   });
 
-  const [attributes, setAttributes] = useState([]);
+  const [attributes, setAttributes] = useState([
+    { id: crypto.randomUUID(), name: "Color", options: [] },
+    { id: crypto.randomUUID(), name: "Size", options: [] },
+  ]);
   const [variations, setVariations] = useState([]); // generated variations
 
   /* Derived: prepare arrays of option values for cartesian product */
@@ -146,18 +149,26 @@ export default function AddProduct() {
     // setLastPayload(payload);
 
     const res = await fetch(`${API_BASE_URL}/products/addproduct`, {
-        method: 'POST',
-        headers: {
-            "Content-type": "application/json",
-        },
-        body: JSON.stringify(payload),
-        credentials: "include",
+      method: 'POST',
+      headers: {
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify(payload),
+      credentials: "include",
     });
 
     const data = res.json();
 
     if (!res.ok) {
-        throw new Error(data.message || "Creation failed!");
+      alert(data.error || "Failed to create product.");
+    } else {
+      alert("Product created successfully!");
+      setProduct({ id: crypto.randomUUID(), name: "", description: "", base_price: "", sku: "" });
+      setAttributes([
+        { id: crypto.randomUUID(), name: "Color", options: [] },
+        { id: crypto.randomUUID(), name: "Size", options: [] },
+      ]);
+      setVariations([]);
     }
 
   };
@@ -223,139 +234,39 @@ export default function AddProduct() {
 
           {/* Attributes */}
           <div>
-            <div className="flex items-center justify-between">
-              <h2 className="text-lg font-medium">Attributes & Options</h2>
-              <div className="flex gap-2">
-                <button
-                  type="button"
-                  onClick={addAttribute}
-                  className="inline-flex items-center px-3 py-1.5 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700"
-                >
-                  + Add attribute
-                </button>
-                <button
-                  type="button"
-                  onClick={generateVariations}
-                  className="inline-flex items-center px-3 py-1.5 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-indigo-700 bg-indigo-100 hover:bg-indigo-200"
-                >
-                  Generate variations
-                </button>
-              </div>
-            </div>
-
-            <div className="mt-4 space-y-4">
-              {attributes.length === 0 && <p className="text-sm text-gray-500">No attributes yet. Add one to begin.</p>}
-              {attributes.map((attr, ai) => (
-                <div key={attr.id} className="border rounded-md p-4 bg-gray-50/10">
-                  <div className="flex gap-2 items-start">
-                    <div className="flex-1">
-                      <label className="block text-sm font-medium">Attribute name</label>
-                      <input
-                        className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
-                        value={attr.name}
-                        onChange={(e) => updateAttributeName(attr.id, e.target.value)}
-                        placeholder={`e.g. Color`}
-                      />
-                    </div>
-
-                    <div className="flex-shrink-0 space-y-1">
-                      <button
-                        type="button"
-                        onClick={() => addOption(attr.id)}
-                        className="px-3 py-1 text-sm rounded-md border"
-                      >
-                        + Option
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => removeAttribute(attr.id)}
-                        className="px-3 py-1 text-sm rounded-md bg-red-50 text-red-600 border"
-                      >
-                        Remove
-                      </button>
-                    </div>
-                  </div>
-
-                  <div className="mt-3">
-                    <label className="block text-sm font-medium">Options</label>
-                    <div className="mt-2 space-y-2">
-                      {attr.options.length === 0 && <p className="text-sm text-gray-500">No options yet for this attribute.</p>}
-                      {attr.options.map((opt) => (
-                        <div key={opt.id} className="flex gap-2 items-center">
-                          <input
-                            className="flex-1 border-gray-500 rounded-md shadow-sm max-w-50"
-                            value={opt.value}
-                            onChange={(e) => updateOptionValue(attr.id, opt.id, e.target.value)}
-                            placeholder="e.g. Red"
-                            maxLength={20}
-                          />
-                          <button
-                            type="button"
-                            onClick={() => removeOption(attr.id, opt.id)}
-                            className="px-2 py-1 rounded-md bg-red-50 text-red-600 border"
-                          >
-                            Remove
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Variations list */}
-          <div>
-            <div className="flex items-center justify-between">
-              <h2 className="text-lg font-medium">Variations ({variations.length})</h2>
-              <p className="text-sm text-gray-500">Editable SKU, price, stock per variation</p>
-            </div>
-
-            <div className="mt-3 space-y-3">
-              {variations.length === 0 && <p className="text-sm text-gray-500">No variations generated yet.</p>}
-
-              {variations.map((v) => (
-                <div key={v.id} className="border rounded-md p-3 flex flex-col md:flex-row md:items-center gap-3">
-                  <div className="flex-1">
-                    <div className="text-sm text-gray-600">
-                      {v.options.map((o) => (
-                        <span key={o.option_id} className="inline-block mr-2">
-                          <strong>{o.attribute_name}:</strong> {o.option_value}
-                        </span>
-                      ))}
-                    </div>
-                    <div className="mt-2 grid grid-cols-1 md:grid-cols-3 gap-2">
-                      <input
-                        className="border-gray-300 rounded-md shadow-sm"
-                        value={v.sku}
-                        onChange={(e) => updateVariationField(v.id, "sku", e.target.value)}
-                      />
-                      <input
-                        type="number"
-                        step="0.01"
-                        className="border-gray-300 rounded-md shadow-sm"
-                        value={v.price}
-                        onChange={(e) => updateVariationField(v.id, "price", e.target.value)}
-                        placeholder="Price"
-                      />
-                      <input
-                        type="number"
-                        className="border-gray-300 rounded-md shadow-sm"
-                        value={v.stock_quantity}
-                        onChange={(e) => updateVariationField(v.id, "stock_quantity", e.target.value)}
-                        placeholder="Stock qty"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="flex-shrink-0 flex gap-2">
+            <h2 className="text-lg font-medium mb-2">Attributes</h2>
+            <div className="space-y-4">
+              {attributes.map((attr) => (
+                <div key={attr.id} className="border rounded-md p-4">
+                  <h3 className="font-medium mb-2">{attr.name}</h3>
+                  <div className="space-y-2">
+                    {attr.options.map((opt) => (
+                      <div key={opt.id} className="flex gap-2 items-center">
+                        <input
+                          className="flex-1 border-gray-300 rounded-md shadow-sm"
+                          value={opt.value}
+                          onChange={(e) =>
+                            updateOptionValue(attr.id, opt.id, e.target.value)
+                          }
+                          placeholder={`e.g. ${
+                            attr.name === "Color" ? "Red" : "Large"
+                          }`}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => removeOption(attr.id, opt.id)}
+                          className="px-2 py-1 rounded-md bg-red-50 text-red-600 border"
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    ))}
                     <button
                       type="button"
-                      onClick={() => removeVariation(v.id)}
-                      className="px-3 py-1 rounded-md bg-red-50 text-red-600 border"
+                      onClick={() => addOption(attr.id)}
+                      className="px-3 py-1 text-sm rounded-md border"
                     >
-                      Remove
+                      + Add {attr.name} Option
                     </button>
                   </div>
                 </div>
@@ -363,24 +274,69 @@ export default function AddProduct() {
             </div>
           </div>
 
-          {/* Submit */}
-          <div className="flex justify-end gap-3">
-            <button
-              type="button"
-              onClick={() => {
-                // regenerate with current names/values but keep any edited fields where possible
-                generateVariations();
-              }}
-              className="px-4 py-2 rounded-md bg-yellow-50 text-yellow-700 border"
-            >
-              Regenerate variations
-            </button>
+          {/* Variations */}
+          <div>
+            <div className="flex items-center justify-between">
+              <h2 className="text-lg font-medium">Variations ({variations.length})</h2>
+              <button
+                type="button"
+                onClick={generateVariations}
+                className="px-3 py-1.5 text-sm rounded-md bg-indigo-100 text-indigo-700 border"
+              >
+                Generate Variations
+              </button>
+            </div>
 
+            <div className="mt-3 space-y-3">
+              {variations.map((v) => (
+                <div key={v.id} className="border rounded-md p-3 flex flex-col gap-3">
+                  <div className="text-sm text-gray-600">
+                    {v.options.map((o) => (
+                      <span key={o.option_id} className="mr-2">
+                        <strong>{o.attribute_name}:</strong> {o.option_value}
+                      </span>
+                    ))}
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+                    <input
+                      value={v.sku}
+                      onChange={(e) =>
+                        updateVariationField(v.id, "sku", e.target.value)
+                      }
+                      className="border-gray-300 rounded-md shadow-sm"
+                    />
+                    <input
+                      type="number"
+                      step="0.01"
+                      value={v.price}
+                      onChange={(e) =>
+                        updateVariationField(v.id, "price", e.target.value)
+                      }
+                      className="border-gray-300 rounded-md shadow-sm"
+                      placeholder="Price"
+                    />
+                    <input
+                      type="number"
+                      value={v.stock_quantity}
+                      onChange={(e) =>
+                        updateVariationField(v.id, "stock_quantity", e.target.value)
+                      }
+                      className="border-gray-300 rounded-md shadow-sm"
+                      placeholder="Stock"
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Submit */}
+          <div className="flex justify-end">
             <button
               type="submit"
-              className="px-4 py-2 rounded-md bg-indigo-600 text-white shadow-sm hover:bg-indigo-700"
+              className="px-4 py-2 rounded-md bg-indigo-600 text-white hover:bg-indigo-700"
             >
-              Save product
+              Save Product
             </button>
           </div>
         </form>
