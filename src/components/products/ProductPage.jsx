@@ -79,8 +79,6 @@ const ImageGallery = ({ images, selectedImage, onImageSelect }) => {
   );
 }
 
-export default ProductPage;;
-
 const ColorSelector = ({ colors, selectedColor, onColorSelect }) => {
   return (
     <div>
@@ -89,9 +87,8 @@ const ColorSelector = ({ colors, selectedColor, onColorSelect }) => {
       </label>
       <div className="grid grid-cols-6 sm:grid-cols-8 md:grid-cols-6 lg:grid-cols-8 gap-2">
         {colors.map((color) => (
-          <div className='flex flex-col'>
+          <div key={color.id} className='flex flex-col'>
           <button
-            key={color.id}
             onClick={() => onColorSelect(color.value)}
             className={`aspect-square rounded-lg overflow-hidden border-2 transition-all hover:scale-105 ${selectedColor === color.value
               ? 'border-cyan-400 ring-2 ring-cyan-400/30'
@@ -108,38 +105,54 @@ const ColorSelector = ({ colors, selectedColor, onColorSelect }) => {
   );
 };
 
-const SizeSelector = ({ sizes, selectedSize, onSizeSelect }) => {
+const SizeSelector = ({ sizes, selectedSize, onSizeSelect, availableSizes }) => {
   return (
     <div>
       <label className="block text-sm font-medium text-slate-300 mb-3">
         Capacity: <span className="text-slate-100 font-semibold">{selectedSize}</span>
       </label>
       <div className="flex flex-wrap gap-2">
-        {sizes.map((size) => (
-          <button
-            key={size.id}
-            onClick={() => onSizeSelect(size.value)}
-            className={`px-6 py-2.5 rounded-lg border-2 transition-all font-medium ${selectedSize === size.value
-              ? 'border-cyan-400 bg-cyan-400/10 text-cyan-400'
-              : 'border-gray-700/50 bg-gray-800/30 text-slate-300 hover:border-gray-600 hover:bg-gray-800/50'
+        {sizes.map((size) => {
+          const isAvailable = availableSizes.includes(size.value);
+          return (
+            <button
+              key={size.id}
+              onClick={() => isAvailable && onSizeSelect(size.value)}
+              disabled={!isAvailable}
+              className={`px-6 py-2.5 rounded-lg border-2 transition-all font-medium ${
+                !isAvailable
+                  ? 'border-gray-800/50 bg-gray-900/30 text-gray-600 cursor-not-allowed opacity-50'
+                  : selectedSize === size.value
+                  ? 'border-cyan-400 bg-cyan-400/10 text-cyan-400'
+                  : 'border-gray-700/50 bg-gray-800/30 text-slate-300 hover:border-gray-600 hover:bg-gray-800/50'
               }`}
-          >
-            {size.value}
-          </button>
-        ))}
+            >
+              {size.value}
+              {!isAvailable && <span className="ml-1 text-xs">(Out of stock)</span>}
+            </button>
+          );
+        })}
       </div>
     </div>
   );
 };
 
-const QuantitySelector = ({ quantity, onQuantityChange, max = 99 }) => {
+const QuantitySelector = ({ quantity, onQuantityChange, max = 99, stockAvailable }) => {
   return (
     <div>
-      <label className="block text-sm font-medium text-slate-300 mb-3">Quantity</label>
+      <label className="block text-sm font-medium text-slate-300 mb-3">
+        Quantity
+        {stockAvailable !== null && (
+          <span className="ml-2 text-xs text-slate-400">
+            ({stockAvailable} available)
+          </span>
+        )}
+      </label>
       <div className="flex items-center gap-3">
         <button
           onClick={() => onQuantityChange(Math.max(1, quantity - 1))}
-          className="w-10 h-10 rounded-lg border border-gray-700/50 bg-gray-800/30 hover:bg-gray-800/50 flex items-center justify-center transition-all"
+          className="w-10 h-10 rounded-lg border border-gray-700/50 bg-gray-800/30 hover:bg-gray-800/50 flex items-center justify-center transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+          disabled={quantity <= 1}
         >
           <MinusIcon className="w-4 h-4" />
         </button>
@@ -151,7 +164,8 @@ const QuantitySelector = ({ quantity, onQuantityChange, max = 99 }) => {
         />
         <button
           onClick={() => onQuantityChange(Math.min(max, quantity + 1))}
-          className="w-10 h-10 rounded-lg border border-gray-700/50 bg-gray-800/30 hover:bg-gray-800/50 flex items-center justify-center transition-all"
+          className="w-10 h-10 rounded-lg border border-gray-700/50 bg-gray-800/30 hover:bg-gray-800/50 flex items-center justify-center transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+          disabled={quantity >= max}
         >
           <PlusIcon className="w-4 h-4" />
         </button>
@@ -176,19 +190,21 @@ const PriceDisplay = ({ price, originalPrice, discount }) => {
   );
 };
 
-const ActionButtons = ({ onAddToCart, onBuyNow }) => {
+const ActionButtons = ({ onAddToCart, onBuyNow, disabled }) => {
   return (
     <div className="space-y-3">
       <button
         onClick={onAddToCart}
-        className="w-full py-3.5 rounded-lg bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white font-semibold flex items-center justify-center gap-2 transition-all shadow-lg shadow-cyan-500/25 hover:shadow-cyan-500/40"
+        disabled={disabled}
+        className="w-full py-3.5 rounded-lg bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white font-semibold flex items-center justify-center gap-2 transition-all shadow-lg shadow-cyan-500/25 hover:shadow-cyan-500/40 disabled:opacity-50 disabled:cursor-not-allowed"
       >
         <ShoppingCartIcon className="w-5 h-5" />
         Add to cart
       </button>
       <button
         onClick={onBuyNow}
-        className="w-full py-3.5 rounded-lg bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-semibold transition-all shadow-lg shadow-purple-500/25 hover:shadow-purple-500/40"
+        disabled={disabled}
+        className="w-full py-3.5 rounded-lg bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-semibold transition-all shadow-lg shadow-purple-500/25 hover:shadow-purple-500/40 disabled:opacity-50 disabled:cursor-not-allowed"
       >
         Buy with Shop
       </button>
@@ -264,7 +280,6 @@ function ProductPage() {
   const [selectedImage, setSelectedImage] = useState(null);
   const [quantity, setQuantity] = useState(1);
 
-
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const idFromUrl = params.get("product_id");
@@ -292,6 +307,63 @@ function ProductPage() {
   const colorOptions = productData.attributes?.find(a => a.name === 'Color')?.options || [];
   const sizeOptions = productData.attributes?.find(a => a.name === 'Size')?.options || [];
 
+  // Get available sizes based on selected color
+  const getAvailableSizes = () => {
+    if (!selectedColor || !productData.variations) {
+      return sizeOptions.map(s => s.value);
+    }
+
+    const availableSizes = new Set();
+    productData.variations.forEach(variation => {
+      const hasColor = variation.options.some(
+        opt => opt.attribute_name === 'Color' && opt.option_value === selectedColor
+      );
+      const sizeOption = variation.options.find(opt => opt.attribute_name === 'Size');
+      
+      if (hasColor && sizeOption && variation.stock_quantity > 0) {
+        availableSizes.add(sizeOption.option_value);
+      }
+    });
+
+    return Array.from(availableSizes);
+  };
+
+  // Get current variation based on selected color and size
+  const getCurrentVariation = () => {
+    if (!selectedColor || !selectedSize || !productData.variations) {
+      return null;
+    }
+
+    return productData.variations.find(variation => {
+      const hasColor = variation.options.some(
+        opt => opt.attribute_name === 'Color' && opt.option_value === selectedColor
+      );
+      const hasSize = variation.options.some(
+        opt => opt.attribute_name === 'Size' && opt.option_value === selectedSize
+      );
+      return hasColor && hasSize;
+    });
+  };
+
+  const currentVariation = getCurrentVariation();
+  const maxQuantity = currentVariation ? currentVariation.stock_quantity : 99;
+  const availableSizes = getAvailableSizes();
+
+  // Reset size if it becomes unavailable
+  useEffect(() => {
+    if (selectedSize && !availableSizes.includes(selectedSize)) {
+      setSelectedSize(null);
+      setQuantity(1);
+    }
+  }, [selectedColor, availableSizes, selectedSize]);
+
+  // Reset quantity if it exceeds new max
+  useEffect(() => {
+    if (quantity > maxQuantity) {
+      setQuantity(Math.min(quantity, maxQuantity));
+    }
+  }, [maxQuantity, quantity]);
+
   const specifications = {
     'Pigment Temperature': 'Cool',
     'Opacity Level': 'Medium',
@@ -303,12 +375,31 @@ function ProductPage() {
   };
 
   const handleAddToCart = () => {
-    console.log('Add to cart:', { selectedColor, selectedSize, quantity });
+    if (!selectedColor || !selectedSize) {
+      alert('Please select color and size');
+      return;
+    }
+    if (!currentVariation || currentVariation.stock_quantity < 1) {
+      alert('This variation is out of stock');
+      return;
+    }
+    console.log('Add to cart:', { selectedColor, selectedSize, quantity, variation: currentVariation });
   };
 
   const handleBuyNow = () => {
-    console.log('Buy now:', { selectedColor, selectedSize, quantity });
+    if (!selectedColor || !selectedSize) {
+      alert('Please select color and size');
+      return;
+    }
+    if (!currentVariation || currentVariation.stock_quantity < 1) {
+      alert('This variation is out of stock');
+      return;
+    }
+    console.log('Buy now:', { selectedColor, selectedSize, quantity, variation: currentVariation });
   };
+
+  const isOutOfStock = currentVariation && currentVariation.stock_quantity < 1;
+  const canPurchase = selectedColor && selectedSize && !isOutOfStock;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-gray-800">
@@ -336,7 +427,7 @@ function ProductPage() {
               <h1 className="text-3xl font-bold text-slate-100 mb-3">
                 {productData.product?.name}
               </h1>
-              <PriceDisplay price={productData.product?.base_price || 0.00} /*originalPrice={productData.product?.base_price || 0.00} discount="0" */ />
+              <PriceDisplay price={currentVariation?.price || productData.product?.base_price || 0.00} />
             </div>
 
             <ColorSelector
@@ -349,16 +440,26 @@ function ProductPage() {
               sizes={sizeOptions}
               selectedSize={selectedSize}
               onSizeSelect={setSelectedSize}
+              availableSizes={availableSizes}
             />
 
             <QuantitySelector
               quantity={quantity}
               onQuantityChange={setQuantity}
+              max={maxQuantity}
+              stockAvailable={currentVariation?.stock_quantity ?? null}
             />
+
+            {isOutOfStock && (
+              <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/30 text-red-400 text-sm">
+                This combination is currently out of stock
+              </div>
+            )}
 
             <ActionButtons
               onAddToCart={handleAddToCart}
               onBuyNow={handleBuyNow}
+              disabled={!canPurchase}
             />
 
             {/* Payment Icons */}
@@ -389,3 +490,5 @@ function ProductPage() {
     </div>
   );
 }
+
+export default ProductPage;
