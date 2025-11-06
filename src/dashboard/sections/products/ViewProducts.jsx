@@ -108,11 +108,11 @@ export default function ViewProducts() {
                         <div className="space-y-3">
                           {/* Attributes */}
                           <div>
-                            <h3 className="text-sm font-semibold text-gray-300">
+                            <h3 className="text-sm font-semibold text-gray-100">
                               Attributes
                             </h3>
                             {p.attributes && p.attributes.length > 0 ? (
-                              <div className="mt-2 grid grid-cols-2 md:grid-cols-3 gap-2 text-sm text-gray-400">
+                              <div className="mt-2 grid grid-cols-2 md:grid-cols-3 gap-2 text-sm text-gray-300">
                                 {p.attributes.map((attr) => (
                                   <div key={attr.id}>
                                     <strong>{attr.name}:</strong>{" "}
@@ -131,7 +131,7 @@ export default function ViewProducts() {
 
                           {/* Variations */}
                           <div>
-                            <h3 className="text-sm font-semibold text-gray-300">
+                            <h3 className="text-sm font-semibold text-gray-100">
                               Variations ({p.variations?.length || 0})
                             </h3>
 
@@ -158,7 +158,7 @@ export default function ViewProducts() {
                                     {p.variations.map((v) => (
                                       <tr
                                         key={v.id}
-                                        className="border-t border-gray-800"
+                                        className="border-t border-gray-800 text-gray-300"
                                       >
                                         <td className="px-3 py-2">
                                           {v.sku}
@@ -169,7 +169,7 @@ export default function ViewProducts() {
                                         <td className="px-3 py-2">
                                           {v.stock_quantity}
                                         </td>
-                                        <td className="px-3 py-2 text-gray-700">
+                                        <td className="px-3 py-2">
                                           {v.options
                                             .map(
                                               (o) =>
