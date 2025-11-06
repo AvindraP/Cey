@@ -7,10 +7,12 @@ import Login from './dashboard/login/Login.jsx'
 import Dashboard from './dashboard/index.jsx'
 import { AuthProvider } from './middleware/AuthProvider.jsx'
 import ProtectedRoute from './middleware/ProtectedRoute.jsx'
+import ProductPage from './components/products/ProductPage.jsx'
 
 // Define routes
 const router = createBrowserRouter([
   { path: "/", element: <App />, }, // main app or homepage  
+  { path: "product", element: <ProductPage />, }, // admin dashboard login
   { path: "login", element: <Login />, }, // admin dashboard login
   { path: "dashboard", element: (<ProtectedRoute> <Dashboard /> </ProtectedRoute>), }, // admin dashboard 
 ]);
