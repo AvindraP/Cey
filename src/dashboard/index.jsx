@@ -1,18 +1,59 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import Sidebar from "./Sidebar";
 import Header from "./Header";
 import Overview from "./sections/Overview";
 import AddProduct from "./sections/products/AddProducst";
 import ViewProducts from "./sections/products/ViewProducts";
+import { AuthContext } from "../middleware/AuthProvider";
+import { useNavigate } from "react-router-dom";
+import { useActivityTracker } from "../hooks/useActivityTracker";
+import SessionWarningModal from "./SessionWarningModal";
 
 export default function Dashboard() {
+  const { user, logout } = useContext(AuthContext);
+  const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("overview");
 
+  // Handle session timeout
+  const handleTimeout = async () => {
+    console.log('Session expired, logging out...');
+    await logout();
+    navigate('/login', {
+      replace: true,
+      state: { message: 'Your session has expired. Please login again.' }
+    });
+  };
+
+  // Initialize activity tracker
+  const { showWarning, extendSession } = useActivityTracker(user, handleTimeout, {
+    sessionTimeout: 30 * 60 * 1000,  // 30 minutes
+    extendThreshold: 5 * 60 * 1000,   // Extend every 5 minutes of activity
+    warningTime: 2 * 60 * 1000,       // Warning 2 minutes before timeout
+  });
+
+  const handleContinueSession = async () => {
+    await extendSession();
+  };
+
+  const handleLogout = async () => {
+    await logout();
+    navigate('/login', { replace: true });
+  };
+
   return (
     <div className="min-h-screen flex bg-gray-950 text-slate-100">
+
+      {/* Session Warning Modal */}
+      <SessionWarningModal
+        show={showWarning}
+        onContinue={handleContinueSession}
+        onLogout={handleLogout}
+        timeLeft={120} // 2 minutes in seconds
+      />
+
       {/* Sidebar */}
-      <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} setActiveSection={setActiveSection} activeSection={activeSection} />
+      <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} setActiveSection={setActiveSection} activeSection={activeSection} handleLogout={handleLogout} />
 
 
       {/* Main content */}

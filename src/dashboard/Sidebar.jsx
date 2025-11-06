@@ -8,7 +8,6 @@ import {
     ChevronLeftIcon,
     ArrowRightStartOnRectangleIcon
 } from "@heroicons/react/24/outline";
-import { useNavigate } from "react-router-dom";
 
 const menuItems = [
     { name: "Overview", icon: HomeIcon, href: "#" },
@@ -122,30 +121,8 @@ function MobileSidebarItem({ item, setActiveSection, activeSection }) {
     );
 }
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-
-export default function Sidebar({ sidebarOpen, setSidebarOpen, setActiveSection, activeSection }) {
+export default function Sidebar({ sidebarOpen, setSidebarOpen, setActiveSection, activeSection, handleLogout }) {
     const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-    const navigate = useNavigate();
-
-    const handleLogout = async () => {
-        try {
-            const response = await fetch(`${API_BASE_URL}/auth/logout`, {
-                method: "POST",
-                credentials: "include",
-            });
-
-            const data = await response.json();
-
-            if (!response.ok) {
-                throw new Error(data.message || "Logout failed");
-            }
-
-            navigate('/login');
-        } catch (err) {
-            console.error(err);
-        }
-    };
 
     return (
         <>

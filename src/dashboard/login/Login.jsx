@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../middleware/AuthProvider";
 
@@ -8,6 +8,7 @@ export default function Login() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
+    const [info, setInfo] = useState("");
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
     const location = useLocation();
@@ -15,9 +16,20 @@ export default function Login() {
 
     const from = location.state?.from?.pathname || "/dashboard";
 
+    // Show timeout message if redirected after session expiry
+    useEffect(() => {
+        if (location.state?.message) {
+            setInfo(location.state.message);
+            // Clear the message after 5 seconds
+            const timer = setTimeout(() => setInfo(""), 5000);
+            return () => clearTimeout(timer);
+        }
+    }, [location.state]);
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError("");
+        setInfo("");
 
         if (!email || !password) {
             setError("Please enter both email and password.");
@@ -35,7 +47,7 @@ export default function Login() {
                 credentials: "include",
             });
 
-            const d = response.json();
+            const d = await response.json();
 
             if (!response.ok) {
                 throw new Error(d.message || "Login failed");
@@ -94,6 +106,12 @@ export default function Login() {
                         onChange={(e) => setPassword(e.target.value)}
                     />
 
+                    {info && (
+                        <div className="text-sm text-blue-300 bg-blue-900/20 px-3 py-2 rounded-md border border-blue-900/30">
+                            {info}
+                        </div>
+                    )}
+
                     {error && (
                         <div className="text-sm text-rose-400 bg-rose-900/20 px-3 py-2 rounded-md border border-rose-900/30">
                             {error}
@@ -103,7 +121,7 @@ export default function Login() {
                     <button
                         type="submit"
                         disabled={loading}
-                        className="w-full py-3 rounded-3xl font-semibold bg-white/10 hover:bg-white/15 border border-white/10 backdrop-blur-sm shadow-lg active:scale-[0.995] transition"
+                        className="w-full py-3 rounded-3xl font-semibold bg-white/10 hover:bg-white/15 border border-white/10 backdrop-blur-sm shadow-lg active:scale-[0.995] transition disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         {loading ? "Signing in…" : "Sign in"}
                     </button>
