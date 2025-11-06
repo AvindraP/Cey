@@ -119,6 +119,13 @@ export default function AddProduct() {
       }))
     ));
 
+    // Append images
+    if (product.images) {
+      product.images.forEach((img, i) => {
+        if (img) formData.append(`product_images[${i}]`, img);
+      });
+    }
+
     // Append image files (if any)
     attributes.forEach(attr => {
       if (attr.name.toLowerCase() === "color") {
@@ -244,6 +251,64 @@ export default function AddProduct() {
                 max={99999999.99}
                 min={0}
               />
+            </div>
+
+            {/* Product Images */}
+            <div className="md:col-span-3">
+              <label className="block text-sm font-medium">Product Images</label>
+              <div className="mt-2 space-y-2">
+                {product.images?.map((img, index) => (
+                  <div key={index} className="flex items-center gap-3">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => {
+                        const file = e.target.files[0];
+                        setProduct((prev) => {
+                          const newImages = [...(prev.images || [])];
+                          newImages[index] = file;
+                          return { ...prev, images: newImages };
+                        });
+                      }}
+                      className="block w-full text-sm text-gray-700 border border-gray-300 rounded-md cursor-pointer"
+                    />
+                    {img && (
+                      <div className="mt-1">
+                        <img
+                          src={typeof img === "string" ? img : URL.createObjectURL(img)}
+                          alt={`Preview ${index + 1}`}
+                          className="h-16 w-16 object-cover rounded border"
+                        />
+                      </div>
+                    )}
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setProduct((prev) => ({
+                          ...prev,
+                          images: prev.images.filter((_, i) => i !== index),
+                        }))
+                      }
+                      className="px-2 py-1 text-sm bg-red-50 text-red-600 border rounded-md"
+                    >
+                      Remove
+                    </button>
+                  </div>
+                ))}
+              </div>
+
+              <button
+                type="button"
+                onClick={() =>
+                  setProduct((prev) => ({
+                    ...prev,
+                    images: [...(prev.images || []), null],
+                  }))
+                }
+                className="mt-2 px-3 py-1.5 bg-cyan-50/20 text-cyan-100 border rounded-md text-sm"
+              >
+                + Add Image
+              </button>
             </div>
           </div>
 
