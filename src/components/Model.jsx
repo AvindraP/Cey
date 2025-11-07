@@ -58,11 +58,11 @@ export const Model = (props) => {
         y: -Math.PI * 3 / 4,
       },
       {
-        duration: 1,
+        duration: 0.8,
         x: 0,
         y: -Math.PI / 2,
       },
-      2
+      2.2
     );
 
     // MOVEMENT
