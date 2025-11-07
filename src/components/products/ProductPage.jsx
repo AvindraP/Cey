@@ -17,10 +17,10 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const ImageGallery = ({ images, selectedImage, onImageSelect }) => {
 
   const newImages = images.length
-  ? images.map((i) => {
-    return `${API_BASE_URL}/images/${i}`;
-  })
-  : ['/images/noimage.webp'];
+    ? images.map((i) => {
+      return `${API_BASE_URL}/images/${i}`;
+    })
+    : ['/images/noimage.webp'];
 
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -34,7 +34,11 @@ const ImageGallery = ({ images, selectedImage, onImageSelect }) => {
 
   return (
     <div className="space-y-4">
-      <div className="relative bg-gradient-to-br from-gray-800/50 to-gray-900/50 rounded-2xl overflow-hidden border border-gray-700/50 backdrop-blur-sm">
+      <div className="relative rounded-2xl overflow-hidden border border-gray-700/50 backdrop-blur-sm"
+        style={{
+          backgroundColor: 'black',
+          background: 'linear-gradient(135deg, #0d0d0d 0%, #1a1a1a 40%, #2b2b2b 100%)'
+        }}>
         <div className="aspect-square flex items-center justify-center p-8">
           <img
             src={selectedImage || newImages[currentIndex]}
@@ -67,7 +71,7 @@ const ImageGallery = ({ images, selectedImage, onImageSelect }) => {
               onImageSelect(img);
             }}
             className={`aspect-square rounded-lg overflow-hidden border-2 transition-all ${currentIndex === idx
-              ? 'border-cyan-400 ring-2 ring-cyan-400/30'
+              ? 'border-white-400 ring-2 ring-white-400/30'
               : 'border-gray-700/50 hover:border-gray-600'
               } bg-gradient-to-br from-gray-800/30 to-gray-900/30`}
           >
@@ -88,16 +92,16 @@ const ColorSelector = ({ colors, selectedColor, onColorSelect }) => {
       <div className="grid grid-cols-6 sm:grid-cols-8 md:grid-cols-6 lg:grid-cols-8 gap-2">
         {colors.map((color) => (
           <div key={color.id} className='flex flex-col'>
-          <button
-            onClick={() => onColorSelect(color.value)}
-            className={`aspect-square rounded-lg overflow-hidden border-2 transition-all hover:scale-105 ${selectedColor === color.value
-              ? 'border-cyan-400 ring-2 ring-cyan-400/30'
-              : 'border-gray-700/50 hover:border-gray-600'
-              } bg-gradient-to-br from-gray-800/30 to-gray-900/30 text-gray-100`}
-          >
-            <img src={color.image ? `${API_BASE_URL}/images/${color.image}` : '/images/noimage.webp'} alt={color.value} className="w-full h-full object-cover" />
-          </button>
-          <label className='text-sm text-gray-300 text-center'>{color.value}</label>
+            <button
+              onClick={() => onColorSelect(color.value)}
+              className={`aspect-square rounded-lg overflow-hidden border-2 transition-all hover:scale-105 ${selectedColor === color.value
+                ? 'border-white-400 ring-2 ring-white-400/30'
+                : 'border-gray-700/50 hover:border-gray-600'
+                } bg-gradient-to-br from-gray-800/30 to-gray-900/30 text-gray-100`}
+            >
+              <img src={color.image ? `${API_BASE_URL}/images/${color.image}` : '/images/noimage.webp'} alt={color.value} className="w-full h-full object-cover" />
+            </button>
+            <label className='text-sm text-gray-300 text-center'>{color.value}</label>
           </div>
         ))}
       </div>
@@ -119,13 +123,12 @@ const SizeSelector = ({ sizes, selectedSize, onSizeSelect, availableSizes }) => 
               key={size.id}
               onClick={() => isAvailable && onSizeSelect(size.value)}
               disabled={!isAvailable}
-              className={`px-6 py-2.5 rounded-lg border-2 transition-all font-medium ${
-                !isAvailable
+              className={`px-6 py-2.5 rounded-lg border-2 transition-all font-medium ${!isAvailable
                   ? 'border-gray-800/50 bg-gray-900/30 text-gray-600 cursor-not-allowed opacity-50'
                   : selectedSize === size.value
-                  ? 'border-cyan-400 bg-cyan-400/10 text-cyan-400'
-                  : 'border-gray-700/50 bg-gray-800/30 text-slate-300 hover:border-gray-600 hover:bg-gray-800/50'
-              }`}
+                    ? 'border-white-400 bg-white-400/10 text-white-400'
+                    : 'border-gray-700/50 bg-gray-800/30 text-slate-300 hover:border-gray-600 hover:bg-gray-800/50'
+                }`}
             >
               {size.value}
               {!isAvailable && <span className="ml-1 text-xs">(Out of stock)</span>}
@@ -160,7 +163,7 @@ const QuantitySelector = ({ quantity, onQuantityChange, max = 99, stockAvailable
           type="number"
           value={quantity}
           onChange={(e) => onQuantityChange(Math.max(1, Math.min(max, parseInt(e.target.value) || 1)))}
-          className="w-20 h-10 text-center bg-gray-800/30 border border-gray-700/50 rounded-lg text-slate-100 focus:outline-none focus:ring-2 focus:ring-cyan-400/50"
+          className="w-20 h-10 text-center bg-gray-800/30 border border-gray-700/50 rounded-lg text-slate-100 focus:outline-none focus:ring-2 focus:ring-white-400/50"
         />
         <button
           onClick={() => onQuantityChange(Math.min(max, quantity + 1))}
@@ -196,7 +199,7 @@ const ActionButtons = ({ onAddToCart, onBuyNow, disabled }) => {
       <button
         onClick={onAddToCart}
         disabled={disabled}
-        className="w-full py-3.5 rounded-lg bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white font-semibold flex items-center justify-center gap-2 transition-all shadow-lg shadow-cyan-500/25 hover:shadow-cyan-500/40 disabled:opacity-50 disabled:cursor-not-allowed"
+        className="w-full py-3.5 rounded-lg bg-gradient-to-r from-gray-200 to-gray-400 hover:from-gray-300 hover:to-gray-500 text-black font-semibold flex items-center justify-center gap-2 transition-all shadow-lg shadow-white-500/25 hover:shadow-white-500/40 disabled:opacity-50 disabled:cursor-not-allowed"
       >
         <ShoppingCartIcon className="w-5 h-5" />
         Add to cart
@@ -204,9 +207,9 @@ const ActionButtons = ({ onAddToCart, onBuyNow, disabled }) => {
       <button
         onClick={onBuyNow}
         disabled={disabled}
-        className="w-full py-3.5 rounded-lg bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-semibold transition-all shadow-lg shadow-purple-500/25 hover:shadow-purple-500/40 disabled:opacity-50 disabled:cursor-not-allowed"
+        className="w-full py-3.5 rounded-lg bg-gradient-to-r from-gray-600 to-gray-600 hover:from-gray-700 hover:to-gray-700 text-white font-semibold transition-all shadow-lg shadow-gray-500/25 hover:shadow-gray-500/40 disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        Buy with Shop
+        Buy with Stripe
       </button>
       <button className="w-full py-2 text-sm text-slate-400 hover:text-slate-300 transition-colors">
         More payment options
@@ -227,13 +230,13 @@ const ProductInfo = ({ description, specifications }) => {
               key={tab}
               onClick={() => setActiveTab(tab)}
               className={`pb-4 text-sm font-medium capitalize transition-colors relative ${activeTab === tab
-                ? 'text-cyan-400'
+                ? 'text-white-400'
                 : 'text-slate-400 hover:text-slate-300'
                 }`}
             >
               {tab}
               {activeTab === tab && (
-                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-cyan-400 to-blue-500" />
+                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-white-400 to-blue-500" />
               )}
             </button>
           ))}
@@ -301,7 +304,7 @@ function ProductPage() {
       }
     }
 
-    if(productId) fetchProduct();
+    if (productId) fetchProduct();
   }, [productId])
 
   const colorOptions = productData.attributes?.find(a => a.name === 'Color')?.options || [];
@@ -319,7 +322,7 @@ function ProductPage() {
         opt => opt.attribute_name === 'Color' && opt.option_value === selectedColor
       );
       const sizeOption = variation.options.find(opt => opt.attribute_name === 'Size');
-      
+
       if (hasColor && sizeOption && variation.stock_quantity > 0) {
         availableSizes.add(sizeOption.option_value);
       }
@@ -402,7 +405,11 @@ function ProductPage() {
   const canPurchase = selectedColor && selectedSize && !isOutOfStock;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-gray-800">
+    <div className="min-h-screen"
+      style={{
+        backgroundColor: 'black',
+        background: 'linear-gradient(135deg, #0d0d0d 0%, #1a1a1a 40%, #2b2b2b 100%)'
+      }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Breadcrumb */}
         <nav className="mb-6 text-sm text-slate-400">
