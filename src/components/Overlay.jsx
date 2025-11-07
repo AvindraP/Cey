@@ -90,7 +90,7 @@ const ProductsSection = ({ isVisible }) => {
 
     return (
         <section
-            className={`flex flex-col justify-center items-start h-[99vh] overflow-hidden w-[70vw] px-6 m-0 py-20 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+            className={`flex flex-col justify-center items-start min-h-screen w-[70vw] px-6 m-0 py-20 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
                 }`}
             id="products"
         >
@@ -188,7 +188,7 @@ export const Overlay = ({ onScrollToSection }) => {
 
                     {/* Slide 0: Hero with INKVERSE Logo */}
                     <section
-                        className={`flex flex-col justify-center items-center h-[99vh] overflow-hidden w-[70vw] px-6 m-0 text-center transition-all duration-1000 ${currentSection === 0 ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
+                        className={`flex flex-col justify-center items-center min-h-screen w-[70vw] px-6 m-0 text-center transition-all duration-1000 ${currentSection === 0 ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
                             }`}
                         id="hero-logo"
                     >
@@ -199,10 +199,9 @@ export const Overlay = ({ onScrollToSection }) => {
                             </h1>
 
                             {/* Placeholder for cutout image - replace src with your actual image */}
-                            <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-48 h-48 md:w-64 md:h-64">
+                            <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-100 h-100 md:w-200 md:h-200">
                                 <img
-                                    src="/path-to-your-cutout-image.png"
-                                    alt="INKVERSE Logo"
+                                    src="/images/cutout-image.png"
                                     className="w-full h-full object-contain drop-shadow-2xl"
                                 />
                             </div>
@@ -215,7 +214,7 @@ export const Overlay = ({ onScrollToSection }) => {
 
                     {/* Slide 1: Original Hero Section */}
                     <section
-                        className={`flex flex-col justify-center items-start h-[99vh] overflow-hidden w-[70vw] px-6 m-0 text-center transition-all duration-1000 ${currentSection === 1 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+                        className={`flex flex-col justify-center items-start min-h-screen w-[70vw] px-6 m-0 text-center transition-all duration-1000 ${currentSection === 1 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
                             }`}
                         id="hero"
                     >
@@ -242,7 +241,7 @@ export const Overlay = ({ onScrollToSection }) => {
 
                     {/* Slide 2: About Us */}
                     <section
-                        className={`flex flex-col justify-center items-start h-[99vh] overflow-hidden w-[70vw] px-6 m-0 text-center transition-all duration-1000 ${currentSection === 2 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+                        className={`flex flex-col justify-center items-start min-h-screen w-[70vw] px-6 m-0 text-center transition-all duration-1000 ${currentSection === 2 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
                             }`}
                         id="about"
                     >
@@ -267,7 +266,7 @@ export const Overlay = ({ onScrollToSection }) => {
 
                     {/* Slide 4: Free Delivery Section */}
                     <section
-                        className={`flex flex-col justify-center items-center h-[99vh] overflow-hidden w-[70vw] px-6 m-0 text-center transition-all duration-1000 ${currentSection === 4 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+                        className={`flex flex-col justify-center items-center min-h-screen w-[70vw] px-6 m-0 text-center transition-all duration-1000 ${currentSection === 4 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
                             }`}
                         id="delivery"
                     >
@@ -291,7 +290,7 @@ export const Overlay = ({ onScrollToSection }) => {
 
                     {/* Slide 5: Contact Us */}
                     <section
-                        className={`flex flex-col justify-center items-center h-[99vh] overflow-hidden w-[70vw] px-6 m-0 text-center pb-32 transition-all duration-1000 ${currentSection === 5 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+                        className={`flex flex-col justify-center items-center min-h-screen w-[70vw] px-6 m-0 text-center pb-32 transition-all duration-1000 ${currentSection === 5 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
                             }`}
                         id="contact"
                     >
