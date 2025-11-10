@@ -101,7 +101,7 @@ const ProductsSection = ({ getSectionProgress }) => {
         >
             <div className="max-w-7xl w-full mx-auto">
                 <h2 className="text-4xl md:text-5xl font-bold mb-4 text-white text-center">Our Products</h2>
-                <p className="text-lg md:text-xl text-zinc-400 mb-12 text-center max-w-2xl mx-auto">
+                <p className="text-base md:text-lg text-zinc-400 mb-6 md:mb-12 text-center max-w-2xl mx-auto">
                     Premium tattoo supplies, inks, and aftercare essentials trusted by professionals
                 </p>
 
@@ -207,7 +207,7 @@ export const Overlay = ({ onScrollToSection }) => {
     }, [scrollPos]);
 
     // Example: define heights of all sections
-    const sectionHeights = [1, 1, 1, 1, 1, 1.5]; // last section taller
+    const sectionHeights = [1, 1, 1, 1.25, 1, 1.5]; // last section taller
     const totalHeight = sectionHeights.reduce((a, b) => a + b, 0);
 
     const getSectionProgress = (index) => {
@@ -392,7 +392,7 @@ export const Overlay = ({ onScrollToSection }) => {
                         const p = getSectionProgress(5);
                         return (
                             <section
-                                className="flex flex-col justify-center items-center min-h-screen overflow-y-hidden w-[70vw] px-6 m-0 mb-50 text-center transition-all duration-500"
+                                className="flex flex-col justify-center items-center min-h-screen overflow-y-hidden w-full lg:w-[70vw] px-6 m-0 mb-50 text-center transition-all duration-500"
                                 style={{
                                     opacity: p,
                                     transform: `translateY(${(1 - p) * 30}px)`,
