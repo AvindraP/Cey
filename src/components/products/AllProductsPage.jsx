@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { MagnifyingGlassIcon, FunnelIcon, XMarkIcon, UserIcon, ShoppingCartIcon } from '@heroicons/react/24/outline';
+import { MagnifyingGlassIcon, FunnelIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { ProductHeader } from './ProductHeader';
 import { Footer } from '../Footer';
 
@@ -28,7 +28,7 @@ const ProductCard = ({ product, images }) => {
 
   const displayPrice = product.display_price || null;
   const discountedPrice = product.base_price || '0.00';
-  const discountPercent = displayPrice 
+  const discountPercent = displayPrice
     ? Math.round(((parseFloat(displayPrice) - parseFloat(discountedPrice)) / parseFloat(displayPrice)) * 100)
     : 0;
 
@@ -52,7 +52,7 @@ const ProductCard = ({ product, images }) => {
             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
           />
         )}
-        
+
         {displayPrice && discountPercent > 0 && (
           <div className="absolute top-3 right-3 bg-green-500 text-white text-xs font-bold px-2.5 py-1 rounded shadow-lg">
             -{discountPercent}%
@@ -64,9 +64,8 @@ const ProductCard = ({ product, images }) => {
             {images.map((_, idx) => (
               <div
                 key={idx}
-                className={`w-1.5 h-1.5 rounded-full transition-all ${
-                  idx === currentImageIndex ? 'bg-white w-4' : 'bg-white/50'
-                }`}
+                className={`w-1.5 h-1.5 rounded-full transition-all ${idx === currentImageIndex ? 'bg-white w-4' : 'bg-white/50'
+                  }`}
               />
             ))}
           </div>
@@ -80,7 +79,7 @@ const ProductCard = ({ product, images }) => {
         <p className="text-sm text-zinc-400 mb-4 line-clamp-2 leading-snug min-h-[2.8em]">
           {product.description}
         </p>
-        
+
         <div className="flex items-center gap-3 mb-4">
           <span className="text-2xl font-bold text-white">${discountedPrice}</span>
           {displayPrice && (
@@ -111,9 +110,8 @@ const FilterSidebar = ({ isOpen, onClose, filters, onFilterChange }) => {
       )}
 
       <div
-        className={`fixed lg:sticky top-20 left-0 h-[calc(100vh-5rem)] lg:h-auto w-80 bg-black lg:bg-zinc-900/50 border-r lg:border border-zinc-800 rounded-none lg:rounded-lg p-6 overflow-y-auto z-40 transition-transform duration-300 ${
-          isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
-        }`}
+        className={`fixed lg:sticky top-20 left-0 h-[calc(100vh-5rem)] lg:h-auto w-80 bg-black lg:bg-zinc-900/50 border-r lg:border border-zinc-800 rounded-none lg:rounded-lg p-6 overflow-y-auto z-40 transition-transform duration-300 ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
+          }`}
       >
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-xl font-bold text-white">Filters</h2>
@@ -283,6 +281,57 @@ export default function AllProductsPage() {
       );
     }
 
+    // Category filter
+    if (filters.categories.length > 0 && !filters.categories.includes('All Products')) {
+      result = result.filter(item => {
+        // You can add category field to your product data
+        // For now, filter by product name keywords
+        const productName = item.product.name.toLowerCase();
+        return filters.categories.some(category => {
+          const categoryKey = category.toLowerCase();
+          if (categoryKey.includes('ink')) return productName.includes('ink') || productName.includes('pigment');
+          if (categoryKey.includes('needle')) return productName.includes('needle');
+          if (categoryKey.includes('machine')) return productName.includes('machine') || productName.includes('pen');
+          if (categoryKey.includes('aftercare')) return productName.includes('aftercare') || productName.includes('balm') || productName.includes('cream');
+          if (categoryKey.includes('accessories')) return productName.includes('tip') || productName.includes('grip') || productName.includes('accessory');
+          return false;
+        });
+      });
+    }
+
+    // Price range filter
+    if (filters.priceRanges.length > 0) {
+      result = result.filter(item => {
+        const price = parseFloat(item.product.base_price);
+        return filters.priceRanges.some(range => {
+          const [min, max] = range.split('-').map(Number);
+          return price >= min && price <= max;
+        });
+      });
+    }
+
+    // Brand filter
+    if (filters.brands.length > 0) {
+      result = result.filter(item => {
+        const productName = item.product.name.toLowerCase();
+        return filters.brands.some(brand =>
+          productName.includes(brand.toLowerCase())
+        );
+      });
+    }
+
+    // In stock filter
+    if (filters.inStock) {
+      result = result.filter(item => {
+        // Check if product has variations with stock
+        if (item.product.variations && item.product.variations.length > 0) {
+          return item.product.variations.some(v => v.stock_quantity > 0);
+        }
+        // If no variations, assume in stock (or add stock_quantity field to product)
+        return true;
+      });
+    }
+
     switch (sortBy) {
       case 'price-low':
         result.sort((a, b) => parseFloat(a.product.base_price) - parseFloat(b.product.base_price));
@@ -303,7 +352,7 @@ export default function AllProductsPage() {
   return (
     <div className="min-h-screen bg-black">
       <ProductHeader allProducts={false} />
-      
+
       <div className="pt-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           {/* Hero Section */}
