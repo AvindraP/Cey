@@ -10,6 +10,7 @@ import {
   PlusIcon
 } from '@heroicons/react/24/outline';
 import { useLocation } from 'react-router-dom';
+import { ProductHeader } from './ProductHeader';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -124,10 +125,10 @@ const SizeSelector = ({ sizes, selectedSize, onSizeSelect, availableSizes }) => 
               onClick={() => isAvailable && onSizeSelect(size.value)}
               disabled={!isAvailable}
               className={`px-6 py-2.5 rounded-lg border-2 transition-all font-medium ${!isAvailable
-                  ? 'border-gray-800/50 bg-gray-900/30 text-gray-600 cursor-not-allowed opacity-50'
-                  : selectedSize === size.value
-                    ? 'border-white-400 bg-white-400/10 text-white-400'
-                    : 'border-gray-700/50 bg-gray-800/30 text-slate-300 hover:border-gray-600 hover:bg-gray-800/50'
+                ? 'border-gray-800/50 bg-gray-900/30 text-gray-600 cursor-not-allowed opacity-50'
+                : selectedSize === size.value
+                  ? 'border-white-400 bg-white-400/10 text-white-400'
+                  : 'border-gray-700/50 bg-gray-800/30 text-slate-300 hover:border-gray-600 hover:bg-gray-800/50'
                 }`}
             >
               {size.value}
@@ -405,96 +406,99 @@ function ProductPage() {
   const canPurchase = selectedColor && selectedSize && !isOutOfStock;
 
   return (
-    <div className="min-h-screen"
-      style={{
-        backgroundColor: 'black',
-        background: 'linear-gradient(135deg, #0d0d0d 0%, #1a1a1a 40%, #2b2b2b 100%)'
-      }}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Breadcrumb */}
-        <nav className="mb-6 text-sm text-slate-400">
-          <span className="hover:text-slate-300 cursor-pointer">Home</span>
-          <span className="mx-2">/</span>
-          <span className="text-slate-100">{productData.product?.name}</span>
-        </nav>
+    <>
+      <ProductHeader allProducts={true} />
+      <div className="min-h-screen mt-15"
+        style={{
+          backgroundColor: 'black',
+          background: 'linear-gradient(135deg, #0d0d0d 0%, #1a1a1a 40%, #2b2b2b 100%)'
+        }}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          {/* Breadcrumb */}
+          <nav className="mb-6 text-sm text-slate-400">
+            <span className="hover:text-slate-300 cursor-pointer">Home</span>
+            <span className="mx-2">/</span>
+            <span className="text-slate-100">{productData.product?.name}</span>
+          </nav>
 
-        <div className="grid lg:grid-cols-2 gap-12">
-          {/* Left Column - Images */}
-          <div>
-            <ImageGallery
-              images={productData.images ?? []}
-              selectedImage={selectedImage}
-              onImageSelect={setSelectedImage}
-            />
-          </div>
-
-          {/* Right Column - Product Details */}
-          <div className="space-y-6">
+          <div className="grid lg:grid-cols-2 gap-12">
+            {/* Left Column - Images */}
             <div>
-              <h1 className="text-3xl font-bold text-slate-100 mb-3">
-                {productData.product?.name}
-              </h1>
-              <PriceDisplay price={currentVariation?.price || productData.product?.base_price || 0.00} />
+              <ImageGallery
+                images={productData.images ?? []}
+                selectedImage={selectedImage}
+                onImageSelect={setSelectedImage}
+              />
             </div>
 
-            <ColorSelector
-              colors={colorOptions}
-              selectedColor={selectedColor}
-              onColorSelect={setSelectedColor}
-            />
-
-            <SizeSelector
-              sizes={sizeOptions}
-              selectedSize={selectedSize}
-              onSizeSelect={setSelectedSize}
-              availableSizes={availableSizes}
-            />
-
-            <QuantitySelector
-              quantity={quantity}
-              onQuantityChange={setQuantity}
-              max={maxQuantity}
-              stockAvailable={currentVariation?.stock_quantity ?? null}
-            />
-
-            {isOutOfStock && (
-              <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/30 text-red-400 text-sm">
-                This combination is currently out of stock
+            {/* Right Column - Product Details */}
+            <div className="space-y-6">
+              <div>
+                <h1 className="text-3xl font-bold text-slate-100 mb-3">
+                  {productData.product?.name}
+                </h1>
+                <PriceDisplay price={currentVariation?.price || productData.product?.base_price || 0.00} />
               </div>
-            )}
 
-            <ActionButtons
-              onAddToCart={handleAddToCart}
-              onBuyNow={handleBuyNow}
-              disabled={!canPurchase}
-            />
+              <ColorSelector
+                colors={colorOptions}
+                selectedColor={selectedColor}
+                onColorSelect={setSelectedColor}
+              />
 
-            {/* Payment Icons */}
-            <div className="flex items-center gap-3 pt-4 border-t border-gray-700/50">
-              <span className="text-sm text-slate-400">We accept:</span>
-              <div className="flex gap-2">
-                {['VISA', 'MC', 'AMEX', 'PP', 'DISC'].map((card) => (
-                  <div key={card} className="w-10 h-6 rounded bg-gray-800/50 border border-gray-700/50" />
-                ))}
+              <SizeSelector
+                sizes={sizeOptions}
+                selectedSize={selectedSize}
+                onSizeSelect={setSelectedSize}
+                availableSizes={availableSizes}
+              />
+
+              <QuantitySelector
+                quantity={quantity}
+                onQuantityChange={setQuantity}
+                max={maxQuantity}
+                stockAvailable={currentVariation?.stock_quantity ?? null}
+              />
+
+              {isOutOfStock && (
+                <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/30 text-red-400 text-sm">
+                  This combination is currently out of stock
+                </div>
+              )}
+
+              <ActionButtons
+                onAddToCart={handleAddToCart}
+                onBuyNow={handleBuyNow}
+                disabled={!canPurchase}
+              />
+
+              {/* Payment Icons */}
+              <div className="flex items-center gap-3 pt-4 border-t border-gray-700/50">
+                <span className="text-sm text-slate-400">We accept:</span>
+                <div className="flex gap-2">
+                  {['VISA', 'MC', 'AMEX', 'PP', 'DISC'].map((card) => (
+                    <div key={card} className="w-10 h-6 rounded bg-gray-800/50 border border-gray-700/50" />
+                  ))}
+                </div>
               </div>
-            </div>
 
-            {/* Product Description Preview */}
-            <div className="pt-6 border-t border-gray-700/50">
-              <p className="text-slate-300 leading-relaxed">
-                {productData.product?.description}
-              </p>
+              {/* Product Description Preview */}
+              <div className="pt-6 border-t border-gray-700/50">
+                <p className="text-slate-300 leading-relaxed">
+                  {productData.product?.description}
+                </p>
+              </div>
             </div>
           </div>
-        </div>
 
-        {/* Full Product Information Tabs */}
-        {/* <ProductInfo
+          {/* Full Product Information Tabs */}
+          {/* <ProductInfo
           description={productData.product?.description}
           specifications={specifications}
         /> */}
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 
