@@ -51,6 +51,18 @@ const ProductCard = ({ product, images }) => {
                         className="w-full h-full object-cover transition-transform duration-500 rounded-t-lg"
                     />
                 )}
+
+                {images && images.length > 1 && (
+                    <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1">
+                        {images.map((_, idx) => (
+                            <div
+                                key={idx}
+                                className={`w-1.5 h-1.5 rounded-full transition-all ${idx === currentImageIndex ? 'bg-white w-4' : 'bg-white/50'
+                                    }`}
+                            />
+                        ))}
+                    </div>
+                )}
             </div>
             <div className="flex flex-col items-center p-5 w-40 lg:w-52">
                 <h3 className="text-lg font-semibold text-white mb-2 line-clamp-1">{product.name}</h3>
