@@ -15,30 +15,33 @@ export const ProductHeader = ({ allProducts }) => {
           >
             INKVERSE
           </a>
-          
-          { allProducts
-          ? 
+
+          {allProducts
+            ?
             <nav className="hidden md:flex space-x-6 text-sm font-medium">
-            <a
-              href="/products"
-              className="hover:text-zinc-300 transition-colors"
-            >
-              All Products
-            </a>
-          </nav>
-          : ''}
+              <a
+                href="/products"
+                className="hover:text-zinc-300 transition-colors"
+              >
+                All Products
+              </a>
+            </nav>
+            : ''}
         </div>
 
         {/* Right Section */}
         <div className="flex items-center space-x-4">
           {/* Search Icon */}
-          <button
-            onClick={() => setSearchOpen(!searchOpen)}
-            className="p-2 hover:bg-zinc-800 rounded-lg transition-colors"
-            aria-label="Search"
-          >
-            <MagnifyingGlassIcon className="w-6 h-6" />
-          </button>
+          {allProducts
+            ?
+            <button
+              onClick={() => setSearchOpen(!searchOpen)}
+              className="p-2 hover:bg-zinc-800 rounded-lg transition-colors"
+              aria-label="Search"
+            >
+              <MagnifyingGlassIcon className="w-6 h-6" />
+            </button>
+            : ''}
 
           {/* Profile Icon */}
           <a
