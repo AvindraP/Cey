@@ -1,6 +1,7 @@
 import { Scroll, useScroll } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { MathUtils } from "three";
 
 const NO_OF_SLIDES = 6;
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
@@ -68,7 +69,7 @@ const ProductCard = ({ product, images }) => {
 };
 
 // Products Section Component
-const ProductsSection = ({ isVisible }) => {
+const ProductsSection = ({ getSectionProgress }) => {
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -88,10 +89,14 @@ const ProductsSection = ({ isVisible }) => {
         fetchProducts();
     }, []);
 
+    const p = getSectionProgress(3);
     return (
         <section
-            className={`flex flex-col justify-center items-start min-h-screen w-[70vw] px-6 m-0 py-20 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-                }`}
+            className="flex flex-col justify-center items-start min-h-screen overflow-y-auto w-full overflow-x-hidden sm:w-[70vw] px-6 m-0 text-center transition-all duration-500"
+            style={{
+                opacity: p,
+                transform: `translateY(${(1 - p) * 30}px)`,
+            }}
             id="products"
         >
             <div className="max-w-7xl w-full mx-auto">
@@ -130,18 +135,39 @@ const ProductsSection = ({ isVisible }) => {
 export const Overlay = ({ onScrollToSection }) => {
     const scroll = useScroll();
     const [scrollPos, setScrollPos] = useState(0);
-    const [currentSection, setCurrentSection] = useState(0);
+    const [introProgress, setIntroProgress] = useState(0);
+    const scrollRef = useRef(0);
 
     useFrame(() => {
-        setScrollPos(scroll.offset);
+        scrollRef.current = MathUtils.lerp(scrollRef.current, scroll.offset, 0.1);
     });
 
     useEffect(() => {
-        const newSection = Math.floor(scrollPos * NO_OF_SLIDES);
-        if (newSection !== currentSection && newSection < NO_OF_SLIDES) {
-            setCurrentSection(newSection);
-        }
-    }, [scrollPos]);
+        let frame;
+        let start = null;
+        const duration = 1500; // 1.5 s fade-in
+
+        const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
+
+        const animate = (timestamp) => {
+            if (!start) start = timestamp;
+            const elapsed = timestamp - start;
+            const progress = easeOutCubic(Math.min(elapsed / duration, 1));
+            setIntroProgress(progress);
+            if (progress < 1) frame = requestAnimationFrame(animate);
+        };
+
+        frame = requestAnimationFrame(animate);
+        return () => cancelAnimationFrame(frame);
+    }, []);
+
+
+    useEffect(() => {
+        const handle = setInterval(() => {
+            setScrollPos(scrollRef.current);
+        }, 100); // update ~10 times per second
+        return () => clearInterval(handle);
+    }, []);
 
     const scrollToSection = (sectionIndex) => {
         const target = sectionIndex / (NO_OF_SLIDES);
@@ -152,7 +178,6 @@ export const Overlay = ({ onScrollToSection }) => {
             });
         }
     };
-
 
     useEffect(() => {
         if (scroll && onScrollToSection) {
@@ -177,9 +202,49 @@ export const Overlay = ({ onScrollToSection }) => {
         }
 
         if (footer) {
-            footer.className = (scrollPos > 0.99) ?  `fixed bottom-0 left-0 w-full py-4 text-center border-t border-zinc-800 bg-black z-50 transition-all` : `hidden`;
+            footer.className = (scrollPos > 0.99) ? `fixed bottom-0 left-0 w-full py-4 text-center border-t border-zinc-800 bg-black z-50 transition-all` : `hidden`;
         }
     }, [scrollPos]);
+
+    const getSectionProgress = (index) => {
+        const total = NO_OF_SLIDES;
+        const sectionSize = 1 / total;
+
+        // ↓ reduce overlap to shorten fade time
+        const fadeOverlap = sectionSize * 0.15; // previously 0.3 → now 0.15 (half)
+
+        const start = index * sectionSize - fadeOverlap;
+        const end = (index + 1) * sectionSize + fadeOverlap;
+
+        const progress = (scrollPos - start) / (end - start);
+        const clamped = MathUtils.clamp(progress, 0, 1);
+
+        // Define "fade-in", "full visible", and "fade-out" zones
+        // smaller fade zones → longer full opacity zone
+        let opacity = 0;
+        const fadeInEnd = 0.25;   // opacity reaches 1 sooner
+        const fadeOutStart = 0.75; // stays fully visible longer
+
+        if (clamped < fadeInEnd) {
+            // fade-in curve
+            opacity = clamped / fadeInEnd;
+        } else if (clamped < fadeOutStart) {
+            // fully visible
+            opacity = 1;
+        } else {
+            // fade-out curve
+            opacity = 1 - (clamped - fadeOutStart) / (1 - fadeOutStart);
+        }
+
+        opacity = MathUtils.clamp(opacity, 0, 1);
+
+        // --- blend intro animation for section 0 ---
+        if (index === 0) {
+            return Math.max(opacity, introProgress);
+        }
+
+        return opacity;
+    };
 
     return (
         <Scroll html>
@@ -187,152 +252,192 @@ export const Overlay = ({ onScrollToSection }) => {
                 <div className="w-full flex flex-col text-white">
 
                     {/* Slide 0: Hero with INKVERSE Logo */}
-                    <section
-                        className={`flex flex-col justify-center items-center min-h-screen w-[70vw] px-6 m-0 text-center transition-all duration-1000 ${currentSection === 0 ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
-                            }`}
-                        id="hero-logo"
-                    >
-                        <div className="max-w-4xl relative">
-                            {/* Large INKVERSE Text */}
-                            <h1 className="text-7xl md:text-9xl font-bold mb-8 tracking-tight text-white">
-                                INKVERSE
-                            </h1>
+                    {(() => {
+                        const p = getSectionProgress(0);
+                        return (
+                            <section
+                                className="flex flex-col justify-center items-center min-h-screen overflow-y-auto w-full overflow-x-hidden sm:w-[70vw] px-6 m-0 text-center transition-all duration-500"
+                                style={{
+                                    opacity: p,
+                                    transform: `translateY(${(1 - p) * 30}px)`,
+                                }}
+                                id="hero-logo"
+                            >
+                                <div className="max-w-4xl relative">
+                                    {/* Large INKVERSE Text */}
+                                    <h1 className="text-7xl md:text-9xl font-bold mb-8 tracking-tight text-white">
+                                        INKVERSE
+                                    </h1>
 
-                            {/* Placeholder for cutout image - replace src with your actual image */}
-                            <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-100 h-100 md:w-200 md:h-200">
-                                <img
-                                    src="/images/cutout-image.png"
-                                    className="w-full h-full object-contain drop-shadow-2xl"
-                                />
-                            </div>
+                                    {/* Placeholder for cutout image - replace src with your actual image */}
+                                    <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-100 h-100 md:w-200 md:h-200">
+                                        <img
+                                            src="/images/cutout-image.png"
+                                            className="w-full h-full object-contain drop-shadow-2xl"
+                                        />
+                                    </div>
 
-                            <p className="text-xl md:text-2xl text-zinc-300 font-light mt-8">
-                                Where Art Meets Skin
-                            </p>
-                        </div>
-                    </section>
+                                    <p className="text-xl md:text-2xl text-zinc-300 font-light mt-8">
+                                        Where Art Meets Skin
+                                    </p>
+                                </div>
+                            </section>
+                        );
+                    })()}
 
                     {/* Slide 1: Original Hero Section */}
-                    <section
-                        className={`flex flex-col justify-center items-start min-h-screen w-[70vw] px-6 m-0 text-center transition-all duration-1000 ${currentSection === 1 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-                            }`}
-                        id="hero"
-                    >
-                        <div className="max-w-4xl">
-                            <h1 className="text-4xl md:text-5xl lg:text-5xl font-bold mb-6 tracking-tight">
-                                Ink That Tells<br />Your Story
-                            </h1>
-                            <p className="text-md md:text-lg text-zinc-300 [text-shadow:2px_2px_3px_rgba(0,0,0,1)] mb-8 leading-relaxed max-w-3xl mx-auto">
-                                Bold lines. Real art. Personal meaning. At <span className="font-semibold text-white">INKVERSE</span>, we craft tattoos that speak louder than words – from fine-line minimal pieces to full custom designs.
-                            </p>
-                            <p className="text-base md:text-md text-zinc-400 [text-shadow:2px_2px_3px_rgba(0,0,0,1)] mb-10 max-w-2xl mx-auto">
-                                Explore our online store for premium tattoo supplies, aftercare essentials, and artist-approved gear. Book your session or shop your essentials – your next masterpiece starts here.
-                            </p>
-                            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                                <button className="bg-white text-black font-semibold px-3 py-1.5 rounded hover:bg-zinc-200 transition-colors">
-                                    Book Your Session
-                                </button>
-                                <button className="border border-white text-white font-semibold px-3 py-1.5 rounded hover:bg-white hover:text-black transition-all">
-                                    Shop Essentials
-                                </button>
-                            </div>
-                        </div>
-                    </section>
+                    {(() => {
+                        const p = getSectionProgress(1);
+                        return (
+                            <section
+                                className="flex flex-col justify-center items-start min-h-screen overflow-y-auto w-[70vw] px-6 m-0 text-center transition-all duration-500"
+                                style={{
+                                    opacity: p,
+                                    transform: `translateY(${(1 - p) * 30}px)`,
+                                }}
+                                id="hero"
+                            >
+                                <div className="max-w-4xl">
+                                    <h1 className="text-4xl md:text-5xl lg:text-5xl font-bold mb-6 tracking-tight">
+                                        Ink That Tells<br />Your Story
+                                    </h1>
+                                    <p className="text-md md:text-lg text-zinc-300 [text-shadow:2px_2px_3px_rgba(0,0,0,1)] mb-8 leading-relaxed max-w-3xl mx-auto">
+                                        Bold lines. Real art. Personal meaning. At <span className="font-semibold text-white">INKVERSE</span>, we craft tattoos that speak louder than words – from fine-line minimal pieces to full custom designs.
+                                    </p>
+                                    <p className="text-base md:text-md text-zinc-400 [text-shadow:2px_2px_3px_rgba(0,0,0,1)] mb-10 max-w-2xl mx-auto">
+                                        Explore our online store for premium tattoo supplies, aftercare essentials, and artist-approved gear. Book your session or shop your essentials – your next masterpiece starts here.
+                                    </p>
+                                    <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                                        <button className="bg-white text-black font-semibold px-3 py-1.5 rounded hover:bg-zinc-200 transition-colors">
+                                            Book Your Session
+                                        </button>
+                                        <button className="border border-white text-white font-semibold px-3 py-1.5 rounded hover:bg-white hover:text-black transition-all">
+                                            Shop Essentials
+                                        </button>
+                                    </div>
+                                </div>
+                            </section>
+                        );
+                    })()}
 
                     {/* Slide 2: About Us */}
-                    <section
-                        className={`flex flex-col justify-center items-start min-h-screen w-[70vw] px-6 m-0 text-center transition-all duration-1000 ${currentSection === 2 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-                            }`}
-                        id="about"
-                    >
-                        <div className="max-w-4xl">
-                            <h2 className="text-4xl md:text-5xl lg:text-5xl font-bold mb-6 tracking-tight">
-                                Where Art<br />Meets Skin
-                            </h2>
-                            <p className="text-md md:text-lg text-zinc-300 [text-shadow:2px_2px_3px_rgba(0,0,0,1)] mb-6 leading-relaxed">
-                                At <span className="font-semibold text-white">INKVERSE</span>, every tattoo is a story – designed, detailed, and delivered with precision. Our artists combine creativity with craftsmanship to make every piece personal and unforgettable.
-                            </p>
-                            <p className="text-base md:text-md text-zinc-400 [text-shadow:2px_2px_3px_rgba(0,0,0,1)] mb-8">
-                                We also bring you a curated range of tattoo supplies, inks, and care products trusted by professionals and enthusiasts alike.
-                            </p>
-                            <p className="text-base md:text-md text-zinc-300 [text-shadow:2px_2px_3px_rgba(0,0,0,1)] font-medium">
-                                Based in <span className="text-white">Brooklyn, NY</span>, INKVERSE is more than a tattoo studio – it's a modern space where art lives forever.
-                            </p>
-                        </div>
-                    </section>
+                    {(() => {
+                        const p = getSectionProgress(2);
+                        return (
+                            <section
+                                className="flex flex-col justify-center items-start min-h-screen overflow-y-auto w-[70vw] px-6 m-0 text-center transition-all duration-500"
+                                style={{
+                                    opacity: p,
+                                    transform: `translateY(${(1 - p) * 30}px)`,
+                                }}
+                                id="about"
+                            >
+                                <div className="max-w-4xl">
+                                    <h2 className="text-4xl md:text-5xl lg:text-5xl font-bold mb-6 tracking-tight">
+                                        Where Art<br />Meets Skin
+                                    </h2>
+                                    <p className="text-md md:text-lg text-zinc-300 [text-shadow:2px_2px_3px_rgba(0,0,0,1)] mb-6 leading-relaxed">
+                                        At <span className="font-semibold text-white">INKVERSE</span>, every tattoo is a story – designed, detailed, and delivered with precision. Our artists combine creativity with craftsmanship to make every piece personal and unforgettable.
+                                    </p>
+                                    <p className="text-base md:text-md text-zinc-400 [text-shadow:2px_2px_3px_rgba(0,0,0,1)] mb-8">
+                                        We also bring you a curated range of tattoo supplies, inks, and care products trusted by professionals and enthusiasts alike.
+                                    </p>
+                                    <p className="text-base md:text-md text-zinc-300 [text-shadow:2px_2px_3px_rgba(0,0,0,1)] font-medium">
+                                        Based in <span className="text-white">Brooklyn, NY</span>, INKVERSE is more than a tattoo studio – it's a modern space where art lives forever.
+                                    </p>
+                                </div>
+                            </section>
+                        );
+                    })()}
 
                     {/* Slide 3: Products Section */}
-                    <ProductsSection isVisible={currentSection === 3} />
+                    <ProductsSection getSectionProgress={getSectionProgress} />
 
                     {/* Slide 4: Free Delivery Section */}
-                    <section
-                        className={`flex flex-col justify-center items-center min-h-screen w-[70vw] px-6 m-0 text-center transition-all duration-1000 ${currentSection === 4 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-                            }`}
-                        id="delivery"
-                    >
-                        <div className="max-w-2xl">
-                            <div className="mb-8 flex justify-center">
-                                <div className="w-32 h-32 rounded-full bg-white/10 border-2 border-white/20 flex items-center justify-center">
-                                    <svg className="w-16 h-16 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" />
-                                    </svg>
+                    {(() => {
+                        const p = getSectionProgress(4);
+                        return (
+                            <section
+                                className="flex flex-col justify-center items-start min-h-screen overflow-y-auto w-[70vw] px-6 m-0 text-center transition-all duration-500"
+                                style={{
+                                    opacity: p,
+                                    transform: `translateY(${(1 - p) * 30}px)`,
+                                }}
+                                id="delivery"
+                            >
+                                <div className="max-w-2xl">
+                                    <div className="mb-8 flex justify-center">
+                                        <div className="w-32 h-32 rounded-full bg-white/10 border-2 border-white/20 flex items-center justify-center">
+                                            <svg className="w-16 h-16 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" />
+                                            </svg>
+                                        </div>
+                                    </div>
+                                    <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white">Free Delivery</h2>
+                                    <p className="text-lg md:text-xl text-zinc-400 mb-6 leading-relaxed">
+                                        We offer complimentary shipping on all orders over $75. Your premium tattoo supplies and aftercare products delivered straight to your door.
+                                    </p>
+                                    <p className="text-base md:text-lg text-zinc-500">
+                                        Fast, reliable, and secure shipping across the continental US. Track your order every step of the way.
+                                    </p>
                                 </div>
-                            </div>
-                            <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white">Free Delivery</h2>
-                            <p className="text-lg md:text-xl text-zinc-400 mb-6 leading-relaxed">
-                                We offer complimentary shipping on all orders over $75. Your premium tattoo supplies and aftercare products delivered straight to your door.
-                            </p>
-                            <p className="text-base md:text-lg text-zinc-500">
-                                Fast, reliable, and secure shipping across the continental US. Track your order every step of the way.
-                            </p>
-                        </div>
-                    </section>
+                            </section>
+                        );
+                    })()}
 
                     {/* Slide 5: Contact Us */}
-                    <section
-                        className={`flex flex-col justify-center items-center min-h-screen w-[70vw] px-6 m-0 text-center pb-32 transition-all duration-1000 ${currentSection === 5 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-                            }`}
-                        id="contact"
-                    >
-                        <div className="max-w-4xl">
-                            <h2 className="text-4xl md:text-5xl lg:text-5xl font-bold mb-6 tracking-tight">
-                                Let's Connect
-                            </h2>
-                            <p className="text-lg md:text-xl text-zinc-400 mb-12">
-                                Book your appointment or send us your idea – we'll help bring it to life.
-                            </p>
+                    {(() => {
+                        const p = getSectionProgress(5);
+                        return (
+                            <section
+                                className="flex flex-col justify-center items-start min-h-screen overflow-y-auto w-[70vw] px-6 pb-20 m-0 text-center transition-all duration-500"
+                                style={{
+                                    opacity: p,
+                                    transform: `translateY(${(1 - p) * 30}px)`,
+                                }}
+                                id="contact"
+                            >
+                                <div className="max-w-4xl">
+                                    <h2 className="text-4xl md:text-5xl lg:text-5xl font-bold mb-6 tracking-tight">
+                                        Let's Connect
+                                    </h2>
+                                    <p className="text-lg md:text-xl text-zinc-400 mb-12">
+                                        Book your appointment or send us your idea – we'll help bring it to life.
+                                    </p>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-left mb-12">
-                                <div className="border border-zinc-800 rounded-lg p-6 hover:border-zinc-600 transition-colors">
-                                    <div className="text-3xl mb-3">📍</div>
-                                    <h3 className="text-xl font-semibold mb-2">Visit Us</h3>
-                                    <p className="text-zinc-400">245 Wythe Ave<br />Brooklyn, NY 11249</p>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-left mb-12">
+                                        <div className="border border-zinc-800 rounded-lg p-6 hover:border-zinc-600 transition-colors">
+                                            <div className="text-3xl mb-3">📍</div>
+                                            <h3 className="text-xl font-semibold mb-2">Visit Us</h3>
+                                            <p className="text-zinc-400">245 Wythe Ave<br />Brooklyn, NY 11249</p>
+                                        </div>
+
+                                        <div className="border border-zinc-800 rounded-lg p-6 hover:border-zinc-600 transition-colors">
+                                            <div className="text-3xl mb-3">📞</div>
+                                            <h3 className="text-xl font-semibold mb-2">Call</h3>
+                                            <p className="text-zinc-400">(718) 555-9034</p>
+                                        </div>
+
+                                        <div className="border border-zinc-800 rounded-lg p-6 hover:border-zinc-600 transition-colors">
+                                            <div className="text-3xl mb-3">✉️</div>
+                                            <h3 className="text-xl font-semibold mb-2">Email</h3>
+                                            <p className="text-zinc-400">hello@inkversestudio.com</p>
+                                        </div>
+
+                                        <div className="border border-zinc-800 rounded-lg p-6 hover:border-zinc-600 transition-colors">
+                                            <div className="text-3xl mb-3">🕒</div>
+                                            <h3 className="text-xl font-semibold mb-2">Hours</h3>
+                                            <p className="text-zinc-400">Mon–Sat: 11 AM – 8 PM<br />Sun: Closed</p>
+                                        </div>
+                                    </div>
+
+                                    <button className="bg-white text-black font-semibold px-10 py-4 rounded hover:bg-zinc-200 transition-colors text-lg mb-20">
+                                        Book Appointment
+                                    </button>
                                 </div>
-
-                                <div className="border border-zinc-800 rounded-lg p-6 hover:border-zinc-600 transition-colors">
-                                    <div className="text-3xl mb-3">📞</div>
-                                    <h3 className="text-xl font-semibold mb-2">Call</h3>
-                                    <p className="text-zinc-400">(718) 555-9034</p>
-                                </div>
-
-                                <div className="border border-zinc-800 rounded-lg p-6 hover:border-zinc-600 transition-colors">
-                                    <div className="text-3xl mb-3">✉️</div>
-                                    <h3 className="text-xl font-semibold mb-2">Email</h3>
-                                    <p className="text-zinc-400">hello@inkversestudio.com</p>
-                                </div>
-
-                                <div className="border border-zinc-800 rounded-lg p-6 hover:border-zinc-600 transition-colors">
-                                    <div className="text-3xl mb-3">🕒</div>
-                                    <h3 className="text-xl font-semibold mb-2">Hours</h3>
-                                    <p className="text-zinc-400">Mon–Sat: 11 AM – 8 PM<br />Sun: Closed</p>
-                                </div>
-                            </div>
-
-                            <button className="bg-white text-black font-semibold px-10 py-4 rounded hover:bg-zinc-200 transition-colors text-lg mb-20">
-                                Book Appointment
-                            </button>
-                        </div>
-                    </section>
+                            </section>
+                        );
+                    })()}
 
                 </div>
             </div>
