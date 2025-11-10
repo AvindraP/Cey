@@ -3,7 +3,7 @@ import { useFrame } from "@react-three/fiber";
 import { useEffect, useRef, useState } from "react";
 import { MathUtils } from "three";
 
-const NO_OF_SLIDES = 6;
+const NO_OF_SLIDES = 6.5;
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 // Product Card Component
@@ -92,7 +92,7 @@ const ProductsSection = ({ getSectionProgress }) => {
     const p = getSectionProgress(3);
     return (
         <section
-            className="flex flex-col justify-center items-start min-h-screen overflow-y-auto w-full overflow-x-hidden sm:w-[70vw] px-6 m-0 text-center transition-all duration-500"
+            className="flex flex-col justify-center items-start min-h-screen overflow-y-hidden w-full overflow-x-hidden lg:w-[70vw] px-6 m-0 text-center transition-all duration-500"
             style={{
                 opacity: p,
                 transform: `translateY(${(1 - p) * 30}px)`,
@@ -206,45 +206,47 @@ export const Overlay = ({ onScrollToSection }) => {
         }
     }, [scrollPos]);
 
+    // Example: define heights of all sections
+    const sectionHeights = [1, 1, 1, 1, 1, 1.5]; // last section taller
+    const totalHeight = sectionHeights.reduce((a, b) => a + b, 0);
+
     const getSectionProgress = (index) => {
-        const total = NO_OF_SLIDES;
-        const sectionSize = 1 / total;
+        const sectionSize = sectionHeights[index] / totalHeight;
 
-        // ↓ reduce overlap to shorten fade time
-        const fadeOverlap = sectionSize * 0.15; // previously 0.3 → now 0.15 (half)
+        // Calculate start position of this section
+        const start = sectionHeights
+            .slice(0, index)
+            .reduce((sum, h) => sum + h / totalHeight, 0);
 
-        const start = index * sectionSize - fadeOverlap;
-        const end = (index + 1) * sectionSize + fadeOverlap;
+        const fadeOverlap = sectionSize * 0.15; // can still scale fade
+        const end = start + sectionSize + fadeOverlap;
 
         const progress = (scrollPos - start) / (end - start);
         const clamped = MathUtils.clamp(progress, 0, 1);
 
-        // Define "fade-in", "full visible", and "fade-out" zones
-        // smaller fade zones → longer full opacity zone
+        // Fade zones
         let opacity = 0;
-        const fadeInEnd = 0.25;   // opacity reaches 1 sooner
-        const fadeOutStart = 0.75; // stays fully visible longer
+        const fadeInEnd = 0.25;
+        const fadeOutStart = 0.75;
 
         if (clamped < fadeInEnd) {
-            // fade-in curve
             opacity = clamped / fadeInEnd;
         } else if (clamped < fadeOutStart) {
-            // fully visible
             opacity = 1;
         } else {
-            // fade-out curve
             opacity = 1 - (clamped - fadeOutStart) / (1 - fadeOutStart);
         }
 
         opacity = MathUtils.clamp(opacity, 0, 1);
 
-        // --- blend intro animation for section 0 ---
+        // Blend intro animation for section 0
         if (index === 0) {
             return Math.max(opacity, introProgress);
         }
 
         return opacity;
     };
+
 
     return (
         <Scroll html>
@@ -256,7 +258,7 @@ export const Overlay = ({ onScrollToSection }) => {
                         const p = getSectionProgress(0);
                         return (
                             <section
-                                className="flex flex-col justify-center items-center min-h-screen overflow-y-auto w-full overflow-x-hidden sm:w-[70vw] px-6 m-0 text-center transition-all duration-500"
+                                className="flex flex-col justify-center items-center min-h-screen overflow-y-hidden w-full overflow-x-hidden lg:w-[70vw] px-6 m-0 text-center transition-all duration-500"
                                 style={{
                                     opacity: p,
                                     transform: `translateY(${(1 - p) * 30}px)`,
@@ -290,7 +292,7 @@ export const Overlay = ({ onScrollToSection }) => {
                         const p = getSectionProgress(1);
                         return (
                             <section
-                                className="flex flex-col justify-center items-start min-h-screen overflow-y-auto w-[70vw] px-6 m-0 text-center transition-all duration-500"
+                                className="flex flex-col justify-center items-start min-h-screen overflow-y-hidden w-[70vw] px-6 m-0 text-center transition-all duration-500"
                                 style={{
                                     opacity: p,
                                     transform: `translateY(${(1 - p) * 30}px)`,
@@ -325,7 +327,7 @@ export const Overlay = ({ onScrollToSection }) => {
                         const p = getSectionProgress(2);
                         return (
                             <section
-                                className="flex flex-col justify-center items-start min-h-screen overflow-y-auto w-[70vw] px-6 m-0 text-center transition-all duration-500"
+                                className="flex flex-col justify-center items-start min-h-screen overflow-y-hidden w-[70vw] px-6 m-0 text-center transition-all duration-500"
                                 style={{
                                     opacity: p,
                                     transform: `translateY(${(1 - p) * 30}px)`,
@@ -358,7 +360,7 @@ export const Overlay = ({ onScrollToSection }) => {
                         const p = getSectionProgress(4);
                         return (
                             <section
-                                className="flex flex-col justify-center items-start min-h-screen overflow-y-auto w-[70vw] px-6 m-0 text-center transition-all duration-500"
+                                className="flex flex-col justify-center items-center min-h-screen overflow-y-hidden w-[70vw] px-6 m-0 text-center transition-all duration-500"
                                 style={{
                                     opacity: p,
                                     transform: `translateY(${(1 - p) * 30}px)`,
@@ -390,7 +392,7 @@ export const Overlay = ({ onScrollToSection }) => {
                         const p = getSectionProgress(5);
                         return (
                             <section
-                                className="flex flex-col justify-center items-start min-h-screen overflow-y-auto w-[70vw] px-6 pb-20 m-0 text-center transition-all duration-500"
+                                className="flex flex-col justify-center items-center min-h-screen overflow-y-hidden w-[70vw] px-6 m-0 mb-50 text-center transition-all duration-500"
                                 style={{
                                     opacity: p,
                                     transform: `translateY(${(1 - p) * 30}px)`,
@@ -398,40 +400,44 @@ export const Overlay = ({ onScrollToSection }) => {
                                 id="contact"
                             >
                                 <div className="max-w-4xl">
-                                    <h2 className="text-4xl md:text-5xl lg:text-5xl font-bold mb-6 tracking-tight">
+                                    <h2 className="text-xl md:text-3xl lg:text-3xl font-bold mb-6 tracking-tight">
                                         Let's Connect
                                     </h2>
-                                    <p className="text-lg md:text-xl text-zinc-400 mb-12">
+                                    <p className="text-base md:text-md text-zinc-400 mb-12">
                                         Book your appointment or send us your idea – we'll help bring it to life.
                                     </p>
 
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-left mb-12">
-                                        <div className="border border-zinc-800 rounded-lg p-6 hover:border-zinc-600 transition-colors">
-                                            <div className="text-3xl mb-3">📍</div>
-                                            <h3 className="text-xl font-semibold mb-2">Visit Us</h3>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-8 text-left mb-12">
+                                        <div className="border border-zinc-800 rounded-lg p-3 sm:p-6 hover:border-zinc-600 transition-colors">
+                                            <div className="flex text-xl mb-2">📍
+                                                <h3 className="text-md font-semibold mb-2 ml-2">Visit Us</h3>
+                                            </div>
                                             <p className="text-zinc-400">245 Wythe Ave<br />Brooklyn, NY 11249</p>
                                         </div>
 
-                                        <div className="border border-zinc-800 rounded-lg p-6 hover:border-zinc-600 transition-colors">
-                                            <div className="text-3xl mb-3">📞</div>
-                                            <h3 className="text-xl font-semibold mb-2">Call</h3>
+                                        <div className="border border-zinc-800 rounded-lg p-3 sm:p-6 hover:border-zinc-600 transition-colors">
+                                            <div className="flex text-xl mb-2">📞
+                                                <h3 className="text-md font-semibold mb-2 ml-2">Call</h3>
+                                            </div>
                                             <p className="text-zinc-400">(718) 555-9034</p>
                                         </div>
 
-                                        <div className="border border-zinc-800 rounded-lg p-6 hover:border-zinc-600 transition-colors">
-                                            <div className="text-3xl mb-3">✉️</div>
-                                            <h3 className="text-xl font-semibold mb-2">Email</h3>
+                                        <div className="border border-zinc-800 rounded-lg p-3 sm:p-6 hover:border-zinc-600 transition-colors">
+                                            <div className="flex text-xl mb-2">✉️
+                                                <h3 className="text-md font-semibold mb-2 ml-2">Email</h3>
+                                            </div>
                                             <p className="text-zinc-400">hello@inkversestudio.com</p>
                                         </div>
 
-                                        <div className="border border-zinc-800 rounded-lg p-6 hover:border-zinc-600 transition-colors">
-                                            <div className="text-3xl mb-3">🕒</div>
-                                            <h3 className="text-xl font-semibold mb-2">Hours</h3>
+                                        <div className="border border-zinc-800 rounded-lg p-3 sm:p-6 hover:border-zinc-600 transition-colors">
+                                            <div className="flex text-xl mb-2">🕒
+                                                <h3 className="text-md font-semibold mb-2 ml-2">Hours</h3>
+                                            </div>
                                             <p className="text-zinc-400">Mon–Sat: 11 AM – 8 PM<br />Sun: Closed</p>
                                         </div>
                                     </div>
 
-                                    <button className="bg-white text-black font-semibold px-10 py-4 rounded hover:bg-zinc-200 transition-colors text-lg mb-20">
+                                    <button className="bg-white text-black font-semibold px-5 py-3 rounded hover:bg-zinc-200 transition-colors text-lg mb-20">
                                         Book Appointment
                                     </button>
                                 </div>
