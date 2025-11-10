@@ -11,6 +11,7 @@ import {
 } from '@heroicons/react/24/outline';
 import { useLocation } from 'react-router-dom';
 import { ProductHeader } from './ProductHeader';
+import { Footer } from '../Footer';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -416,7 +417,7 @@ function ProductPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* Breadcrumb */}
           <nav className="mb-6 text-sm text-slate-400">
-            <span className="hover:text-slate-300 cursor-pointer">Home</span>
+            <a href="/products" className="hover:text-slate-300 cursor-pointer">Products</a>
             <span className="mx-2">/</span>
             <span className="text-slate-100">{productData.product?.name}</span>
           </nav>
@@ -498,6 +499,7 @@ function ProductPage() {
         /> */}
         </div>
       </div>
+      <Footer />
     </>
   );
 }

@@ -1,7 +1,7 @@
 import { MagnifyingGlassIcon, UserIcon, ShoppingCartIcon } from '@heroicons/react/24/outline';
 import { useState } from 'react';
 
-export const ProductHeader = ({ allProducts }) => {
+export const ProductHeader = ({ allProducts, prodCount }) => {
   const [searchOpen, setSearchOpen] = useState(false);
 
   return (
@@ -60,7 +60,7 @@ export const ProductHeader = ({ allProducts }) => {
           >
             <ShoppingCartIcon className="w-6 h-6" />
             <span className="absolute top-0 right-0 w-5 h-5 bg-white text-black text-xs font-bold rounded-full flex items-center justify-center">
-              3
+              {prodCount ?? 0}
             </span>
           </a>
         </div>
