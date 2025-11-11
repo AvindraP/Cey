@@ -8,6 +8,7 @@ import { AuthContext } from "../middleware/AuthProvider";
 import { useNavigate } from "react-router-dom";
 import { useActivityTracker } from "../hooks/useActivityTracker";
 import SessionWarningModal from "./SessionWarningModal";
+import { Toaster } from "react-hot-toast";
 
 export default function Dashboard() {
   const { user, logout } = useContext(AuthContext);
@@ -51,6 +52,9 @@ export default function Dashboard() {
         onLogout={handleLogout}
         timeLeft={120} // 2 minutes in seconds
       />
+
+      {/* Toaster */}
+      <Toaster position="top-right" reverseOrder={false} />
 
       {/* Sidebar */}
       <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} setActiveSection={setActiveSection} activeSection={activeSection} handleLogout={handleLogout} />
