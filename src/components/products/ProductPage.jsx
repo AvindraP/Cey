@@ -12,6 +12,8 @@ import {
 import { useLocation } from 'react-router-dom';
 import { ProductHeader } from './ProductHeader';
 import { Footer } from '../Footer';
+import { addToCart } from '../cart/cartApi';
+import toast, { Toaster } from 'react-hot-toast';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -195,16 +197,16 @@ const PriceDisplay = ({ price, originalPrice, discount }) => {
   );
 };
 
-const ActionButtons = ({ onAddToCart, onBuyNow, disabled }) => {
+const ActionButtons = ({ onAddToCart, onBuyNow, disabled, isLoading }) => {
   return (
     <div className="space-y-3">
       <button
         onClick={onAddToCart}
-        disabled={disabled}
+        disabled={disabled || isLoading}
         className="w-full py-3.5 rounded-lg bg-gradient-to-r from-gray-200 to-gray-400 hover:from-gray-300 hover:to-gray-500 text-black font-semibold flex items-center justify-center gap-2 transition-all shadow-lg shadow-white-500/25 hover:shadow-white-500/40 disabled:opacity-50 disabled:cursor-not-allowed"
       >
         <ShoppingCartIcon className="w-5 h-5" />
-        Add to cart
+        {isLoading ? 'Adding...' : 'Add to cart'}
       </button>
       <button
         onClick={onBuyNow}
@@ -284,6 +286,7 @@ function ProductPage() {
   const [selectedSize, setSelectedSize] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
   const [quantity, setQuantity] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -379,28 +382,45 @@ function ProductPage() {
     'High Retention & Color Stability': 'Developed by Biomaser, this formula is packed with high-density pigments'
   };
 
-  const handleAddToCart = () => {
+  const handleAddToCart = async () => {
     if (!selectedColor || !selectedSize) {
-      alert('Please select color and size');
+      toast.error('Please select color and size');
       return;
     }
     if (!currentVariation || currentVariation.stock_quantity < 1) {
-      alert('This variation is out of stock');
+      toast.error('This variation is out of stock');
       return;
     }
-    console.log('Add to cart:', { selectedColor, selectedSize, quantity, variation: currentVariation });
+
+    setIsLoading(true);
+    try {
+      const response = await addToCart(
+        productData.product.id,
+        currentVariation.id,
+        quantity
+      );
+      
+      toast.success('Product added to cart successfully!');
+      console.log('Added to cart:', response);
+    } catch (error) {
+      toast.error(error.message || 'Failed to add to cart');
+      console.error('Add to cart error:', error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleBuyNow = () => {
     if (!selectedColor || !selectedSize) {
-      alert('Please select color and size');
+      toast.error('Please select color and size');
       return;
     }
     if (!currentVariation || currentVariation.stock_quantity < 1) {
-      alert('This variation is out of stock');
+      toast.error('This variation is out of stock');
       return;
     }
     console.log('Buy now:', { selectedColor, selectedSize, quantity, variation: currentVariation });
+    // Implement buy now logic here
   };
 
   const isOutOfStock = currentVariation && currentVariation.stock_quantity < 1;
@@ -409,6 +429,10 @@ function ProductPage() {
   return (
     <>
       <ProductHeader allProducts={true} />
+
+      {/* Toaster */}
+      <Toaster position="top-right" reverseOrder={false} containerStyle={{ marginTop: '80px', }} />
+
       <div className="min-h-screen mt-15"
         style={{
           backgroundColor: 'black',
@@ -471,6 +495,7 @@ function ProductPage() {
                 onAddToCart={handleAddToCart}
                 onBuyNow={handleBuyNow}
                 disabled={!canPurchase}
+                isLoading={isLoading}
               />
 
               {/* Payment Icons */}
