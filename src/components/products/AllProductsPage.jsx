@@ -233,7 +233,7 @@ export default function AllProductsPage() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch(`${API_BASE_URL}/products/listproducts`);
+        const response = await fetch(`${API_BASE_URL}/products/getproducts`);
         const data = await response.json();
         setProducts(data);
         setFilteredProducts(data);
@@ -324,11 +324,11 @@ export default function AllProductsPage() {
     if (filters.inStock) {
       result = result.filter(item => {
         // Check if product has variations with stock
-        if (item.product.variations && item.product.variations.length > 0) {
-          return item.product.variations.some(v => v.stock_quantity > 0);
+        if (item.variations && item.variations.length > 0) {
+          return item.variations.some(v => v.stock_quantity > 0);
         }
-        // If no variations, assume in stock (or add stock_quantity field to product)
-        return true;
+        // If no variations, assume not in stock
+        return false;
       });
     }
 
