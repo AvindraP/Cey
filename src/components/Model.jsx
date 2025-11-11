@@ -5,119 +5,66 @@ Command: npx gltfjsx@6.5.3 public/models/model.glb -o src/components/Model.jsx
 
 import React, { useEffect, useLayoutEffect, useRef } from 'react'
 import { useGLTF, useScroll } from '@react-three/drei'
-import { useFrame, useThree } from '@react-three/fiber';
-import gsap from 'gsap';
-import * as THREE from 'three';
+import { useFrame, useThree } from '@react-three/fiber'
+import gsap from 'gsap'
+import * as THREE from 'three'
 
 export const Model = (props) => {
   const { nodes, materials } = useGLTF('/models/model.glb')
-  const { viewport, camera } = useThree();
-  const ref = useRef();
-  const tl = useRef();
-
-  const scroll = useScroll();
+  const { viewport, camera } = useThree()
+  const ref = useRef()
+  const tl = useRef()
+  const scroll = useScroll()
 
   useFrame(() => {
-    tl.current.seek(scroll.offset * tl.current.duration());
-  });
+    if (tl.current) tl.current.seek(scroll.offset * tl.current.duration())
+  })
 
+  // Main scroll-based timeline (existing)
   useLayoutEffect(() => {
-    tl.current = gsap.timeline();
+    tl.current = gsap.timeline()
 
     // ROTATION
     tl.current.fromTo(
       ref.current.rotation,
-      {
-        x: 0,
-        y: -Math.PI / 4,
-      },
-      {
-        duration: 1,
-        x: Math.PI / 4,
-        y: -Math.PI / 2,
-      },
+      { x: 0, y: -Math.PI / 4 },
+      { duration: 1, x: Math.PI / 4, y: -Math.PI / 2 },
       0
-    );
+    )
     tl.current.fromTo(
       ref.current.rotation,
-      {
-        x: Math.PI / 4,
-        y: -Math.PI / 2,
-      },
-      {
-        duration: 1,
-        x: 0,
-        y: -Math.PI * 3 / 4,
-      },
+      { x: Math.PI / 4, y: -Math.PI / 2 },
+      { duration: 1, x: 0, y: -Math.PI * 3 / 4 },
       1
-    );
+    )
     tl.current.fromTo(
       ref.current.rotation,
-      {
-        x: 0,
-        y: -Math.PI * 3 / 4,
-      },
-      {
-        duration: 0.8,
-        x: 0,
-        y: -Math.PI / 2,
-      },
+      { x: 0, y: -Math.PI * 3 / 4 },
+      { duration: 0.8, x: 0, y: -Math.PI / 2 },
       2.2
-    );
+    )
 
     // MOVEMENT
-    tl.current.to(
-      ref.current.position,
-      {
-        duration: 1,
-        x: 0.35,
-        z: 0.1,
-      },
-      0
-    );
-    tl.current.to(
-      ref.current.position,
-      {
-        duration: 1,
-        x: 0.5,
-        z: 0,
-      },
-      1
-    );
+    tl.current.to(ref.current.position, { duration: 1, x: 0.35, z: 0.1 }, 0)
+    tl.current.to(ref.current.position, { duration: 1, x: 0.5, z: 0 }, 1)
 
     // CAMERA POSITION
-    tl.current.to(
-      camera.position,
-      {
-        duration: 1,
-        z: 1.2,
-      },
-      0
-    );
-    tl.current.to(
-      camera.position,
-      {
-        duration: 1,
-        z: 1.4,
-      },
-      1
-    );
+    tl.current.to(camera.position, { duration: 1, z: 1.2 }, 0)
+    tl.current.to(camera.position, { duration: 1, z: 1.4 }, 1)
+  }, [camera])
 
-  }, []);
-
+  // Convert all materials to grayscale (existing)
   useEffect(() => {
     Object.values(materials).forEach((material) => {
       if (material.color) {
-        const c = material.color;
-        let gray = c.r * 0.299 + c.g * 0.587 + c.b * 0.114;
+        const c = material.color
+        let gray = c.r * 0.299 + c.g * 0.587 + c.b * 0.114
 
-        // Increase contrast and brightness
-        const contrast = 1.5;  // >1 increases contrast
-        const brightness = 0.1; // positive = brighter
-        gray = (gray - 0.5) * contrast + 0.5 + brightness;
-        gray = Math.min(Math.max(gray, 0), 1); // clamp between 0–1
-
-        material.color = new THREE.Color(gray, gray, gray);
+        const contrast = 1.5
+        const brightness = 0.1
+        gray = (gray - 0.5) * contrast + 0.5 + brightness
+        gray = Math.min(Math.max(gray, 0), 1)
+        material.color = new THREE.Color(gray, gray, gray)
       }
 
       if (material.map) {
@@ -125,56 +72,73 @@ export const Model = (props) => {
           shader.fragmentShader = shader.fragmentShader.replace(
             '#include <map_fragment>',
             `
-          vec4 texelColor = texture2D(map, vMapUv);
-          float gray = dot(texelColor.rgb, vec3(0.299, 0.587, 0.114));
-
-          // Contrast and brightness adjustment
-          float contrast = 1.5;
-          float brightness = 0.1;
-          gray = (gray - 0.5) * contrast + 0.5 + brightness;
-          gray = clamp(gray, 0.0, 1.0);
-
-          diffuseColor *= vec4(vec3(gray), texelColor.a);
-          `
-          );
-        };
-        material.needsUpdate = true;
+              vec4 texelColor = texture2D(map, vMapUv);
+              float gray = dot(texelColor.rgb, vec3(0.299, 0.587, 0.114));
+              float contrast = 1.5;
+              float brightness = 0.1;
+              gray = (gray - 0.5) * contrast + 0.5 + brightness;
+              gray = clamp(gray, 0.0, 1.0);
+              diffuseColor *= vec4(vec3(gray), texelColor.a);
+            `
+          )
+        }
+        material.needsUpdate = true
       }
-    });
-  }, [materials]);
+    })
+  }, [materials])
 
+  // Responsive positioning + entry animation
   useEffect(() => {
     const updatePosition = () => {
-      const aspect = viewport.aspect;
+      const aspect = viewport.aspect
+      let targetPos = new THREE.Vector3()
+      let cameraPos = new THREE.Vector3()
 
-      if (ref.current) {
-        if (aspect < 1) {                       // Tablet / Mobile (portrait)
-          ref.current.position.set(0.2, -0.1, 0);
-          camera.position.set(-0.3, 0, 1.5);
-        } else if (aspect < 1.5) {              // Small laptop / landscape tablet
-          ref.current.position.set(0.5, -0.1, 0);
-          camera.position.set(0, 0, 1.5);
-        } else {                                // Desktop / wide screens
-          ref.current.position.set(0.7, -0.1, 0);
-          camera.position.set(0.2, 0, 1.5);
-        }
+      if (aspect < 1) {                       // Tablet / Mobile (portrait)
+        targetPos.set(0.2, -0.1, 0)
+        cameraPos.set(-0.3, 0, 1.5)
+      } else if (aspect < 1.5) {              // Small laptop / landscape tablet
+        targetPos.set(0.5, -0.1, 0)
+        cameraPos.set(0, 0, 1.5)
+      } else {                                // Desktop / wide screens
+        targetPos.set(0.7, -0.1, 0)
+        cameraPos.set(0.2, 0, 1.5)
       }
-    };
 
-    updatePosition();
+      // Initial off-screen position before animation (e.g., below canvas)
+      ref.current.position.set(targetPos.x, targetPos.y - 1.5, targetPos.z)
 
-    // Handle dynamic resizing
-    window.addEventListener('resize', updatePosition);
-    return () => window.removeEventListener('resize', updatePosition);
-  }, [viewport, camera]);
+      // Animate in on component mount
+      gsap.to(ref.current.position, {
+        duration: 2,
+        ease: 'power3.out',
+        x: targetPos.x,
+        y: targetPos.y,
+        z: targetPos.z,
+      })
 
+      gsap.to(camera.position, {
+        duration: 2,
+        ease: 'power3.out',
+        x: cameraPos.x,
+        y: cameraPos.y,
+        z: cameraPos.z,
+      })
+    }
+
+    updatePosition()
+    window.addEventListener('resize', updatePosition)
+    return () => window.removeEventListener('resize', updatePosition)
+  }, [viewport, camera])
 
   return (
     <group {...props} dispose={null} ref={ref}>
-      <mesh geometry={nodes['tripo_node_a78418c3-2df1-4bb1-87dc-aa978a6a6054'].geometry} material={materials['tripo_mat_a78418c3-2df1-4bb1-87dc-aa978a6a6054']} />
+      <mesh
+        geometry={nodes['tripo_node_a78418c3-2df1-4bb1-87dc-aa978a6a6054'].geometry}
+        material={materials['tripo_mat_a78418c3-2df1-4bb1-87dc-aa978a6a6054']}
+      />
     </group>
   )
 }
-
 
 useGLTF.preload('/models/model.glb')
