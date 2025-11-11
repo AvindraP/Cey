@@ -31,24 +31,24 @@ const ProductCard = ({ product, images }) => {
     const discountedPrice = product.base_price || '0.00';
 
     return (
-        <div className="bg-zinc-900/50 border border-zinc-800 rounded-lg hover:border-zinc-600 hover:scale-105 transition-all duration-300 group"
+        <div className="bg-zinc-900/50 border border-zinc-800 rounded-lg hover:border-zinc-600 hover:scale-[1.02] transition-all duration-300 group"
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
         >
             <div
-                className="relative h-40 lg:h-52 w-40 lg:w-52 bg-zinc-950 rounded-t-lg"
+                className="relative h-40 lg:h-52 w-40 lg:w-52 bg-zinc-950 rounded-t-lg overflow-hidden"
             >
                 {images && images.length > 0 ? (
                     <img
                         src={`${API_BASE_URL}/images/${images[currentImageIndex]}`}
                         alt={product.name}
-                        className="w-full h-full object-cover transition-transform duration-500 rounded-t-lg"
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                     />
                 ) : (
                     <img
                         src={`/images/noimage.webp`}
                         alt={product.name}
-                        className="w-full h-full object-cover transition-transform duration-500 rounded-t-lg"
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                     />
                 )}
 
