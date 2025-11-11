@@ -24,6 +24,9 @@ export const Model = (props) => {
   useLayoutEffect(() => {
     tl.current = gsap.timeline()
 
+    const aspect = viewport.aspect
+    const isMobile = aspect < 1
+
     // ROTATION
     tl.current.fromTo(
       ref.current.rotation,
@@ -44,14 +47,19 @@ export const Model = (props) => {
       2.2
     )
 
-    // MOVEMENT
-    tl.current.to(ref.current.position, { duration: 1, x: 0.35, z: 0.1 }, 0)
-    tl.current.to(ref.current.position, { duration: 1, x: 0.5, z: 0 }, 1)
+    // MOVEMENT - adjust for mobile
+    if (isMobile) {
+      tl.current.to(ref.current.position, { duration: 1, x: 0.1, z: 0.1 }, 0)
+      tl.current.to(ref.current.position, { duration: 1, x: 0.15, z: 0 }, 1)
+    } else {
+      tl.current.to(ref.current.position, { duration: 1, x: 0.35, z: 0.1 }, 0)
+      tl.current.to(ref.current.position, { duration: 1, x: 0.5, z: 0 }, 1)
+    }
 
     // CAMERA POSITION
     tl.current.to(camera.position, { duration: 1, z: 1.2 }, 0)
     tl.current.to(camera.position, { duration: 1, z: 1.4 }, 1)
-  }, [camera])
+  }, [camera, viewport.aspect])
 
   // Convert all materials to grayscale (existing)
   useEffect(() => {

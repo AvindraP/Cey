@@ -9,7 +9,7 @@ export const Experience = ({ onScrollToSection }) => {
             <OrbitControls enableZoom={false} enableRotate={false} enablePan={false} />
             <ScrollControls pages={6.75} damping={0.50}>
                 <Overlay onScrollToSection={onScrollToSection} />
-                <Model position={[0.5,-0.1,0]} />
+                <Model position={[0.5,-1.5,0]} />
             </ScrollControls>
         </>
     );
