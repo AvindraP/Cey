@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from "react";
+import toast from "react-hot-toast";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -25,8 +26,8 @@ export default function AddProduct() {
   });
 
   const [attributes, setAttributes] = useState([
-    { id: crypto.randomUUID(), name: "Color", options: [] },
-    { id: crypto.randomUUID(), name: "Size", options: [] },
+    { id: crypto.randomUUID(), name: "Color", options: [{ id: crypto.randomUUID(), value: "default", imageFile: null }] },
+    { id: crypto.randomUUID(), name: "Size", options: [{ id: crypto.randomUUID(), value: "default", imageFile: null }] },
   ]);
   const [variations, setVariations] = useState([]); // generated variations
 
@@ -43,7 +44,18 @@ export default function AddProduct() {
   const generateVariations = () => {
     const productAttributes = attributes.filter((a) => a.options.length);
     if (productAttributes.length === 0) {
-      setVariations([]);
+      const defaultVariation = {
+        id: crypto.randomUUID(),
+        product_id: product.id,
+        sku: `${product.sku || product.name || "P"}-DEFAULT`.toUpperCase(),
+        price: product.base_price || "",
+        stock_quantity: 0,
+        options: [
+          { attribute_name: "Color", option_value: "default" },
+          { attribute_name: "Size", option_value: "default" },
+        ],
+      };
+      setVariations([defaultVariation]);
       return;
     }
 
@@ -84,7 +96,29 @@ export default function AddProduct() {
   };
 
   const removeOption = (attrId, optionId) => {
-    setAttributes((prev) => prev.map((a) => (a.id === attrId ? { ...a, options: a.options.filter((o) => o.id !== optionId) } : a)));
+    setAttributes((prev) =>
+      prev.map((a) => {
+        if (a.id !== attrId) return a;
+
+        // Prevent deleting the last remaining option
+        if (a.options.length <= 1) {
+          toast.error(`At least one option must remain for ${a.name}`, {
+            style: {
+              background: "#fee2e2", // Tailwind red-100
+              color: "#991b1b", // Tailwind red-800
+              border: "1px solid #fca5a5", // Tailwind red-300
+            },
+            icon: "⚠️",
+          });
+          return a;
+        }
+
+        return {
+          ...a,
+          options: a.options.filter((o) => o.id !== optionId),
+        };
+      })
+    );
   };
 
   /* Variation editing */
@@ -208,7 +242,7 @@ export default function AddProduct() {
             <div className="md:col-span-2">
               <label className="block text-sm font-medium">Product Name</label>
               <input
-                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
+                className="mt-1 pl-2 block w-full border-gray-300 rounded-md shadow-sm"
                 value={product.name}
                 onChange={(e) => setProduct((p) => ({ ...p, name: e.target.value }))}
                 placeholder="e.g. Classic T-Shirt"
@@ -220,7 +254,7 @@ export default function AddProduct() {
             <div>
               <label className="block text-sm font-medium">SKU</label>
               <input
-                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
+                className="mt-1 pl-2 block w-full border-gray-300 rounded-md shadow-sm"
                 value={product.sku}
                 onChange={(e) => setProduct((p) => ({ ...p, sku: e.target.value }))}
                 placeholder="e.g. TS-001"
@@ -231,7 +265,7 @@ export default function AddProduct() {
             <div className="md:col-span-3">
               <label className="block text-sm font-medium">Description</label>
               <textarea
-                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
+                className="mt-1 pl-2 block w-full border-gray-300 rounded-md shadow-sm"
                 rows="3"
                 value={product.description}
                 onChange={(e) => setProduct((p) => ({ ...p, description: e.target.value }))}
@@ -244,7 +278,7 @@ export default function AddProduct() {
               <input
                 type="number"
                 step="0.01"
-                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
+                className="mt-1 pl-2 block w-full border-gray-300 rounded-md shadow-sm"
                 value={product.base_price}
                 onChange={(e) => setProduct((p) => ({ ...p, base_price: e.target.value }))}
                 placeholder="0.00"
@@ -317,14 +351,14 @@ export default function AddProduct() {
             <h2 className="text-lg font-medium mb-2">Attributes</h2>
             <div className="space-y-4">
               {attributes.map((attr) => (
-                <div key={attr.id} className="border rounded-md p-4">
+                <div key={attr.id} className="border border-gray-700 rounded-md p-4">
                   <h3 className="font-medium mb-2">{attr.name}</h3>
                   <div className="space-y-2">
                     {attr.options.map((opt) => (
-                      <div key={opt.id} className="flex flex-col md:flex-row gap-3 items-start md:items-center border p-3 rounded-md">
+                      <div key={opt.id} className="flex flex-col md:flex-row gap-3 items-start md:items-center border border-gray-900 p-3 rounded-md">
                         <div className="flex-1 w-full">
                           <input
-                            className="w-full border-gray-300 rounded-md shadow-sm"
+                            className="w-full border border-gray-600 pl-2 rounded-md shadow-sm"
                             value={opt.value}
                             onChange={(e) => updateOptionValue(attr.id, opt.id, e.target.value)}
                             placeholder={`e.g. ${attr.name === "Color" ? "Red" : "Large"}`}
@@ -365,7 +399,7 @@ export default function AddProduct() {
                     <button
                       type="button"
                       onClick={() => addOption(attr.id)}
-                      className="px-3 py-1 text-sm rounded-md border"
+                      className="px-3 py-1 text-sm rounded-md border border-gray-400"
                     >
                       + Add {attr.name} Option
                     </button>
@@ -390,7 +424,7 @@ export default function AddProduct() {
 
             <div className="mt-3 space-y-3">
               {variations.map((v) => (
-                <div key={v.id} className="border rounded-md p-3 flex flex-col gap-3">
+                <div key={v.id} className="border border-gray-700 rounded-md p-3 flex flex-col gap-3">
                   <div className="text-sm text-gray-600">
                     {v.options.map((o) => (
                       <span key={o.option_id} className="mr-2">
