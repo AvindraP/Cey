@@ -325,7 +325,7 @@ export default function AllProductsPage() {
       result = result.filter(item => {
         // Check if product has variations with stock
         if (item.variations && item.variations.length > 0) {
-          return item.variations.some(v => v.stock_quantity > 0);
+          return item.variations.some(v => v.stock_balance > 0);
         }
         // If no variations, assume not in stock
         return false;

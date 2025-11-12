@@ -135,7 +135,7 @@ const SizeSelector = ({ sizes, selectedSize, onSizeSelect, availableSizes }) => 
                 }`}
             >
               {size.value}
-              {!isAvailable && <span className="ml-1 text-xs">(Out of stock)</span>}
+              {/* {!isAvailable && <span className="ml-1 text-xs">(Out of stock)</span>} */}
             </button>
           );
         })}
@@ -328,7 +328,7 @@ function ProductPage() {
       );
       const sizeOption = variation.options.find(opt => opt.attribute_name === 'Size');
 
-      if (hasColor && sizeOption && variation.stock_quantity > 0) {
+      if (hasColor && sizeOption && variation.stock_balance > 0) {
         availableSizes.add(sizeOption.option_value);
       }
     });
@@ -354,7 +354,7 @@ function ProductPage() {
   };
 
   const currentVariation = getCurrentVariation();
-  const maxQuantity = currentVariation ? currentVariation.stock_quantity : 99;
+  const maxQuantity = currentVariation ? currentVariation.stock_balance : 99;
   const availableSizes = getAvailableSizes();
 
   // Reset size if it becomes unavailable
@@ -387,7 +387,7 @@ function ProductPage() {
       toast.error('Please select color and size');
       return;
     }
-    if (!currentVariation || currentVariation.stock_quantity < 1) {
+    if (!currentVariation || currentVariation.stock_balance < 1) {
       toast.error('This variation is out of stock');
       return;
     }
@@ -416,7 +416,7 @@ function ProductPage() {
       toast.error('Please select color and size');
       return;
     }
-    if (!currentVariation || currentVariation.stock_quantity < 1) {
+    if (!currentVariation || currentVariation.stock_balance < 1) {
       toast.error('This variation is out of stock');
       return;
     }
@@ -424,7 +424,7 @@ function ProductPage() {
     // Implement buy now logic here
   };
 
-  const isOutOfStock = currentVariation && currentVariation.stock_quantity < 1;
+  const isOutOfStock = currentVariation && currentVariation.stock_balance < 1;
   const canPurchase = selectedColor && selectedSize && !isOutOfStock;
 
   return (
@@ -483,7 +483,7 @@ function ProductPage() {
                 quantity={quantity}
                 onQuantityChange={setQuantity}
                 max={maxQuantity}
-                stockAvailable={currentVariation?.stock_quantity ?? null}
+                stockAvailable={currentVariation?.stock_balance ?? null}
               />
 
               {isOutOfStock && (
