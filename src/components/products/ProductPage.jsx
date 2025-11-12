@@ -403,7 +403,8 @@ function ProductPage() {
       toast.success('Product added to cart successfully!');
       console.log('Added to cart:', response);
     } catch (error) {
-      toast.error(error.message || 'Failed to add to cart');
+      const parsed = JSON.parse(error.message);
+      toast.error(parsed.message || 'Failed to add to cart');
       console.error('Add to cart error:', error);
     } finally {
       setIsLoading(false);

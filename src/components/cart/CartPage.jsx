@@ -7,37 +7,26 @@ import {
   MinusIcon,
   PlusIcon,
   ShoppingBagIcon,
-  XMarkIcon
+  ExclamationTriangleIcon
 } from '@heroicons/react/24/outline';
 import toast, { Toaster } from "react-hot-toast";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-// Toast Notification Component
-const Toast = ({ message, type, onClose }) => {
-  React.useEffect(() => {
-    const timer = setTimeout(onClose, 3000);
-    return () => clearTimeout(timer);
-  }, [onClose]);
-
-  return (
-    <div className={`fixed top-4 right-4 z-50 px-6 py-4 rounded-lg shadow-lg border-2 flex items-center gap-3 animate-slide-in ${type === 'success'
-      ? 'bg-green-500/20 border-green-500/50 text-green-400'
-      : 'bg-red-500/20 border-red-500/50 text-red-400'
-      }`}>
-      <span className="font-medium">{message}</span>
-      <button onClick={onClose} className="text-xl hover:opacity-70">×</button>
-    </div>
-  );
-};
-
 // Cart Item Component
-const CartItem = ({ item, onUpdate, onRemove }) => {
+const CartItem = ({ item, onUpdate, onRemove, isOutOfStock = false }) => {
   const [quantity, setQuantity] = useState(item.quantity);
   const [isUpdating, setIsUpdating] = useState(false);
 
   const handleQuantityChange = async (newQuantity) => {
+    const maxStock = item.stock_balance || 999;
+    
     if (newQuantity < 1) return;
+    if (newQuantity > maxStock) {
+      toast.error(`Only ${maxStock} items available in stock`);
+      return;
+    }
+
     setQuantity(newQuantity);
     setIsUpdating(true);
     await onUpdate(item.id, newQuantity);
@@ -45,28 +34,55 @@ const CartItem = ({ item, onUpdate, onRemove }) => {
   };
 
   const subtotal = (item.price * quantity);
+  const maxStock = item.stock_balance || 999;
 
   return (
-    <div className="bg-zinc-900/50 border border-zinc-800 rounded-lg p-4 sm:p-6 hover:border-zinc-700 transition-all">
+    <div className={`bg-zinc-900/50 border rounded-lg p-4 sm:p-6 transition-all ${
+      isOutOfStock 
+        ? 'border-red-900/50 opacity-75' 
+        : 'border-zinc-800 hover:border-zinc-700'
+    }`}>
       <div className="flex flex-col sm:flex-row gap-4 sm:gap-6">
         {/* Product Image */}
-        <div className="w-full sm:w-32 h-32 bg-zinc-950 rounded-lg overflow-hidden flex-shrink-0">
+        <div className="w-full sm:w-32 h-32 bg-zinc-950 rounded-lg overflow-hidden flex-shrink-0 relative">
           <img
             src={item.image ? `${API_BASE_URL}/images/${item.image}` : '/images/noimage.webp'}
             alt={item.product_name}
-            className="w-full h-full object-cover"
+            className={`w-full h-full object-cover ${isOutOfStock ? 'grayscale' : ''}`}
           />
+          {isOutOfStock && (
+            <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
+              <span className="text-red-400 font-semibold text-sm">Out of Stock</span>
+            </div>
+          )}
         </div>
 
         {/* Product Details */}
         <div className="flex-1 min-w-0">
           <div className="flex justify-between items-start gap-4 mb-3">
             <div className="flex-1">
-              <h3 className="text-lg font-semibold text-white mb-1 line-clamp-2">
+              <h3 className="text-lg font-semibold text-white mb-2 line-clamp-2">
                 {item.product_name}
               </h3>
+              
+              {/* Color and Size Attributes */}
+              {item.attributes && (
+                <div className="flex flex-wrap gap-2 mb-2">
+                  {item.attributes.color && (
+                    <span className="px-3 py-1 bg-zinc-800/80 border border-zinc-700 rounded-md text-sm text-zinc-300">
+                      <span className="text-zinc-500">Color:</span> <span className="font-medium">{item.attributes.color}</span>
+                    </span>
+                  )}
+                  {item.attributes.size && (
+                    <span className="px-3 py-1 bg-zinc-800/80 border border-zinc-700 rounded-md text-sm text-zinc-300">
+                      <span className="text-zinc-500">Size:</span> <span className="font-medium">{item.attributes.size}</span>
+                    </span>
+                  )}
+                </div>
+              )}
+              
               {item.variation_sku && (
-                <p className="text-sm text-zinc-400">
+                <p className="text-xs text-zinc-500">
                   SKU: {item.variation_sku}
                 </p>
               )}
@@ -83,41 +99,56 @@ const CartItem = ({ item, onUpdate, onRemove }) => {
           {/* Price and Quantity Controls */}
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             {/* Quantity Selector */}
-            <div className="flex items-center gap-3">
-              <span className="text-sm text-zinc-400">Qty:</span>
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => handleQuantityChange(quantity - 1)}
-                  disabled={quantity <= 1 || isUpdating}
-                  className="w-8 h-8 rounded-lg border border-zinc-700 bg-zinc-800/50 hover:bg-zinc-800 flex items-center justify-center transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  <MinusIcon className="w-4 h-4 text-white" />
-                </button>
-                <input
-                  type="number"
-                  value={quantity}
-                  onChange={(e) => {
-                    const val = parseInt(e.target.value) || 1;
-                    handleQuantityChange(val);
-                  }}
-                  disabled={isUpdating}
-                  className="w-16 h-8 text-center bg-zinc-800/50 border border-zinc-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-white/50"
-                />
-                <button
-                  onClick={() => handleQuantityChange(quantity + 1)}
-                  disabled={isUpdating}
-                  className="w-8 h-8 rounded-lg border border-zinc-700 bg-zinc-800/50 hover:bg-zinc-800 flex items-center justify-center transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  <PlusIcon className="w-4 h-4 text-white" />
-                </button>
+            {!isOutOfStock && (
+              <div className="flex items-center gap-3">
+                <span className="text-sm text-zinc-400">Qty:</span>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => handleQuantityChange(quantity - 1)}
+                    disabled={quantity <= 1 || isUpdating}
+                    className="w-8 h-8 rounded-lg border border-zinc-700 bg-zinc-800/50 hover:bg-zinc-800 flex items-center justify-center transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <MinusIcon className="w-4 h-4 text-white" />
+                  </button>
+                  <input
+                    type="number"
+                    value={quantity}
+                    onChange={(e) => {
+                      const val = parseInt(e.target.value) || 1;
+                      handleQuantityChange(val);
+                    }}
+                    disabled={isUpdating}
+                    max={maxStock}
+                    className="w-16 h-8 text-center bg-zinc-800/50 border border-zinc-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-white/50"
+                  />
+                  <button
+                    onClick={() => handleQuantityChange(quantity + 1)}
+                    disabled={isUpdating || quantity >= maxStock}
+                    className="w-8 h-8 rounded-lg border border-zinc-700 bg-zinc-800/50 hover:bg-zinc-800 flex items-center justify-center transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <PlusIcon className="w-4 h-4 text-white" />
+                  </button>
+                </div>
+                {item.stock_balance && (
+                  <span className="text-xs text-zinc-500">
+                    ({item.stock_balance} available)
+                  </span>
+                )}
               </div>
-            </div>
+            )}
+
+            {isOutOfStock && (
+              <div className="flex items-center gap-2 text-red-400">
+                <ExclamationTriangleIcon className="w-5 h-5" />
+                <span className="text-sm font-medium">This item is currently unavailable</span>
+              </div>
+            )}
 
             {/* Price */}
             <div className="flex items-center gap-4">
               <div className="text-right">
                 <div className="text-sm text-zinc-400">${item.price} each</div>
-                <div className="text-xl font-bold text-white">${subtotal}</div>
+                <div className="text-xl font-bold text-white">${subtotal.toFixed(2)}</div>
               </div>
             </div>
           </div>
@@ -153,7 +184,8 @@ const OrderSummary = ({ cart, onCheckout, onClearCart }) => {
       <div className="space-y-3">
         <button
           onClick={onCheckout}
-          className="w-full py-3.5 rounded-lg bg-gradient-to-r from-gray-200 to-gray-400 hover:from-gray-300 hover:to-gray-500 text-black font-semibold flex items-center justify-center gap-2 transition-all shadow-lg"
+          disabled={!cart.items || cart.items.length === 0}
+          className="w-full py-3.5 rounded-lg bg-gradient-to-r from-gray-200 to-gray-400 hover:from-gray-300 hover:to-gray-500 text-black font-semibold flex items-center justify-center gap-2 transition-all shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <ShoppingBagIcon className="w-5 h-5" />
           Proceed to Checkout
@@ -180,7 +212,7 @@ const OrderSummary = ({ cart, onCheckout, onClearCart }) => {
             <div className="w-5 h-5 bg-green-500/20 rounded-full flex items-center justify-center">
               <span className="text-green-400 text-xs">✓</span>
             </div>
-            <span>Free shipping on orders over $100</span>
+            <span>Free shipping on orders over $50</span>
           </div>
           <div className="flex items-center gap-2">
             <div className="w-5 h-5 bg-green-500/20 rounded-full flex items-center justify-center">
@@ -224,7 +256,7 @@ const CartPage = () => {
       await handleUpdate(itemId, quantity);
       toast.success('Cart updated successfully');
     } catch (error) {
-      toast.error('Failed to update cart');
+      toast.error(error.message || 'Failed to update cart');
     }
   };
 
@@ -254,12 +286,15 @@ const CartPage = () => {
     toast.success('Checkout coming soon!');
   };
 
+  const hasInStockItems = cart.items && cart.items.length > 0;
+  const hasOutOfStockItems = cart.out_of_stock_items && cart.out_of_stock_items.length > 0;
+
   return (
     <>
       <ProductHeader allProducts={true} />
 
       {/* Toaster */}
-      <Toaster position="top-right" reverseOrder={false} containerStyle={{ marginTop: '80px', }} />
+      <Toaster position="top-right" reverseOrder={false} containerStyle={{ marginTop: '80px' }} />
 
       <div className="min-h-screen mt-20 w-full overflow-x-hidden"
         style={{
@@ -277,9 +312,10 @@ const CartPage = () => {
           {/* Page Title */}
           <div className="mb-8">
             <h1 className="text-3xl sm:text-4xl font-bold text-white mb-2">Shopping Cart</h1>
-            {!loading && cart.items && cart.items.length > 0 && (
+            {!loading && (hasInStockItems || hasOutOfStockItems) && (
               <p className="text-zinc-400">
-                You have {cart.items.length} {cart.items.length === 1 ? 'item' : 'items'} in your cart
+                You have {(cart.items?.length || 0) + (cart.out_of_stock_items?.length || 0)} {((cart.items?.length || 0) + (cart.out_of_stock_items?.length || 0)) === 1 ? 'item' : 'items'} in your cart
+                {hasOutOfStockItems && <span className="text-red-400 ml-2">({cart.out_of_stock_items.length} out of stock)</span>}
               </p>
             )}
           </div>
@@ -296,20 +332,48 @@ const CartPage = () => {
               </div>
               <div className="bg-zinc-900/50 border border-zinc-800 rounded-lg h-96 animate-pulse" />
             </div>
-          ) : !cart.items || cart.items.length === 0 ? (
+          ) : !hasInStockItems && !hasOutOfStockItems ? (
             <EmptyCart />
           ) : (
             <div className="grid lg:grid-cols-3 gap-8">
               {/* Cart Items */}
-              <div className="lg:col-span-2 space-y-4">
-                {cart.items.map((item) => (
-                  <CartItem
-                    key={item.id}
-                    item={item}
-                    onUpdate={handleUpdateWithToast}
-                    onRemove={handleRemoveWithToast}
-                  />
-                ))}
+              <div className="lg:col-span-2 space-y-6">
+                {/* In Stock Items */}
+                {hasInStockItems && (
+                  <div className="space-y-4">
+                    <h2 className="text-xl font-semibold text-white">Available Items</h2>
+                    {cart.items.map((item) => (
+                      <CartItem
+                        key={item.id}
+                        item={item}
+                        onUpdate={handleUpdateWithToast}
+                        onRemove={handleRemoveWithToast}
+                      />
+                    ))}
+                  </div>
+                )}
+
+                {/* Out of Stock Items */}
+                {hasOutOfStockItems && (
+                  <div className="space-y-4 mt-8">
+                    <div className="flex items-center gap-2">
+                      <ExclamationTriangleIcon className="w-6 h-6 text-red-400" />
+                      <h2 className="text-xl font-semibold text-red-400">Out of Stock Items</h2>
+                    </div>
+                    <p className="text-sm text-zinc-400 mb-4">
+                      These items are currently unavailable and won't be included in your order.
+                    </p>
+                    {cart.out_of_stock_items.map((item) => (
+                      <CartItem
+                        key={item.id}
+                        item={item}
+                        onUpdate={handleUpdateWithToast}
+                        onRemove={handleRemoveWithToast}
+                        isOutOfStock={true}
+                      />
+                    ))}
+                  </div>
+                )}
 
                 {/* Continue Shopping Link */}
                 <div className="pt-4">
