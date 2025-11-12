@@ -296,7 +296,7 @@ const CartPage = () => {
       {/* Toaster */}
       <Toaster position="top-right" reverseOrder={false} containerStyle={{ marginTop: '80px' }} />
 
-      <div className="min-h-screen mt-20 w-full overflow-x-hidden"
+      <div className="min-h-screen mt-18 w-full overflow-x-hidden"
         style={{
           backgroundColor: 'black',
           background: 'linear-gradient(135deg, #0d0d0d 0%, #1a1a1a 40%, #2b2b2b 100%)'
