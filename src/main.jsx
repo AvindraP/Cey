@@ -10,6 +10,7 @@ import ProtectedRoute from './middleware/ProtectedRoute.jsx'
 import ProductPage from './components/products/ProductPage.jsx'
 import AllProductsPage from './components/products/AllProductsPage.jsx'
 import Cart from './components/cart/Cart.jsx'
+import CheckoutPage from './components/checkout/CheckoutPage.jsx'
 
 // Define routes
 const router = createBrowserRouter([
@@ -17,6 +18,7 @@ const router = createBrowserRouter([
   { path: "product", element: <ProductPage />, }, // single product page
   { path: "products", element: <AllProductsPage />, }, // all products
   { path: "cart", element: <Cart />, }, // cart
+  { path: "checkout", element: <CheckoutPage />, }, // cart
   { path: "login", element: <Login />, }, // admin dashboard login
   { path: "dashboard", element: (<ProtectedRoute> <Dashboard /> </ProtectedRoute>), }, // admin dashboard 
 ]);
