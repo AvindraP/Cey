@@ -280,10 +280,45 @@ const CartPage = () => {
     }
   };
 
-  const handleCheckout = () => {
-    // Implement checkout logic
-    console.log('Proceeding to checkout...');
-    toast.success('Checkout coming soon!');
+  const handleCheckout = async () => {
+    if (!cart.items || cart.items.length === 0) {
+      toast.error('Your cart is empty');
+      return;
+    }
+
+    try {
+      // Show loading toast
+      const loadingToast = toast.loading('Initializing checkout...');
+
+      // Call checkout initiate API
+      const response = await fetch(`${API_BASE_URL}/checkout/initiate`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          shipping_address_id: null, // Will be set in checkout page
+        }),
+      });
+
+      const data = await response.json();
+
+      // Dismiss loading toast
+      toast.dismiss(loadingToast);
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to initiate checkout');
+      }
+
+      // Success - redirect to checkout page
+      toast.success('Redirecting to checkout...');
+      
+      // Redirect to checkout page with session ID
+      window.location.href = `/checkout?session=${data.checkout_session_id}`;
+      
+    } catch (error) {
+      console.error('Checkout error:', error);
+      toast.error(error.message || 'Failed to proceed to checkout');
+    }
   };
 
   const hasInStockItems = cart.items && cart.items.length > 0;
