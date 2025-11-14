@@ -6,7 +6,8 @@ import {
     CubeIcon,
     ChevronRightIcon,
     ChevronLeftIcon,
-    ArrowRightStartOnRectangleIcon
+    ArrowRightStartOnRectangleIcon,
+    TruckIcon
 } from "@heroicons/react/24/outline";
 
 const menuItems = [
@@ -20,6 +21,7 @@ const menuItems = [
             { name: "Add Product", href: "#" },
         ],
     },
+    { name: "Orders", icon: TruckIcon, href: "#"},
     { name: "Settings", icon: Cog6ToothIcon, href: "#" },
 ];
 

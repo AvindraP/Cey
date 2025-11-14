@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { useActivityTracker } from "../hooks/useActivityTracker";
 import SessionWarningModal from "./SessionWarningModal";
 import { Toaster } from "react-hot-toast";
+import ViewOrders from "./sections/orders/ViewOrders";
 
 export default function Dashboard() {
   const { user, logout } = useContext(AuthContext);
@@ -76,6 +77,7 @@ export default function Dashboard() {
           {activeSection === "overview" && <Overview />}
           {activeSection === "add product" && <AddProduct />}
           {activeSection === "view products" && <ViewProducts />}
+          {activeSection === "orders" && <ViewOrders />}
         </div>
       </main>
     </div>

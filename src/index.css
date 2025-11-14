@@ -32,3 +32,19 @@ body {
 .scrollable::-webkit-scrollbar-thumb:hover {
   background: #6b7280; /* gray-500 */
 }
+
+/* Style the SELECT itself (fully supported) */
+select {
+  @apply bg-gray-800 text-white border border-gray-600 rounded;
+}
+
+/* Style OPTION items (limited support, works in Firefox, partial in Chrome) */
+select option {
+  background-color: var(--color-gray-800);
+  color: white;
+}
+
+/* Hover/focus (only Firefox fully supports) */
+select option:hover {
+  background-color: var(--color-gray-700);
+}
