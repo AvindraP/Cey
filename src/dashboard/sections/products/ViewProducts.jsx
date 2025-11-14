@@ -54,32 +54,32 @@ export default function ViewProducts() {
 
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-800">
-            <thead className="bg-gray-100/20 rounded">
+            <thead className="bg-gray-800 border-b border-gray-700 rounded">
               <tr>
-                <th className="px-6 py-3 text-left text-sm font-semibold text-gray-100">
+                <th className="px-6 py-3 text-left text-sm font-semibold text-gray-400">
                   Product ID
                 </th>
-                <th className="px-6 py-3 text-left text-sm font-semibold text-gray-100">
+                <th className="px-6 py-3 text-left text-sm font-semibold text-gray-400">
                   Name
                 </th>
-                <th className="px-6 py-3 text-left text-sm font-semibold text-gray-100">
+                <th className="px-6 py-3 text-left text-sm font-semibold text-gray-400">
                   SKU
                 </th>
-                <th className="px-6 py-3 text-left text-sm font-semibold text-gray-100">
+                <th className="px-6 py-3 text-left text-sm font-semibold text-gray-400">
                   Base Price
                 </th>
-                <th className="px-6 py-3 text-left text-sm font-semibold text-gray-100">
+                <th className="px-6 py-3 text-left text-sm font-semibold text-gray-400">
                   Created At
                 </th>
               </tr>
             </thead>
 
-            <tbody className="divide-y divide-gray-800">
+            <tbody className="divide-y divide-gray-700 bg-gray-900">
               {products.map((p, i) => (
                 <React.Fragment key={p.product.id}>
                   {/* Main Row */}
                   <tr
-                    className="hover:bg-gray-800 cursor-pointer"
+                    className={`hover:bg-gray-800 cursor-pointer ${expanded === p.product.id && "bg-gray-700"}`}
                     onClick={() => toggleExpand(p.product.id)}
                   >
                     <td className="px-6 py-3 text-sm text-gray-300">
@@ -103,7 +103,7 @@ export default function ViewProducts() {
 
                   {/* Expanded Row */}
                   {expanded === p.product.id && (
-                    <tr className="bg-gray-50/10">
+                    <tr className="bg-gray-800/50">
                       <td colSpan={5} className="px-6 py-4">
                         <div className="space-y-3">
                           {/* Attributes */}
@@ -138,7 +138,7 @@ export default function ViewProducts() {
                             {p.variations && p.variations.length > 0 ? (
                               <div className="overflow-x-auto mt-2">
                                 <table className="min-w-full text-sm border border-gray-800">
-                                  <thead className="bg-gray-100/20">
+                                  <thead className="bg-gray-900">
                                     <tr>
                                       <th className="px-3 py-2 text-left font-medium">
                                         SKU
