@@ -1,8 +1,9 @@
+import { PencilSquareIcon } from "@heroicons/react/24/outline";
 import React, { useEffect, useState } from "react";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-export default function ViewProducts() {
+export default function ViewProducts({ setActiveSection, setID }) {
   const [products, setProducts] = useState([]);
   const [expanded, setExpanded] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -29,6 +30,11 @@ export default function ViewProducts() {
 
   const toggleExpand = (id) => {
     setExpanded(expanded === id ? null : id);
+  };
+
+  const handleEditProduct = (productId) => {
+    setID(productId);
+    setActiveSection('edit product');
   };
 
   if (loading) {
@@ -71,6 +77,9 @@ export default function ViewProducts() {
                 <th className="px-6 py-3 text-left text-sm font-semibold text-gray-400">
                   Created At
                 </th>
+                <th className="px-6 py-3 text-left text-sm font-semibold text-gray-400">
+                  Actions
+                </th>
               </tr>
             </thead>
 
@@ -99,12 +108,21 @@ export default function ViewProducts() {
                         ? new Date(p.product.created_at).toLocaleString()
                         : "-"}
                     </td>
+                    <td className="px-6 py-3 text-sm text-gray-300">
+                      <button
+                        onClick={() => handleEditProduct(p.product.id)}
+                        className="inline-flex items-center gap-1 text-gray-400 hover:text-gray-300"
+                      >
+                        <PencilSquareIcon className="w-4 h-4" />
+                        <span className="text-sm font-medium">Edit</span>
+                      </button>
+                    </td>
                   </tr>
 
                   {/* Expanded Row */}
                   {expanded === p.product.id && (
                     <tr className="bg-gray-800/50">
-                      <td colSpan={5} className="px-6 py-4">
+                      <td colSpan={6} className="px-6 py-4">
                         <div className="space-y-3">
                           {/* Attributes */}
                           <div>

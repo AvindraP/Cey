@@ -10,12 +10,14 @@ import { useActivityTracker } from "../hooks/useActivityTracker";
 import SessionWarningModal from "./SessionWarningModal";
 import { Toaster } from "react-hot-toast";
 import ViewOrders from "./sections/orders/ViewOrders";
+import EditProduct from "./sections/products/EditProduct";
 
 export default function Dashboard() {
   const { user, logout } = useContext(AuthContext);
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("overview");
+  const [id, setID] = useState(null);
 
   // Handle session timeout
   const handleTimeout = async () => {
@@ -76,7 +78,8 @@ export default function Dashboard() {
         <div className="flex-1 overflow-y-auto scrollable px-4 sm:px-8 max-h-[calc(100vh-7rem)]">
           {activeSection === "overview" && <Overview />}
           {activeSection === "add product" && <AddProduct />}
-          {activeSection === "view products" && <ViewProducts />}
+          {activeSection === "edit product" && <EditProduct setActiveSection={setActiveSection} id={id} />}
+          {activeSection === "view products" && <ViewProducts setActiveSection={setActiveSection} setID={setID} />}
           {activeSection === "orders" && <ViewOrders />}
         </div>
       </main>
