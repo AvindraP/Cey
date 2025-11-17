@@ -499,7 +499,7 @@ export default function EditProduct({ setActiveSection, id }) {
                                                     return updated;
                                                 });
                                             }}
-                                            className="flex-1 text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-blue-500 file:text-white hover:file:bg-blue-600 cursor-pointer"
+                                            className="flex-1 text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-gray-500/20 file:text-gray-400 hover:file:bg-gray-500/30 cursor-pointer"
                                         />
                                         {img && (
                                             <img
@@ -522,7 +522,7 @@ export default function EditProduct({ setActiveSection, id }) {
                             <button
                                 type="button"
                                 onClick={() => setNewImages((prev) => [...prev, null])}
-                                className="mt-3 px-4 py-2 bg-blue-500/20 hover:bg-blue-500/30 text-blue-400 border border-blue-500/30 rounded-lg transition-colors"
+                                className="mt-3 px-4 py-2 hover:bg-gray-500/30 text-gray-200 border border-gray-300 rounded-lg transition-colors"
                             >
                                 + Add Image
                             </button>
@@ -558,7 +558,7 @@ export default function EditProduct({ setActiveSection, id }) {
                                                                 const file = e.target.files?.[0];
                                                                 if (file) updateOptionImage(attr.id, opt.id, file);
                                                             }}
-                                                            className="text-sm text-gray-400 file:mr-4 file:py-1 file:px-3 file:rounded file:border-0 file:bg-blue-500/20 file:text-blue-400 hover:file:bg-blue-500/30"
+                                                            className="text-sm text-gray-400 file:mr-4 file:py-1 file:px-3 file:rounded file:border-0 file:bg-gray-500/20 file:text-gray-400 hover:file:bg-gray-500/30"
                                                         />
                                                         {opt.previewUrl && (
                                                             <img
@@ -582,7 +582,7 @@ export default function EditProduct({ setActiveSection, id }) {
                                         <button
                                             type="button"
                                             onClick={() => addOption(attr.id)}
-                                            className="px-4 py-2 bg-green-500/20 hover:bg-green-500/30 text-green-400 border border-green-500/30 rounded-lg transition-colors text-sm"
+                                            className="px-3 py-1 hover:bg-gray-500/30 text-sm rounded-md border border-gray-400"
                                         >
                                             + Add {attr.name} Option
                                         </button>
@@ -602,7 +602,7 @@ export default function EditProduct({ setActiveSection, id }) {
                             <button
                                 type="button"
                                 onClick={generateVariations}
-                                className="px-4 py-2 bg-indigo-500 hover:bg-indigo-600 text-white rounded-lg transition-colors font-medium"
+                                className="px-3 py-1.5 text-sm rounded-md bg-indigo-100 text-indigo-700 border"
                             >
                                 Generate Variations
                             </button>
@@ -675,7 +675,7 @@ export default function EditProduct({ setActiveSection, id }) {
                         </button>
                         <button
                             type="submit"
-                            className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors font-medium"
+                            className="px-6 py-3 bg-indigo-600 hover:bg-blue-700 text-white rounded-lg transition-colors font-medium"
                         >
                             Update Product
                         </button>
