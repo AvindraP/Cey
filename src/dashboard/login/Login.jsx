@@ -14,7 +14,8 @@ export default function Login() {
     const location = useLocation();
     const { setUser } = useContext(AuthContext);
 
-    const from = location.state?.from?.pathname || "/dashboard";
+    // Determine redirect based on referrer or default
+    const from = location.state?.from?.pathname || null;
 
     // Show timeout message if redirected after session expiry
     useEffect(() => {
@@ -66,7 +67,18 @@ export default function Login() {
 
             setUser(data.user);
 
-            navigate(from, { replace: true }); // redirect after successful login
+            // Redirect based on user type and referrer
+            let redirectPath = '/';
+            
+            if (data.user.type === 'admin') {
+                // Admin users go to dashboard
+                redirectPath = from || '/dashboard';
+            } else {
+                // Customers go to homepage or the page they came from
+                redirectPath = from || '/account';
+            }
+
+            navigate(redirectPath, { replace: true });
         } catch (err) {
             console.error(err);
             setError(err.message || "An error occurred. Please try again.");
@@ -127,12 +139,15 @@ export default function Login() {
                     </button>
                 </form>
 
-                <p className="mt-6 text-xs text-center text-slate-400">
-                    Forgot Password?{" "}
-                    <a href="#resetPw" className="underline hover:text-slate-200">
-                        Reset
+                <div className="mt-6 flex items-center justify-between text-xs text-slate-400">
+                    <a href="/register" className="hover:text-slate-200 underline">
+                        Create account
                     </a>
-                </p>
+                    <a href="#resetPw" className="hover:text-slate-200 underline">
+                        Forgot password?
+                    </a>
+                </div>
+
             </section>
         </main>
     );
