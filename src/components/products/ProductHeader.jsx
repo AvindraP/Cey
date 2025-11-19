@@ -1,8 +1,15 @@
-import { MagnifyingGlassIcon, UserIcon, ShoppingCartIcon } from '@heroicons/react/24/outline';
-import { useState } from 'react';
+import { MagnifyingGlassIcon, UserIcon, ShoppingCartIcon, ArrowRightStartOnRectangleIcon } from '@heroicons/react/24/outline';
+import { useContext, useState } from 'react';
+import { AuthContext } from '../../middleware/AuthProvider';
 
 export const ProductHeader = ({ allProducts, prodCount }) => {
   const [searchOpen, setSearchOpen] = useState(false);
+  const { isCustomer, logout } = useContext(AuthContext);
+
+  const handleLogout = async () => {
+    await logout();
+    navigate('/login', { replace: true });
+  };
 
   return (
     <header className="fixed top-0 left-0 w-full z-50 bg-black/80 backdrop-blur-md border-b border-zinc-800">
@@ -30,7 +37,7 @@ export const ProductHeader = ({ allProducts, prodCount }) => {
         </div>
 
         {/* Right Section */}
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center space-x-0 md:space-x-4">
           {/* Search Icon */}
           {allProducts
             ?
@@ -45,9 +52,9 @@ export const ProductHeader = ({ allProducts, prodCount }) => {
 
           {/* Profile Icon */}
           <a
-            href="/profile"
+            href="/account"
             className="p-2 hover:bg-zinc-800 rounded-lg transition-colors"
-            aria-label="Profile"
+            aria-label="Account"
           >
             <UserIcon className="w-6 h-6" />
           </a>
@@ -63,6 +70,17 @@ export const ProductHeader = ({ allProducts, prodCount }) => {
               {prodCount ?? 0}
             </span>
           </a>
+
+          {/* Logout Icon */}
+          {isCustomer &&
+            <a
+              href="#"
+              onClick={handleLogout}
+              aria-label="Logout"
+            >
+              <ArrowRightStartOnRectangleIcon className="w-6 h-6" />
+            </a>
+          }
         </div>
       </div>
 
