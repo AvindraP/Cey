@@ -5,7 +5,7 @@ export const AuthContext = createContext();
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export function AuthProvider({ children }) {
-    const [user, setUser] = useState(null); // user info
+    const [user, setUser] = useState(null); // user info (admin or customer)
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -17,7 +17,7 @@ export function AuthProvider({ children }) {
                 if (!res.ok) throw new Error("Not authenticated");
 
                 const data = await res.json();
-                setUser(data.user);
+                setUser(data.user); // Will include 'type' field: 'admin' or 'customer'
             } catch (err) {
                 setUser(null);
             } finally {
@@ -41,8 +41,19 @@ export function AuthProvider({ children }) {
         }
     };
 
+    // Helper functions to check user type
+    const isAdmin = user?.type === 'admin';
+    const isCustomer = user?.type === 'customer';
+
     return (
-        <AuthContext.Provider value={{ user, setUser, loading, logout }}>
+        <AuthContext.Provider value={{ 
+            user, 
+            setUser, 
+            loading, 
+            logout,
+            isAdmin,
+            isCustomer 
+        }}>
             {children}
         </AuthContext.Provider>
     );
