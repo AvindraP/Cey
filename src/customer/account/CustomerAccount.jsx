@@ -323,7 +323,7 @@ const CustomerAccount = () => {
       <ProductHeader allProducts={true} />
       <Toaster position="top-right" reverseOrder={false} containerStyle={{ marginTop: '80px' }} />
 
-      <div className="min-h-screen mt-20"
+      <div className="min-h-screen mt-18"
         style={{
           backgroundColor: 'black',
           background: 'linear-gradient(135deg, #0d0d0d 0%, #1a1a1a 40%, #2b2b2b 100%)'
