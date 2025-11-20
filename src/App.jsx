@@ -16,12 +16,6 @@ function App() {
       }}>
         <Experience onScrollToSection={setScrollToSection} />
       </Canvas>
-      {/* Footer */}
-      <footer className="hidden fixed bottom-0 left-0 w-full py-4 text-center border-t border-zinc-800 bg-black z-50 transition-all">
-        <p className="text-sm text-zinc-500">
-          © 2025 INKVERSE. All rights reserved.
-        </p>
-      </footer>
     </>
   )
 }

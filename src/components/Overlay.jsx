@@ -2,8 +2,9 @@ import { Scroll, useScroll } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import { useEffect, useRef, useState } from "react";
 import { MathUtils } from "three";
+import { Footer } from './Footer'
 
-const NO_OF_SLIDES = 6.5;
+const NO_OF_SLIDES = 8.5;
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 // Product Card Component
@@ -105,7 +106,7 @@ const ProductsSection = ({ getSectionProgress }) => {
         fetchProducts();
     }, []);
 
-    const p = getSectionProgress(3);
+    const p = getSectionProgress(5);
     return (
         <section
             className="flex flex-col justify-center items-start min-h-screen overflow-y-hidden w-full overflow-x-hidden lg:w-[70vw] px-6 m-0 text-center transition-all duration-500"
@@ -203,7 +204,6 @@ export const Overlay = ({ onScrollToSection }) => {
 
     useEffect(() => {
         const header = document.querySelector("header");
-        const footer = document.querySelector("footer");
 
         let headerBgClass = "";
 
@@ -216,14 +216,10 @@ export const Overlay = ({ onScrollToSection }) => {
         if (header) {
             header.className = `fixed top-0 left-0 w-full z-50 transition-all duration-500 ${headerBgClass}`;
         }
-
-        if (footer) {
-            footer.className = (scrollPos > 0.99) ? `fixed bottom-0 left-0 w-full py-4 text-center border-t border-zinc-800 bg-black z-50 transition-all` : `hidden`;
-        }
     }, [scrollPos]);
 
     // Example: define heights of all sections
-    const sectionHeights = [1, 1, 1, 1.25, 1, 1.5]; // last section taller
+    const sectionHeights = [0.9, 1.1, 1, 1, 1, 1.25, 1, 1.5]; // last section taller
     const totalHeight = sectionHeights.reduce((a, b) => a + b, 0);
 
     const getSectionProgress = (index) => {
@@ -266,15 +262,15 @@ export const Overlay = ({ onScrollToSection }) => {
 
     return (
         <Scroll html>
-            <div className="w-full flex flex-col text-white min-h-[120vh] pb-40 pt-20">
-                <div className="w-full flex flex-col text-white">
+            <div className="w-[100vw] flex flex-col text-white min-h-[120vh] pb-40 pt-20">
+                <div className="w-[100vw] flex flex-col text-white">
 
                     {/* Slide 0: Hero with INKVERSE Logo */}
                     {(() => {
                         const p = getSectionProgress(0);
                         return (
                             <section
-                                className="flex flex-col justify-center items-center min-h-screen overflow-y-hidden w-full overflow-x-hidden lg:w-[70vw] px-6 m-0 text-center transition-all duration-500"
+                                className="flex flex-col justify-center items-center min-h-screen overflow-y-hidden w-full overflow-x-hidden lg:w-[70vw] max-w-7xl px-6 m-0 text-center transition-all duration-500"
                                 style={{
                                     opacity: p,
                                     transform: `translateY(${(1 - p) * 30}px)`,
@@ -308,7 +304,7 @@ export const Overlay = ({ onScrollToSection }) => {
                         const p = getSectionProgress(1);
                         return (
                             <section
-                                className="flex flex-col justify-center items-start min-h-screen overflow-y-hidden w-[70vw] px-6 m-0 text-center transition-all duration-500"
+                                className="flex flex-col justify-center items-start min-h-screen overflow-y-hidden w-[70vw] max-w-7xl px-6 m-0 text-center transition-all duration-500"
                                 style={{
                                     opacity: p,
                                     transform: `translateY(${(1 - p) * 30}px)`,
@@ -338,42 +334,145 @@ export const Overlay = ({ onScrollToSection }) => {
                         );
                     })()}
 
-                    {/* Slide 2: About Us */}
+                    {/* Slide 2: Video section */}
                     {(() => {
                         const p = getSectionProgress(2);
                         return (
                             <section
-                                className="flex flex-col justify-center items-start min-h-screen overflow-y-hidden w-[70vw] px-6 m-0 text-center transition-all duration-500"
+                                className="relative flex justify-center items-center min-h-screen w-full px-6 m-0 overflow-hidden text-center transition-all duration-500"
+                                id="gif-section"
+                                style={{
+                                    opacity: p,
+                                    transform: `translateY(${(1 - p) * 30}px)`
+                                }}
+                            >
+                                <div className="absolute inset-0 bg-zinc-200"></div>
+                                {/* Background GIF */}
+                                <div className="absolute inset-0 py-12 px-4 md:px-8 lg:px-12">
+                                    <img
+                                        src="/video/Ultrapremium_6second_cinematic_202511190947.gif"
+                                        alt="Looping tattoo animation"
+                                        className="w-full h-[85vh] object-cover rounded-4xl"
+                                    />
+                                </div>
+
+                                {/* Text Overlay */}
+                                <div className="relative z-10 max-w-3xl">
+                                    <h2 className="text-6xl md:text-7xl font-bold mb-6 tracking-tight text-white [text-shadow:2px_2px_4px_rgba(0,0,0,0.9)]">
+                                        Ink in Motion
+                                    </h2>
+
+                                    <p className="text-lg md:text-xl text-zinc-200 [text-shadow:2px_2px_4px_rgba(0,0,0,1)]">
+                                        A living canvas — experience the fluid artistry behind every piece.
+                                    </p>
+                                </div>
+
+                            </section>
+                        );
+                    })()}
+
+                    {/* Slide 3: About Us */}
+                    {(() => {
+                        const p = getSectionProgress(3);
+                        return (
+                            <section
+                                className="flex flex-col justify-center items-center min-h-screen overflow-y-hidden w-full px-6 m-0 text-center transition-all duration-500"
                                 style={{
                                     opacity: p,
                                     transform: `translateY(${(1 - p) * 30}px)`,
                                 }}
                                 id="about"
                             >
-                                <div className="max-w-4xl">
-                                    <h2 className="text-4xl md:text-5xl lg:text-5xl font-bold mb-6 tracking-tight">
-                                        Where Art<br />Meets Skin
-                                    </h2>
-                                    <p className="text-md md:text-lg text-zinc-300 [text-shadow:2px_2px_3px_rgba(0,0,0,1)] mb-6 leading-relaxed">
-                                        At <span className="font-semibold text-white">INKVERSE</span>, every tattoo is a story – designed, detailed, and delivered with precision. Our artists combine creativity with craftsmanship to make every piece personal and unforgettable.
-                                    </p>
-                                    <p className="text-base md:text-md text-zinc-400 [text-shadow:2px_2px_3px_rgba(0,0,0,1)] mb-8">
-                                        We also bring you a curated range of tattoo supplies, inks, and care products trusted by professionals and enthusiasts alike.
-                                    </p>
-                                    <p className="text-base md:text-md text-zinc-300 [text-shadow:2px_2px_3px_rgba(0,0,0,1)] font-medium">
-                                        Based in <span className="text-white">Brooklyn, NY</span>, INKVERSE is more than a tattoo studio – it's a modern space where art lives forever.
-                                    </p>
+                                {/* Full-width but capped to max-w-7xl */}
+                                <div className="max-w-7xl w-full mx-auto flex justify-start">
+
+                                    {/* 70% content width */}
+                                    <div className="w-[70%]">
+                                        <h2 className="text-4xl md:text-5xl lg:text-5xl font-bold mb-6 tracking-tight">
+                                            Where Art<br />Meets Skin
+                                        </h2>
+
+                                        <p className="text-md md:text-lg text-zinc-300 [text-shadow:2px_2px_3px_rgba(0,0,0,1)] mb-6 leading-relaxed">
+                                            At <span className="font-semibold text-white">INKVERSE</span>, every tattoo is a story – designed, detailed, and delivered with precision.
+                                            Our artists combine creativity with craftsmanship to make every piece personal and unforgettable.
+                                        </p>
+
+                                        <p className="text-base md:text-md text-zinc-400 [text-shadow:2px_2px_3px_rgba(0,0,0,1)] mb-8">
+                                            We also bring you a curated range of tattoo supplies, inks, and care products trusted by professionals and enthusiasts alike.
+                                        </p>
+
+                                        <p className="text-base md:text-md text-zinc-300 [text-shadow:2px_2px_3px_rgba(0,0,0,1)] font-medium">
+                                            Based in <span className="text-white">Brooklyn, NY</span>, INKVERSE is more than a tattoo studio – it's a modern space where art lives forever.
+                                        </p>
+                                    </div>
+
                                 </div>
                             </section>
                         );
                     })()}
 
-                    {/* Slide 3: Products Section */}
-                    <ProductsSection getSectionProgress={getSectionProgress} />
-
-                    {/* Slide 4: Free Delivery Section */}
+                    {/* Slide 4: Product display section */}
                     {(() => {
                         const p = getSectionProgress(4);
+                        return (
+                            <section
+                                className="relative flex justify-center items-center min-h-screen w-full px-6 m-0 overflow-hidden transition-all duration-500"
+                                id="gif-section"
+                                style={{
+                                    opacity: p,
+                                    transform: `translateY(${(1 - p) * 30}px)`
+                                }}
+                            >
+                                <div className="absolute inset-0 bg-zinc-200"></div>
+
+                                {/* MAX WIDTH WRAPPER */}
+                                <div className="absolute inset-0 flex justify-center items-center">
+                                    <div className="relative bg-zinc-100 m-8 rounded-4xl overflow-hidden max-w-7xl w-full h-[80vh]">
+
+                                        {/* Center container */}
+                                        <div className="relative flex flex-col justify-center items-center text-center max-w-7xl w-full h-full mx-auto">
+
+                                            {/* FLOATING IMAGE ABOVE H1 */}
+                                            <img
+                                                src="/images/tattoo_pen.png"
+                                                alt="Looping tattoo animation"
+                                                className="w-[60%] lg:w-[30%] max-w-7xl absolute top-[25%] md:top-[30%] left-1/2 -translate-x-1/2"
+                                            />
+
+                                            {/* Centered H1 */}
+                                            <h1 className="text-4xl md:text-7xl xl:text-9xl font-bold tracking-tight text-zinc-900 max-w-7xl px-4">
+                                                Tattoo Pen Machine
+                                            </h1>
+                                        </div>
+
+                                        {/* Bottom-left text */}
+                                        <div className="absolute bottom-26 md:bottom-8 left-8 flex flex-col max-w-7xl">
+                                            <h6 className="text-bold text-zinc-900">Precise needles. Solid premium materials.</h6>
+                                            <p className="text-bold text-zinc-700">$549.99</p>
+                                        </div>
+
+                                        {/* Bottom-right buttons */}
+                                        <div className="absolute bottom-8 right-8 flex gap-4 max-w-7xl">
+                                            <button className="px-6 py-3 bg-zinc-900 text-zinc-100 rounded-lg hover:bg-zinc-800 transition">
+                                                Learn More
+                                            </button>
+                                            <button className="px-6 py-3 bg-zinc-100 text-zinc-900 border border-zinc-900 rounded-lg hover:bg-zinc-200 transition">
+                                                Buy
+                                            </button>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </section>
+                        );
+                    })()}
+
+                    {/* Slide 5: Products Section */}
+                    <ProductsSection getSectionProgress={getSectionProgress} />
+
+                    {/* Slide 6: Free Delivery Section */}
+                    {(() => {
+                        const p = getSectionProgress(6);
                         return (
                             <section
                                 className="flex flex-col justify-center items-center min-h-screen overflow-y-hidden w-[70vw] px-6 m-0 text-center transition-all duration-500"
@@ -403,12 +502,12 @@ export const Overlay = ({ onScrollToSection }) => {
                         );
                     })()}
 
-                    {/* Slide 5: Contact Us */}
+                    {/* Slide 7: Contact Us */}
                     {(() => {
-                        const p = getSectionProgress(5);
+                        const p = getSectionProgress(7);
                         return (
                             <section
-                                className="flex flex-col justify-center items-center min-h-screen overflow-y-hidden w-full lg:w-[70vw] px-6 m-0 mb-50 text-center transition-all duration-500"
+                                className="flex flex-col justify-center items-center min-h-screen overflow-hidden w-full text-center transition-all duration-500"
                                 style={{
                                     opacity: p,
                                     transform: `translateY(${(1 - p) * 30}px)`,
@@ -456,6 +555,10 @@ export const Overlay = ({ onScrollToSection }) => {
                                     <button className="bg-white text-black font-semibold px-5 py-3 rounded hover:bg-zinc-200 transition-colors text-lg mb-20">
                                         Book Appointment
                                     </button>
+                                </div>
+
+                                <div className="w-[120%] ms-[-50px] bg-black">
+                                    <Footer />
                                 </div>
                             </section>
                         );
