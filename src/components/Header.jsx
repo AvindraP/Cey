@@ -10,7 +10,7 @@ export const Header = ({ scrollToSection }) => {
   };
 
   return (
-    <header className="fixed top-0 left-0 w-full z-50 transition-all duration-500">
+    <header className="fixed top-0 left-0 w-full z-50 transition-all duration-1500">
       <div className="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between text-white">
         {/* Logo */}
         <a
