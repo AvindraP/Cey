@@ -28,10 +28,10 @@ export default function Header({ setSidebarOpen }) {
           </div>
 
           <div className="flex items-center gap-4">
-            <button className="flex items-center gap-2 px-2 py-1 sm:px-4 sm:py-2 rounded-2xl bg-white/10 hover:bg-white/15 backdrop-blur-sm transition">
+            {/* <button className="flex items-center gap-2 px-2 py-1 sm:px-4 sm:py-2 rounded-2xl bg-white/10 hover:bg-white/15 backdrop-blur-sm transition">
               <BellAlertIcon className="w-4 h-4 sm:w-5 sm:h-5" />
               <span className="hidden sm:inline">Notifications</span>
-            </button>
+            </button> */}
 
             <button className="flex items-center gap-2 px-2 py-1 sm:px-4 sm:py-2 rounded-2xl bg-white/10 hover:bg-white/15 backdrop-blur-sm transition">
               <UserIcon className="w-4 h-4 sm:w-5 sm:h-5" />
