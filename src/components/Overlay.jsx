@@ -545,8 +545,8 @@ export const Overlay = ({ onScrollToSection } = {}) => {
                     className={`w-full mx-auto text-center overflow-y-auto overlay-no-scrollbar`}
                     style={{ maxHeight: "100%" }}
                 >
-                    <div className="flex flex-col justify-center items-center ">
-                        <div className="max-w-4xl mx-4 h-auto pt-30">
+                    <div className="flex flex-col min-h-screen justify-end items-center bottom-0">
+                        <div className="max-w-4xl mx-4 pt-30">
                             <h2 className="text-xl md:text-3xl lg:text-3xl font-bold mb-6 tracking-tight">
                                 Let's Connect
                             </h2>
