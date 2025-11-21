@@ -12,7 +12,7 @@ import {
 
 const menuItems = [
     { name: "Overview", icon: HomeIcon, href: "#" },
-    { name: "Analytics", icon: ChartBarIcon, href: "#" },
+    // { name: "Analytics", icon: ChartBarIcon, href: "#" },
     {
         name: "Products",
         icon: CubeIcon,
@@ -22,7 +22,7 @@ const menuItems = [
         ],
     },
     { name: "Orders", icon: TruckIcon, href: "#"},
-    { name: "Settings", icon: Cog6ToothIcon, href: "#" },
+    // { name: "Settings", icon: Cog6ToothIcon, href: "#" },
 ];
 
 function SidebarItem({ item, sidebarCollapsed, setActiveSection, activeSection }) {
@@ -130,7 +130,7 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen, setActiveSection,
         <>
             <aside
                 className={`hidden sm:flex sm:flex-col bg-white/5 backdrop-blur-md border-r border-white/10 
-                            transition-[width] duration-500 ease-in-out overflow-hidden ${sidebarCollapsed ? "sm:w-15" : "sm:w-50"
+                            transition-[width] duration-500 ease-in-out overflow-hidden ${sidebarCollapsed ? "sm:w-15" : "sm:w-60"
                     }`}
             >
                 <div className="flex items-center justify-between p-4 border-b border-white/10 transition-all">
