@@ -30,13 +30,13 @@ const StatusBadge = ({ status }) => {
 
 // Order Details Modal
 const OrderDetailsModal = ({ order, items, onClose }) => {
-  const shippingAddress = typeof order.shipping_address === 'string' 
-    ? JSON.parse(order.shipping_address) 
+  const shippingAddress = typeof order.shipping_address === 'string'
+    ? JSON.parse(order.shipping_address)
     : order.shipping_address;
 
   return (
     <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="bg-zinc-900 rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto border border-zinc-800">
+      <div className="bg-zinc-900 rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto scrollable border border-zinc-800">
         {/* Header */}
         <div className="sticky top-0 bg-zinc-900 border-b border-zinc-800 px-6 py-4 flex items-center justify-between">
           <div>
@@ -323,231 +323,234 @@ const CustomerAccount = () => {
       <ProductHeader allProducts={true} />
       <Toaster position="top-right" reverseOrder={false} containerStyle={{ marginTop: '80px' }} />
 
-      <div className="min-h-screen mt-18"
-        style={{
-          backgroundColor: 'black',
-          background: 'linear-gradient(135deg, #0d0d0d 0%, #1a1a1a 40%, #2b2b2b 100%)'
-        }}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          {/* Header */}
-          <div className="mb-8">
-            <h1 className="text-3xl font-bold text-white mb-2">My Account</h1>
-            <p className="text-zinc-400">Welcome back, {user?.pref_name}</p>
-          </div>
+      <div className='max-h-screen overflow-y-auto scrollable'>
 
-          {/* Tabs */}
-          <div className="border-b border-zinc-800 mb-8">
-            <div className="flex gap-8">
-              <button
-                onClick={() => setActiveTab('orders')}
-                className={`pb-4 text-sm font-medium transition-colors relative ${
-                  activeTab === 'orders' ? 'text-white' : 'text-zinc-400 hover:text-zinc-300'
-                }`}
-              >
-                <div className="flex items-center gap-2">
-                  <ShoppingBagIcon className="w-5 h-5" />
-                  Orders
-                </div>
-                {activeTab === 'orders' && (
-                  <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-white" />
-                )}
-              </button>
-
-              <button
-                onClick={() => setActiveTab('profile')}
-                className={`pb-4 text-sm font-medium transition-colors relative ${
-                  activeTab === 'profile' ? 'text-white' : 'text-zinc-400 hover:text-zinc-300'
-                }`}
-              >
-                <div className="flex items-center gap-2">
-                  <UserCircleIcon className="w-5 h-5" />
-                  Profile
-                </div>
-                {activeTab === 'profile' && (
-                  <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-white" />
-                )}
-              </button>
+        <div className="min-h-screen mt-18"
+          style={{
+            backgroundColor: 'black',
+            background: 'linear-gradient(135deg, #0d0d0d 0%, #1a1a1a 40%, #2b2b2b 100%)'
+          }}>
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            {/* Header */}
+            <div className="mb-8">
+              <h1 className="text-3xl font-bold text-white mb-2">My Account</h1>
+              <p className="text-zinc-400">Welcome back, {user?.pref_name}</p>
             </div>
-          </div>
 
-          {/* Content */}
-          {loading ? (
-            <div className="text-center py-12">
-              <div className="inline-block w-8 h-8 border-4 border-zinc-700 border-t-white rounded-full animate-spin"></div>
-              <p className="mt-4 text-zinc-400">Loading...</p>
-            </div>
-          ) : (
-            <>
-              {/* Orders Tab */}
-              {activeTab === 'orders' && (
-                <div>
-                  {orders.length === 0 ? (
-                    <div className="text-center py-20 border border-zinc-800 rounded-lg bg-zinc-900/30">
-                      <ShoppingBagIcon className="w-16 h-16 mx-auto text-zinc-600 mb-4" />
-                      <p className="text-zinc-400 mb-4">No orders yet</p>
-                      <a
-                        href="/products"
-                        className="inline-block px-6 py-2 bg-zinc-800 hover:bg-zinc-700 text-white rounded-lg transition-colors"
-                      >
-                        Start Shopping
-                      </a>
-                    </div>
-                  ) : (
-                    <div className="overflow-x-auto">
-                      <table className="min-w-full divide-y divide-zinc-800">
-                        <thead className="bg-zinc-900/50">
-                          <tr>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-zinc-400 uppercase">Order #</th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-zinc-400 uppercase">Date</th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-zinc-400 uppercase">Status</th>
-                            <th className="px-6 py-3 text-right text-xs font-medium text-zinc-400 uppercase">Total</th>
-                            <th className="px-6 py-3 text-center text-xs font-medium text-zinc-400 uppercase">Actions</th>
-                          </tr>
-                        </thead>
-                        <tbody className="divide-y divide-zinc-800">
-                          {orders.map((order) => (
-                            <tr key={order.id} className="hover:bg-zinc-900/30">
-                              <td className="px-6 py-4 whitespace-nowrap">
-                                <div className="text-sm font-medium text-white">{order.order_number}</div>
-                              </td>
-                              <td className="px-6 py-4 whitespace-nowrap">
-                                <div className="text-sm text-zinc-300">
-                                  {new Date(order.created_at).toLocaleDateString()}
-                                </div>
-                              </td>
-                              <td className="px-6 py-4 whitespace-nowrap">
-                                <StatusBadge status={order.status} />
-                              </td>
-                              <td className="px-6 py-4 whitespace-nowrap text-right">
-                                <div className="text-sm font-semibold text-white">${order.total_amount}</div>
-                              </td>
-                              <td className="px-6 py-4 whitespace-nowrap text-center">
-                                <button
-                                  onClick={() => handleViewOrder(order)}
-                                  className="inline-flex items-center gap-1 text-zinc-400 hover:text-white"
-                                >
-                                  <EyeIcon className="w-4 h-4" />
-                                  <span className="text-sm">View</span>
-                                </button>
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
+            {/* Tabs */}
+            <div className="border-b border-zinc-800 mb-8">
+              <div className="flex gap-8">
+                <button
+                  onClick={() => setActiveTab('orders')}
+                  className={`pb-4 text-sm font-medium transition-colors relative ${activeTab === 'orders' ? 'text-white' : 'text-zinc-400 hover:text-zinc-300'
+                    }`}
+                >
+                  <div className="flex items-center gap-2">
+                    <ShoppingBagIcon className="w-5 h-5" />
+                    Orders
+                  </div>
+                  {activeTab === 'orders' && (
+                    <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-white" />
                   )}
-                </div>
-              )}
+                </button>
 
-              {/* Profile Tab */}
-              {activeTab === 'profile' && (
-                <div className="max-w-2xl">
-                  <div className="bg-zinc-900/50 border border-zinc-800 rounded-lg p-6">
-                    <div className="flex items-center justify-between mb-6">
-                      <h2 className="text-xl font-semibold text-white">Profile Information</h2>
-                      {!isEditing && (
-                        <button
-                          onClick={() => setIsEditing(true)}
-                          className="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 text-white rounded-lg transition-colors text-sm"
+                <button
+                  onClick={() => setActiveTab('profile')}
+                  className={`pb-4 text-sm font-medium transition-colors relative ${activeTab === 'profile' ? 'text-white' : 'text-zinc-400 hover:text-zinc-300'
+                    }`}
+                >
+                  <div className="flex items-center gap-2">
+                    <UserCircleIcon className="w-5 h-5" />
+                    Profile
+                  </div>
+                  {activeTab === 'profile' && (
+                    <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-white" />
+                  )}
+                </button>
+              </div>
+            </div>
+
+            {/* Content */}
+            {loading ? (
+              <div className="text-center py-12">
+                <div className="inline-block w-8 h-8 border-4 border-zinc-700 border-t-white rounded-full animate-spin"></div>
+                <p className="mt-4 text-zinc-400">Loading...</p>
+              </div>
+            ) : (
+              <>
+                {/* Orders Tab */}
+                {activeTab === 'orders' && (
+                  <div>
+                    {orders.length === 0 ? (
+                      <div className="text-center py-20 border border-zinc-800 rounded-lg bg-zinc-900/30">
+                        <ShoppingBagIcon className="w-16 h-16 mx-auto text-zinc-600 mb-4" />
+                        <p className="text-zinc-400 mb-4">No orders yet</p>
+                        <a
+                          href="/products"
+                          className="inline-block px-6 py-2 bg-zinc-800 hover:bg-zinc-700 text-white rounded-lg transition-colors"
                         >
-                          Edit Profile
-                        </button>
-                      )}
-                    </div>
-
-                    {isEditing ? (
-                      <form onSubmit={handleUpdateProfile} className="space-y-4">
-                        <div>
-                          <label className="block text-sm font-medium text-zinc-300 mb-2">
-                            Preferred Name
-                          </label>
-                          <input
-                            type="text"
-                            value={profileData.pref_name}
-                            onChange={(e) => setProfileData({ ...profileData, pref_name: e.target.value })}
-                            className="w-full px-4 py-2 bg-zinc-800/50 border border-zinc-700 rounded-lg text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-zinc-600"
-                            maxLength={20}
-                            required
-                          />
-                        </div>
-
-                        <div>
-                          <label className="block text-sm font-medium text-zinc-300 mb-2">
-                            Full Name
-                          </label>
-                          <input
-                            type="text"
-                            value={profileData.full_name}
-                            onChange={(e) => setProfileData({ ...profileData, full_name: e.target.value })}
-                            className="w-full px-4 py-2 bg-zinc-800/50 border border-zinc-700 rounded-lg text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-zinc-600"
-                            maxLength={255}
-                            required
-                          />
-                        </div>
-
-                        <div>
-                          <label className="block text-sm font-medium text-zinc-300 mb-2">
-                            Email
-                          </label>
-                          <input
-                            type="email"
-                            value={profileData.email}
-                            onChange={(e) => setProfileData({ ...profileData, email: e.target.value })}
-                            className="w-full px-4 py-2 bg-zinc-800/50 border border-zinc-700 rounded-lg text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-zinc-600"
-                            maxLength={100}
-                            required
-                          />
-                        </div>
-
-                        <div className="flex gap-3 pt-4">
-                          <button
-                            type="submit"
-                            className="flex-1 px-4 py-2 bg-white hover:bg-zinc-200 text-black rounded-lg transition-colors font-medium"
-                          >
-                            Save Changes
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setIsEditing(false);
-                              fetchProfile();
-                            }}
-                            className="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 text-white rounded-lg transition-colors"
-                          >
-                            Cancel
-                          </button>
-                        </div>
-                      </form>
+                          Start Shopping
+                        </a>
+                      </div>
                     ) : (
-                      <div className="space-y-4">
-                        <div>
-                          <label className="block text-sm font-medium text-zinc-400 mb-1">
-                            Preferred Name
-                          </label>
-                          <p className="text-white">{profileData.pref_name}</p>
-                        </div>
-
-                        <div>
-                          <label className="block text-sm font-medium text-zinc-400 mb-1">
-                            Full Name
-                          </label>
-                          <p className="text-white">{profileData.full_name}</p>
-                        </div>
-
-                        <div>
-                          <label className="block text-sm font-medium text-zinc-400 mb-1">
-                            Email
-                          </label>
-                          <p className="text-white">{profileData.email}</p>
-                        </div>
+                      <div className="overflow-x-auto">
+                        <table className="min-w-full divide-y divide-zinc-800">
+                          <thead className="bg-zinc-900/50">
+                            <tr>
+                              <th className="px-6 py-3 text-left text-xs font-medium text-zinc-400 uppercase">Order #</th>
+                              <th className="px-6 py-3 text-left text-xs font-medium text-zinc-400 uppercase">Date</th>
+                              <th className="px-6 py-3 text-left text-xs font-medium text-zinc-400 uppercase">Status</th>
+                              <th className="px-6 py-3 text-right text-xs font-medium text-zinc-400 uppercase">Total</th>
+                              <th className="px-6 py-3 text-center text-xs font-medium text-zinc-400 uppercase">Actions</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-zinc-800">
+                            {orders.map((order) => (
+                              <tr key={order.id} className="hover:bg-zinc-900/30">
+                                <td className="px-6 py-4 whitespace-nowrap">
+                                  <div className="text-sm font-medium text-white">{order.order_number}</div>
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap">
+                                  <div className="text-sm text-zinc-300">
+                                    {new Date(order.created_at).toLocaleDateString()}
+                                  </div>
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap">
+                                  <StatusBadge status={order.status} />
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap text-right">
+                                  <div className="text-sm font-semibold text-white">${order.total_amount}</div>
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap text-center">
+                                  <button
+                                    onClick={() => handleViewOrder(order)}
+                                    className="inline-flex items-center gap-1 text-zinc-400 hover:text-white"
+                                  >
+                                    <EyeIcon className="w-4 h-4" />
+                                    <span className="text-sm">View</span>
+                                  </button>
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
                       </div>
                     )}
                   </div>
-                </div>
-              )}
-            </>
-          )}
+                )}
+
+                {/* Profile Tab */}
+                {activeTab === 'profile' && (
+                  <div className="max-w-2xl">
+                    <div className="bg-zinc-900/50 border border-zinc-800 rounded-lg p-6">
+                      <div className="flex items-center justify-between mb-6">
+                        <h2 className="text-xl font-semibold text-white">Profile Information</h2>
+                        {!isEditing && (
+                          <button
+                            onClick={() => setIsEditing(true)}
+                            className="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 text-white rounded-lg transition-colors text-sm"
+                          >
+                            Edit Profile
+                          </button>
+                        )}
+                      </div>
+
+                      {isEditing ? (
+                        <form onSubmit={handleUpdateProfile} className="space-y-4">
+                          <div>
+                            <label className="block text-sm font-medium text-zinc-300 mb-2">
+                              Preferred Name
+                            </label>
+                            <input
+                              type="text"
+                              value={profileData.pref_name}
+                              onChange={(e) => setProfileData({ ...profileData, pref_name: e.target.value })}
+                              className="w-full px-4 py-2 bg-zinc-800/50 border border-zinc-700 rounded-lg text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-zinc-600"
+                              maxLength={20}
+                              required
+                            />
+                          </div>
+
+                          <div>
+                            <label className="block text-sm font-medium text-zinc-300 mb-2">
+                              Full Name
+                            </label>
+                            <input
+                              type="text"
+                              value={profileData.full_name}
+                              onChange={(e) => setProfileData({ ...profileData, full_name: e.target.value })}
+                              className="w-full px-4 py-2 bg-zinc-800/50 border border-zinc-700 rounded-lg text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-zinc-600"
+                              maxLength={255}
+                              required
+                            />
+                          </div>
+
+                          <div>
+                            <label className="block text-sm font-medium text-zinc-300 mb-2">
+                              Email
+                            </label>
+                            <input
+                              type="email"
+                              value={profileData.email}
+                              onChange={(e) => setProfileData({ ...profileData, email: e.target.value })}
+                              className="w-full px-4 py-2 bg-zinc-800/50 border border-zinc-700 rounded-lg text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-zinc-600"
+                              maxLength={100}
+                              required
+                            />
+                          </div>
+
+                          <div className="flex gap-3 pt-4">
+                            <button
+                              type="submit"
+                              className="flex-1 px-4 py-2 bg-white hover:bg-zinc-200 text-black rounded-lg transition-colors font-medium"
+                            >
+                              Save Changes
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setIsEditing(false);
+                                fetchProfile();
+                              }}
+                              className="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 text-white rounded-lg transition-colors"
+                            >
+                              Cancel
+                            </button>
+                          </div>
+                        </form>
+                      ) : (
+                        <div className="space-y-4">
+                          <div>
+                            <label className="block text-sm font-medium text-zinc-400 mb-1">
+                              Preferred Name
+                            </label>
+                            <p className="text-white">{profileData.pref_name}</p>
+                          </div>
+
+                          <div>
+                            <label className="block text-sm font-medium text-zinc-400 mb-1">
+                              Full Name
+                            </label>
+                            <p className="text-white">{profileData.full_name}</p>
+                          </div>
+
+                          <div>
+                            <label className="block text-sm font-medium text-zinc-400 mb-1">
+                              Email
+                            </label>
+                            <p className="text-white">{profileData.email}</p>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </>
+            )}
+          </div>
         </div>
+
+        <Footer />
       </div>
 
       {/* Order Details Modal */}
@@ -561,8 +564,6 @@ const CustomerAccount = () => {
           }}
         />
       )}
-
-      <Footer />
     </>
   );
 };
