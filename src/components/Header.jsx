@@ -32,21 +32,21 @@ export const Header = ({ scrollToSection }) => {
           </a>
           <a
             href="#about"
-            onClick={(e) => handleNavClick(e, 2)}
+            onClick={(e) => handleNavClick(e, 3)}
             className="hover:text-zinc-300 transition-colors cursor-pointer"
           >
             About Us
           </a>
           <a
             href="#products"
-            onClick={(e) => handleNavClick(e, 3)}
+            onClick={(e) => handleNavClick(e, 5)}
             className="hover:text-zinc-300 transition-colors cursor-pointer"
           >
             Our Products
           </a>
           <a
             href="#contact"
-            onClick={(e) => handleNavClick(e, 5)}
+            onClick={(e) => handleNavClick(e, 7)}
             className="hover:text-zinc-300 transition-colors cursor-pointer"
           >
             Contact Us
