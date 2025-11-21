@@ -22,7 +22,7 @@ const ImageGallery = ({ images, selectedImage, onImageSelect }) => {
 
   const newImages = images.length
     ? images.map((i) => {
-      return `${API_BASE_URL}/images/${i}`;
+      return `${API_BASE_URL}/images/${i.filename}`;
     })
     : ['/images/noimage.webp'];
 
