@@ -146,7 +146,8 @@ const ProductsSection = () => {
         </div>
     );
 };
-export const NewOverlay = ({ onScrollToSection } = {}) => {
+
+export const Overlay = ({ onScrollToSection } = {}) => {
     const scroll = useScroll(); // kept if you need it for three/drei behaviors
     const [activeIndex, setActiveIndex] = useState(-1);
     const isAnimatingRef = useRef(false);
@@ -261,38 +262,53 @@ export const NewOverlay = ({ onScrollToSection } = {}) => {
 
     // Helper: determine whether `el` or any ancestor up to the section root can scroll further in dir
     function shouldAllowNativeScroll(target, dir) {
-        // Find the section node (closest element with data-section-index)
         let node = target;
+        const TOLERANCE = 8; // <= fix for bounce & fractional scrollTop
+
         while (node && node !== document.body) {
-            // If an element is explicitly marked non-scrollable, skip
             try {
                 const style = window.getComputedStyle(node);
-                // If overflow is visible, it's not scrollable
                 const overflowY = style.overflowY;
-                if (
+
+                const isScrollable =
                     (overflowY === "auto" || overflowY === "scroll" || overflowY === "overlay") &&
-                    node.scrollHeight > node.clientHeight
-                ) {
-                    // dir === 1 -> wants to scroll down -> can we scroll down further?
-                    if (dir > 0 && node.scrollTop + node.clientHeight < node.scrollHeight - 1) {
-                        return true;
+                    node.scrollHeight > node.clientHeight + 1;
+
+                if (isScrollable) {
+                    const scrollTop = node.scrollTop;
+                    const maxScroll = node.scrollHeight - node.clientHeight;
+
+                    // ---- DOWN ----
+                    if (dir > 0) {
+                        // can scroll more?
+                        if (scrollTop < maxScroll - TOLERANCE) return true;
+
+                        // at bottom → do NOT scroll the section until fully bottomed out
+                        if (scrollTop <= maxScroll + TOLERANCE) return false;
                     }
-                    // dir === -1 -> wants to scroll up -> can we scroll up further?
-                    if (dir < 0 && node.scrollTop > 1) {
-                        return true;
+
+                    // ---- UP ----
+                    if (dir < 0) {
+                        // can scroll more upward?
+                        if (scrollTop > TOLERANCE) return true;
+
+                        // at top → allow section switch only when fully settled at 0
+                        if (scrollTop <= TOLERANCE) return false;
                     }
+
+                    // If still ambiguous, treat as not scrollable vertically (fallback)
+                    return false;
                 }
-            } catch (err) {
-                // ignore cross-origin or weird nodes
-            }
-            // stop search if we've reached a section container
-            if (node.dataset && node.dataset.sectionIndex !== undefined) {
-                break;
-            }
+            } catch (err) { }
+
+            if (node.dataset && node.dataset.sectionIndex !== undefined) break;
+
             node = node.parentElement;
         }
+
         return false;
     }
+
 
     const sections =
         [
@@ -479,12 +495,14 @@ export const NewOverlay = ({ onScrollToSection } = {}) => {
                 className={`absolute left-0 w-full h-screen px-6 flex justify-center items-center text-white transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]`}
             >
                 <div
-                    className={`flex justify-start items-center w-full h-full mx-auto text-center overflow-y-auto`}
+                    className={`w-full mx-auto text-center overflow-y-auto overlay-no-scrollbar`}
                     style={{ maxHeight: "100%" }}
                 >
-                    {/* Max width full capped at 7xl */}
-                    <div className="max-w-7xl w-full mx-auto flex justify-start items-start space-y-6 h-auto">
-                        <ProductsSection />
+                    <div className="flex flex-col justify-center items-center">
+                        {/* Max width full capped at 7xl */}
+                        <div className="max-w-7xl w-full mx-auto flex justify-start items-start space-y-6 h-auto pt-30 pb-20">
+                            <ProductsSection />
+                        </div>
                     </div>
                 </div>
             </section>,
@@ -524,54 +542,56 @@ export const NewOverlay = ({ onScrollToSection } = {}) => {
                 className={`absolute left-0 w-full h-screen px-6 flex justify-center items-center text-white transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]`}
             >
                 <div
-                    className={`flex flex-col justify-center items-center w-full h-full mx-auto text-center overflow-y-auto`}
+                    className={`w-full mx-auto text-center overflow-y-auto overlay-no-scrollbar`}
                     style={{ maxHeight: "100%" }}
                 >
-                    <div className="max-w-4xl mx-4 h-auto mt-60">
-                        <h2 className="text-xl md:text-3xl lg:text-3xl font-bold mb-6 tracking-tight">
-                            Let's Connect
-                        </h2>
-                        <p className="text-base md:text-md text-zinc-400 mb-12">
-                            Book your appointment or send us your idea – we'll help bring it to life.
-                        </p>
+                    <div className="flex flex-col justify-center items-center ">
+                        <div className="max-w-4xl mx-4 h-auto pt-30">
+                            <h2 className="text-xl md:text-3xl lg:text-3xl font-bold mb-6 tracking-tight">
+                                Let's Connect
+                            </h2>
+                            <p className="text-base md:text-md text-zinc-400 mb-12">
+                                Book your appointment or send us your idea – we'll help bring it to life.
+                            </p>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-8 text-left mb-12">
-                            <div className="border border-zinc-800 rounded-lg p-3 sm:p-6 hover:border-zinc-600 transition-colors">
-                                <div className="flex text-xl mb-2">📍
-                                    <h3 className="text-md font-semibold mb-2 ml-2">Visit Us</h3>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-8 text-left mb-12">
+                                <div className="border border-zinc-800 rounded-lg p-3 sm:p-6 hover:border-zinc-600 transition-colors">
+                                    <div className="flex text-xl mb-2">📍
+                                        <h3 className="text-md font-semibold mb-2 ml-2">Visit Us</h3>
+                                    </div>
+                                    <p className="text-zinc-400">245 Wythe Ave<br />Brooklyn, NY 11249</p>
                                 </div>
-                                <p className="text-zinc-400">245 Wythe Ave<br />Brooklyn, NY 11249</p>
+
+                                <div className="border border-zinc-800 rounded-lg p-3 sm:p-6 hover:border-zinc-600 transition-colors">
+                                    <div className="flex text-xl mb-2">📞
+                                        <h3 className="text-md font-semibold mb-2 ml-2">Call</h3>
+                                    </div>
+                                    <p className="text-zinc-400">(718) 555-9034</p>
+                                </div>
+
+                                <div className="border border-zinc-800 rounded-lg p-3 sm:p-6 hover:border-zinc-600 transition-colors">
+                                    <div className="flex text-xl mb-2">✉️
+                                        <h3 className="text-md font-semibold mb-2 ml-2">Email</h3>
+                                    </div>
+                                    <p className="text-zinc-400">hello@inkversestudio.com</p>
+                                </div>
+
+                                <div className="border border-zinc-800 rounded-lg p-3 sm:p-6 hover:border-zinc-600 transition-colors">
+                                    <div className="flex text-xl mb-2">🕒
+                                        <h3 className="text-md font-semibold mb-2 ml-2">Hours</h3>
+                                    </div>
+                                    <p className="text-zinc-400">Mon–Sat: 11 AM – 8 PM<br />Sun: Closed</p>
+                                </div>
                             </div>
 
-                            <div className="border border-zinc-800 rounded-lg p-3 sm:p-6 hover:border-zinc-600 transition-colors">
-                                <div className="flex text-xl mb-2">📞
-                                    <h3 className="text-md font-semibold mb-2 ml-2">Call</h3>
-                                </div>
-                                <p className="text-zinc-400">(718) 555-9034</p>
-                            </div>
-
-                            <div className="border border-zinc-800 rounded-lg p-3 sm:p-6 hover:border-zinc-600 transition-colors">
-                                <div className="flex text-xl mb-2">✉️
-                                    <h3 className="text-md font-semibold mb-2 ml-2">Email</h3>
-                                </div>
-                                <p className="text-zinc-400">hello@inkversestudio.com</p>
-                            </div>
-
-                            <div className="border border-zinc-800 rounded-lg p-3 sm:p-6 hover:border-zinc-600 transition-colors">
-                                <div className="flex text-xl mb-2">🕒
-                                    <h3 className="text-md font-semibold mb-2 ml-2">Hours</h3>
-                                </div>
-                                <p className="text-zinc-400">Mon–Sat: 11 AM – 8 PM<br />Sun: Closed</p>
-                            </div>
+                            <button className="bg-white text-black font-semibold px-5 py-3 rounded hover:bg-zinc-200 transition-colors text-lg mb-20">
+                                Book Appointment
+                            </button>
                         </div>
 
-                        <button className="bg-white text-black font-semibold px-5 py-3 rounded hover:bg-zinc-200 transition-colors text-lg mb-20">
-                            Book Appointment
-                        </button>
-                    </div>
-
-                    <div className="w-full bg-black">
-                        <Footer />
+                        <div className="w-full bg-black">
+                            <Footer />
+                        </div>
                     </div>
                 </div>
             </section>
