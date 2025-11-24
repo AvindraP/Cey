@@ -505,13 +505,14 @@ function ProductPage() {
                 </div>
               </div>
 
-              {/* Product Description Preview */}
-              <div className="pt-6 border-t border-gray-700/50">
-                <p className="text-slate-300 leading-relaxed">
-                  {productData.product?.description}
-                </p>
-              </div>
             </div>
+          </div>
+
+          {/* Product Description Preview */}
+          <div className="mt-6 pt-6 border-t border-gray-700/50">
+            <p className="text-slate-300 leading-relaxed">
+              {productData.product?.description}
+            </p>
           </div>
 
           {/* Full Product Information Tabs */}
