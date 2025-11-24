@@ -4,62 +4,110 @@ Command: npx gltfjsx@6.5.3 public/models/model.glb -o src/components/Model.jsx
 */
 
 import React, { useEffect, useLayoutEffect, useRef } from 'react'
-import { useGLTF, useScroll } from '@react-three/drei'
-import { useFrame, useThree } from '@react-three/fiber'
+import { useGLTF } from '@react-three/drei'
+import { useThree } from '@react-three/fiber'
 import gsap from 'gsap'
 import * as THREE from 'three'
 
-export const Model = (props) => {
+export const Model = ({ activeIndex, ...props }) => {
   const { nodes, materials } = useGLTF('/models/model.glb')
   const { viewport, camera } = useThree()
   const ref = useRef()
-  const tl = useRef()
-  const scroll = useScroll()
+  const prevIndexRef = useRef(-1)
+  const hasEnteredRef = useRef(false)
 
-  useFrame(() => {
-    if (tl.current) tl.current.seek(scroll.offset * tl.current.duration())
-  })
+  // Animate based on activeIndex changes
+  useEffect(() => {
+    if (!ref.current) return
 
-  // Main scroll-based timeline (existing)
-  useLayoutEffect(() => {
-    tl.current = gsap.timeline()
+    if (!hasEnteredRef.current) return  // <-- prevent running on mount
+    if (activeIndex === prevIndexRef.current) return
 
     const aspect = viewport.aspect
     const isMobile = aspect < 1
+    const duration = 1 // 1 second per transition
 
-    // ROTATION
-    tl.current.fromTo(
-      ref.current.rotation,
-      { x: 0, y: -Math.PI / 4 },
-      { duration: 1, x: Math.PI / 4, y: -Math.PI / 2 },
-      0
-    )
-    tl.current.fromTo(
-      ref.current.rotation,
-      { x: Math.PI / 4, y: -Math.PI / 2 },
-      { duration: 1, x: 0, y: -Math.PI * 3 / 4 },
-      1
-    )
-    tl.current.fromTo(
-      ref.current.rotation,
-      { x: 0, y: -Math.PI * 3 / 4 },
-      { duration: 0.8, x: 0, y: -Math.PI / 2 },
-      2.2
-    )
+    // Define animation states for each index
+    const animations = [
+      // Index 0 - Initial state
+      {
+        rotation: { x: 0, y: -Math.PI / 4 },
+        position: isMobile ? { x: 0.2, z: 0 } : { x: 0.7, z: 0 },
+        camera: { z: 1.5, y: 0 }
+      },
+      // Index 1
+      {
+        rotation: { x: Math.PI / 6, y: -Math.PI * 6 / 10 },
+        position: isMobile ? { x: 0.15, y: -0.18, z: 0 } : { x: 0.5, y: -0.18, z: 0.1 },
+        camera: { z: 1.38, y: -0.3 }
+      },
+      // Index 2
+      {
+        rotation: { x: Math.PI / 4, y: -Math.PI / 2 },
+        position: isMobile ? { x: 0.15, y: -0.25, z: 0 } : { x: 0.5, y: -0.25, z: 0.1 },
+        camera: { z: 1.38, y: -0.3 }
+      },
+      // Index 3
+      {
+        rotation: { x: 0, y: -Math.PI * 3 / 4 },
+        position: isMobile ? { x: 0.15, z: 0 } : { x: 0.5, z: 0 },
+        camera: { z: 1.4, y: 0 }
+      },
+      // Index 4
+      {
+        rotation: { x: 0, y: -Math.PI * 3 / 4 },
+        position: isMobile ? { x: 0.15, y: -0.25, z: 0 } : { x: 0.5, y: -0.25, z: 0 },
+        camera: { z: 1.4, y: 0 }
+      },
+      // Index 5 
+      {
+        rotation: { x: 0, y: -Math.PI / 2 },
+        position: isMobile ? { x: 0.15, z: 0 } : { x: 0.5, z: 0 },
+        camera: { z: 1.4, y: 0 }
+      },
+      // Index 6
+      {
+        rotation: { x: Math.PI / 6, y: -Math.PI / 3 },
+        position: isMobile ? { x: 0.15, y: -0.18, z: 0 } : { x: 0.5, y: -0.18, z: 0.1 },
+        camera: { z: 1.38, y: -0.3 }
+      },
+      // Index 7
+      {
+        rotation: { x: 0, y: -Math.PI / 4 },
+        position: isMobile ? { x: 0.2, z: 0 } : { x: 0.7, z: 0 },
+        camera: { z: 1.5, y: 0 }
+      },
+    ]
 
-    // MOVEMENT - adjust for mobile
-    if (isMobile) {
-      tl.current.to(ref.current.position, { duration: 1, x: 0.1, z: 0.1 }, 0)
-      tl.current.to(ref.current.position, { duration: 1, x: 0.15, z: 0 }, 1)
-    } else {
-      tl.current.to(ref.current.position, { duration: 1, x: 0.35, z: 0.1 }, 0)
-      tl.current.to(ref.current.position, { duration: 1, x: 0.5, z: 0 }, 1)
-    }
+    // Get target animation state (clamp to available animations)
+    const targetIndex = Math.max(0, Math.min(activeIndex, animations.length - 1))
+    const targetState = animations[targetIndex]
 
-    // CAMERA POSITION
-    tl.current.to(camera.position, { duration: 1, z: 1.2 }, 0)
-    tl.current.to(camera.position, { duration: 1, z: 1.4 }, 1)
-  }, [camera, viewport.aspect])
+    // Animate to target state
+    gsap.to(ref.current.rotation, {
+      duration,
+      x: targetState.rotation.x,
+      y: targetState.rotation.y,
+      ease: 'power2.inOut'
+    })
+
+    gsap.to(ref.current.position, {
+      duration,
+      x: targetState.position.x,
+      z: targetState.position.z,
+      y: targetState.position.y ?? -0.1,
+      ease: 'power2.inOut'
+    })
+
+    gsap.to(camera.position, {
+      duration,
+      z: targetState.camera.z,
+      y: targetState.camera.y,
+      ease: 'power2.inOut'
+    })
+
+    prevIndexRef.current = activeIndex
+  }, [activeIndex, camera, viewport.aspect])
 
   // Convert all materials to grayscale (existing)
   useEffect(() => {
@@ -113,17 +161,29 @@ export const Model = (props) => {
         cameraPos.set(0.2, 0, 1.5)
       }
 
-      // Initial off-screen position before animation (e.g., below canvas)
+      // Initial off-screen position before animation
       ref.current.position.set(targetPos.x, targetPos.y - 1.5, targetPos.z)
 
       // Animate in on component mount
-      gsap.to(ref.current.position, {
-        duration: 2,
-        ease: 'power3.out',
-        x: targetPos.x,
-        y: targetPos.y,
-        z: targetPos.z,
+      gsap.timeline({
+        onComplete: () => {
+          hasEnteredRef.current = true
+        }
       })
+        .to(ref.current.position, {
+          duration: 2,
+          ease: 'power3.out',
+          x: targetPos.x,
+          y: targetPos.y,
+          z: targetPos.z,
+        })
+        .to(ref.current.rotation, {
+          duration: 2,
+          ease: 'power3.out',
+          x: 0,
+          y: -Math.PI / 4,
+        }, "<") // sync position + rotation
+
 
       gsap.to(camera.position, {
         duration: 2,

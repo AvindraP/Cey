@@ -147,7 +147,7 @@ const ProductsSection = () => {
     );
 };
 
-export const Overlay = ({ onScrollToSection } = {}) => {
+export const Overlay = ({ onScrollToSection, onActiveIndexChange } = {}) => {
     const scroll = useScroll(); // kept if you need it for three/drei behaviors
     const [activeIndex, setActiveIndex] = useState(-1);
     const isAnimatingRef = useRef(false);
@@ -167,6 +167,12 @@ export const Overlay = ({ onScrollToSection } = {}) => {
             setActiveIndex(0);
         }, 500);
     }, [setActiveIndex]);
+
+    useEffect(() => {
+        if (onActiveIndexChange) {
+            onActiveIndexChange(activeIndex);
+        }
+    }, [activeIndex, onActiveIndexChange]);
 
     useEffect(() => {
         if (typeof onScrollToSection === 'function')
