@@ -1,9 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
   ShoppingCartIcon,
-  HeartIcon,
-  ShareIcon,
-  StarIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
   MinusIcon,
@@ -409,17 +406,45 @@ function ProductPage() {
     }
   };
 
-  const handleBuyNow = () => {
+  const handleBuyNow = async () => {
     if (!selectedColor || !selectedSize) {
-      toast.error('Please select color and size');
+      toast.error("Please select color and size");
       return;
     }
+
     if (!currentVariation || currentVariation.stock_balance < 1) {
-      toast.error('This variation is out of stock');
+      toast.error("This variation is out of stock");
       return;
     }
-    console.log('Buy now:', { selectedColor, selectedSize, quantity, variation: currentVariation });
-    // Implement buy now logic here
+
+    try {
+      const res = await fetch(`${API_BASE_URL}/checkout/initiate-direct`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include", // important to support logged-in or guest session
+        body: JSON.stringify({
+          product_id: productData.product.id,
+          variation_id: currentVariation.id,
+          quantity,
+          shipping_address_id: null,
+        }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        toast.error(data.error || "Failed to initiate checkout");
+        return;
+      }
+
+      // Move to checkout page
+      const sessionId = data.checkout_session_id;
+      window.location.href = `/checkout?session=${sessionId}`;
+    } catch (error) {
+      console.error("Buy Now failed:", error);
+      toast.error("Something went wrong");
+    }
   };
 
   const isOutOfStock = currentVariation && currentVariation.stock_balance < 1;
