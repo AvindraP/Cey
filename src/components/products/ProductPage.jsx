@@ -18,7 +18,7 @@ import toast, { Toaster } from 'react-hot-toast';
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 // Reusable Components
-const ImageGallery = ({ images, selectedImage, onImageSelect }) => {
+const ImageGallery = ({ images }) => {
 
   const newImages = images.length
     ? images.map((i) => {
@@ -45,7 +45,7 @@ const ImageGallery = ({ images, selectedImage, onImageSelect }) => {
         }}>
         <div className="aspect-square flex items-center justify-center p-8">
           <img
-            src={selectedImage || newImages[currentIndex]}
+            src={newImages[currentIndex]}
             alt="Product"
             className="max-w-full max-h-full object-contain"
           />
@@ -72,7 +72,6 @@ const ImageGallery = ({ images, selectedImage, onImageSelect }) => {
             key={idx}
             onClick={() => {
               setCurrentIndex(idx);
-              onImageSelect(img);
             }}
             className={`aspect-square rounded-lg overflow-hidden border-2 transition-all ${currentIndex === idx
               ? 'border-white-400 ring-2 ring-white-400/30'
@@ -284,7 +283,6 @@ function ProductPage() {
   const [productData, setProductData] = useState({});
   const [selectedColor, setSelectedColor] = useState(null);
   const [selectedSize, setSelectedSize] = useState(null);
-  const [selectedImage, setSelectedImage] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -399,7 +397,7 @@ function ProductPage() {
         currentVariation.id,
         quantity
       );
-      
+
       toast.success('Product added to cart successfully!');
       console.log('Added to cart:', response);
     } catch (error) {
@@ -452,8 +450,6 @@ function ProductPage() {
             <div>
               <ImageGallery
                 images={productData.images ?? []}
-                selectedImage={selectedImage}
-                onImageSelect={setSelectedImage}
               />
             </div>
 
