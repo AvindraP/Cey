@@ -14,6 +14,7 @@ import AdminRoute from './middleware/AdminRoute.jsx'
 import CustomerRoute from './middleware/CustomerRoute.jsx'
 import CustomerAccount from './customer/account/CustomerAccount.jsx'
 import RegisterPage from './customer/register/RegisterPage.jsx'
+import OrderConfirmationPage from './components/checkout/OrderConfirmation.jsx'
 
 // Define routes
 const router = createBrowserRouter([
@@ -22,6 +23,7 @@ const router = createBrowserRouter([
   { path: "products", element: <AllProductsPage />, }, // all products
   { path: "cart", element: <Cart />, }, // cart
   { path: "checkout", element: <CheckoutPage />, }, // checkout
+  { path: "order-confirmation", element: <OrderConfirmationPage />, }, // checkout
   { path: "account", element: (<CustomerRoute><CustomerAccount /></CustomerRoute>), }, // customer account
   { path: "login", element: <Login />, }, // admin/customer login
   { path: "register", element: <RegisterPage />, }, // customer registration
