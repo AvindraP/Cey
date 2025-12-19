@@ -198,8 +198,8 @@ export default function AddProduct() {
       alert("Product created successfully!");
       setProduct({ id: crypto.randomUUID(), name: "", description: "", base_price: "", sku: "" });
       setAttributes([
-        { id: crypto.randomUUID(), name: "Color", options: [] },
-        { id: crypto.randomUUID(), name: "Size", options: [] },
+        { id: crypto.randomUUID(), name: "Color", options: [{ id: crypto.randomUUID(), value: "default", imageFile: null }] },
+        { id: crypto.randomUUID(), name: "Size", options: [{ id: crypto.randomUUID(), value: "default", imageFile: null }] },
       ]);
       setVariations([]);
     }
