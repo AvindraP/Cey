@@ -20,7 +20,7 @@ const CartItem = ({ item, onUpdate, onRemove, isOutOfStock = false }) => {
 
   const handleQuantityChange = async (newQuantity) => {
     const maxStock = item.stock_balance || 999;
-    
+
     if (newQuantity < 1) return;
     if (newQuantity > maxStock) {
       toast.error(`Only ${maxStock} items available in stock`);
@@ -37,11 +37,10 @@ const CartItem = ({ item, onUpdate, onRemove, isOutOfStock = false }) => {
   const maxStock = item.stock_balance || 999;
 
   return (
-    <div className={`bg-zinc-900/50 border rounded-lg p-4 sm:p-6 transition-all ${
-      isOutOfStock 
-        ? 'border-red-900/50 opacity-75' 
+    <div className={`bg-zinc-900/50 border rounded-lg p-4 sm:p-6 transition-all ${isOutOfStock
+        ? 'border-red-900/50 opacity-75'
         : 'border-zinc-800 hover:border-zinc-700'
-    }`}>
+      }`}>
       <div className="flex flex-col sm:flex-row gap-4 sm:gap-6">
         {/* Product Image */}
         <div className="w-full sm:w-32 h-32 bg-zinc-950 rounded-lg overflow-hidden flex-shrink-0 relative">
@@ -64,7 +63,7 @@ const CartItem = ({ item, onUpdate, onRemove, isOutOfStock = false }) => {
               <h3 className="text-lg font-semibold text-white mb-2 line-clamp-2">
                 {item.product_name}
               </h3>
-              
+
               {/* Color and Size Attributes */}
               {item.attributes && (
                 <div className="flex flex-wrap gap-2 mb-2">
@@ -80,7 +79,7 @@ const CartItem = ({ item, onUpdate, onRemove, isOutOfStock = false }) => {
                   )}
                 </div>
               )}
-              
+
               {item.variation_sku && (
                 <p className="text-xs text-zinc-500">
                   SKU: {item.variation_sku}
@@ -250,11 +249,13 @@ const EmptyCart = () => {
 // Main Cart Page Component
 const CartPage = () => {
   const { cart, loading, handleUpdate, handleRemove, handleClear } = useCart();
+  const [timestamp, setTimestamp] = useState(Date.now());
 
   const handleUpdateWithToast = async (itemId, quantity) => {
     try {
       await handleUpdate(itemId, quantity);
       toast.success('Cart updated successfully');
+      setTimestamp(Date.now());
     } catch (error) {
       toast.error(error.message || 'Failed to update cart');
     }
@@ -264,6 +265,7 @@ const CartPage = () => {
     try {
       await handleRemove(itemId);
       toast.success('Item removed from cart');
+      setTimestamp(Date.now());
     } catch (error) {
       toast.error('Failed to remove item');
     }
@@ -274,6 +276,7 @@ const CartPage = () => {
       try {
         await handleClear();
         toast.success('Cart cleared successfully');
+        setTimestamp(Date.now());
       } catch (error) {
         toast.error('Failed to clear cart');
       }
@@ -311,10 +314,10 @@ const CartPage = () => {
 
       // Success - redirect to checkout page
       toast.success('Redirecting to checkout...');
-      
+
       // Redirect to checkout page with session ID
       window.location.href = `/checkout?session=${data.checkout_session_id}`;
-      
+
     } catch (error) {
       console.error('Checkout error:', error);
       toast.error(error.message || 'Failed to proceed to checkout');
@@ -326,7 +329,7 @@ const CartPage = () => {
 
   return (
     <>
-      <ProductHeader allProducts={true} />
+      <ProductHeader allProducts={true} refresh={timestamp} />
 
       {/* Toaster */}
       <Toaster position="top-right" reverseOrder={false} containerStyle={{ marginTop: '80px' }} />

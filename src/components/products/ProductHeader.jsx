@@ -1,10 +1,34 @@
 import { MagnifyingGlassIcon, UserIcon, ShoppingCartIcon, ArrowRightStartOnRectangleIcon } from '@heroicons/react/24/outline';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../../middleware/AuthProvider';
 
-export const ProductHeader = ({ allProducts, prodCount }) => {
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
+export const ProductHeader = ({ allProducts, refresh }) => {
   const [searchOpen, setSearchOpen] = useState(false);
+  const [ count, setCount ] = useState(0);
   const { isCustomer, logout } = useContext(AuthContext);
+
+  useEffect(() => {
+    const fetchCount = async () => {
+      const res = await fetch(`${API_BASE_URL}/cart/count`, {
+        method: 'GET',
+        credentials: 'include'
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        console.error(data.error);
+        setCount('!');
+      }
+
+      console.log(data);
+      setCount(data.count);
+    }
+
+    fetchCount();
+  }, [setCount, refresh]);
 
   const handleLogout = async () => {
     await logout();
@@ -67,7 +91,7 @@ export const ProductHeader = ({ allProducts, prodCount }) => {
           >
             <ShoppingCartIcon className="w-6 h-6" />
             <span className="absolute top-0 right-0 w-5 h-5 bg-white text-black text-xs font-bold rounded-full flex items-center justify-center">
-              {prodCount ?? 0}
+              {count ?? 0}
             </span>
           </a>
 
