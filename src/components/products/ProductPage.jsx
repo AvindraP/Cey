@@ -282,6 +282,7 @@ function ProductPage() {
   const [selectedSize, setSelectedSize] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
+  const [timestamp, setTimestamp] = useState(Date.now());
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -367,15 +368,15 @@ function ProductPage() {
     }
   }, [maxQuantity, quantity]);
 
-  const specifications = {
-    'Pigment Temperature': 'Cool',
-    'Opacity Level': 'Medium',
-    'Fitzpatrick Skin Type Suitability': 'F1 - F6',
-    'Ready to Use - No Mixing Required': 'Pre-modified and ready straight from the bottle',
-    'Compatibility': 'Use it on its own or mix with other Biomaser pigments',
-    'Includes': '1 12ml / 0.5 oz. pigment',
-    'High Retention & Color Stability': 'Developed by Biomaser, this formula is packed with high-density pigments'
-  };
+  // const specifications = {
+  //   'Pigment Temperature': 'Cool',
+  //   'Opacity Level': 'Medium',
+  //   'Fitzpatrick Skin Type Suitability': 'F1 - F6',
+  //   'Ready to Use - No Mixing Required': 'Pre-modified and ready straight from the bottle',
+  //   'Compatibility': 'Use it on its own or mix with other Biomaser pigments',
+  //   'Includes': '1 12ml / 0.5 oz. pigment',
+  //   'High Retention & Color Stability': 'Developed by Biomaser, this formula is packed with high-density pigments'
+  // };
 
   const handleAddToCart = async () => {
     if (!selectedColor || !selectedSize) {
@@ -397,6 +398,7 @@ function ProductPage() {
 
       toast.success('Product added to cart successfully!');
       console.log('Added to cart:', response);
+      setTimestamp(Date.now());
     } catch (error) {
       const parsed = JSON.parse(error.message);
       toast.error(parsed.message || 'Failed to add to cart');
@@ -452,7 +454,7 @@ function ProductPage() {
 
   return (
     <>
-      <ProductHeader allProducts={true} />
+      <ProductHeader allProducts={true} refresh={timestamp} />
 
       {/* Toaster */}
       <Toaster position="top-right" reverseOrder={false} containerStyle={{ marginTop: '80px', }} />
