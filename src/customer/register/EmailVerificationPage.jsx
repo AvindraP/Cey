@@ -180,21 +180,24 @@ const EmailVerificationPage = () => {
                       <span>The verification link is invalid</span>
                     </li>
                   </ul>
+                  <p className="text-zinc-300 mb-4">
+                    Try Logging In to resend a new verification link.
+                  </p>
                 </div>
 
                 <div className="space-y-3">
                   <button
-                    onClick={handleHomeRedirect}
+                    onClick={handleLoginRedirect}
                     className="w-full py-3.5 rounded-lg bg-gradient-to-r from-gray-200 to-gray-400 hover:from-gray-300 hover:to-gray-500 text-black font-semibold transition-all shadow-lg"
                   >
-                    Go to Home
+                    Try Logging In
                   </button>
 
                   <button
-                    onClick={handleLoginRedirect}
+                    onClick={handleHomeRedirect}
                     className="w-full py-3.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-white font-semibold border border-zinc-700 transition-all"
                   >
-                    Try Logging In
+                    Go to Home
                   </button>
                 </div>
               </div>
