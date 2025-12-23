@@ -69,7 +69,7 @@ export default function Login() {
 
             // Redirect based on user type and referrer
             let redirectPath = '/';
-            
+
             if (data.user.type === 'admin') {
                 // Admin users go to dashboard
                 redirectPath = from || '/dashboard';
@@ -79,6 +79,43 @@ export default function Login() {
             }
 
             navigate(redirectPath, { replace: true });
+        } catch (err) {
+            console.error(err);
+            setError(err.message || "An error occurred. Please try again.");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleResend = async (e) => {
+        e.preventDefault();
+        setError("");
+        setInfo("");
+
+        if (!email || !password) {
+            setError("Please enter both email and password.");
+            return;
+        }
+
+        try {
+            setLoading(true);
+            const response = await fetch(`${API_BASE_URL}/verify-email/resend-verification`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ email, password }),
+                credentials: "include",
+            });
+
+            const d = await response.json();
+
+            if (!response.ok) {
+                throw new Error(d.message || "Resend failed");
+            }
+
+            setInfo(d.message || "Email sent");
+
         } catch (err) {
             console.error(err);
             setError(err.message || "An error occurred. Please try again.");
@@ -125,8 +162,9 @@ export default function Login() {
                     )}
 
                     {error && (
-                        <div className="text-sm text-rose-400 bg-rose-900/20 px-3 py-2 rounded-md border border-rose-900/30">
-                            {error}
+                        <div className="flex items-center justify-between text-sm text-rose-400 bg-rose-900/20 px-3 py-2 rounded-md border border-rose-900/30">
+                            <span>{error}</span>
+                            <a href="#" onClick={handleResend} className="text-zinc-300 underline">Resend</a>
                         </div>
                     )}
 
