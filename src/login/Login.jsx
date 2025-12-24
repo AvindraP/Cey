@@ -1,6 +1,6 @@
 import React, { useContext, useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { AuthContext } from "../../middleware/AuthProvider";
+import { AuthContext } from "../middleware/AuthProvider";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
