@@ -4,6 +4,8 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import './index.css'
 import App from './App.jsx'
 import Login from './login/Login.jsx'
+import ForgotPassword from './login/ForgotPassword.jsx'
+import ResetPassword from './login/ResetPassword.jsx'
 import Dashboard from './dashboard/index.jsx'
 import { AuthProvider } from './middleware/AuthProvider.jsx'
 import ProductPage from './components/products/ProductPage.jsx'
@@ -28,6 +30,8 @@ const router = createBrowserRouter([
   { path: "account", element: (<CustomerRoute><CustomerAccount /></CustomerRoute>), }, // customer account
   { path: "login", element: <Login />, }, // admin/customer login
   { path: "register", element: <RegisterPage />, }, // customer registration
+  { path: "forgot-password", element: <ForgotPassword />, }, // forgot password page
+  { path: "reset-password", element: <ResetPassword />, }, // reset password page
   { path: "verify-email", element: <EmailVerificationPage />, }, // customer registration
   { path: "dashboard", element: (<AdminRoute> <Dashboard /> </AdminRoute>), }, // admin dashboard 
 ]);
