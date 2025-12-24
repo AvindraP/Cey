@@ -9,6 +9,7 @@ export default function Login() {
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     const [info, setInfo] = useState("");
+    const [canResend, setCanResend] = useState(false);
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
     const location = useLocation();
@@ -31,6 +32,7 @@ export default function Login() {
         e.preventDefault();
         setError("");
         setInfo("");
+        setCanResend(false);
 
         if (!email || !password) {
             setError("Please enter both email and password.");
@@ -51,6 +53,7 @@ export default function Login() {
             const d = await response.json();
 
             if (!response.ok) {
+                if (d.resend) setCanResend(true);
                 throw new Error(d.message || "Login failed");
             }
 
@@ -91,6 +94,7 @@ export default function Login() {
         e.preventDefault();
         setError("");
         setInfo("");
+        setCanResend(false);
 
         if (!email || !password) {
             setError("Please enter both email and password.");
@@ -164,7 +168,7 @@ export default function Login() {
                     {error && (
                         <div className="flex items-center justify-between text-sm text-rose-400 bg-rose-900/20 px-3 py-2 rounded-md border border-rose-900/30">
                             <span>{error}</span>
-                            <a href="#" onClick={handleResend} className="text-zinc-300 underline">Resend</a>
+                            {canResend && <a href="#" onClick={handleResend} className="text-zinc-300 underline">Resend</a>}
                         </div>
                     )}
 
