@@ -1,6 +1,7 @@
 import React, { useContext, useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { AuthContext } from "../middleware/AuthProvider";
+import { Footer } from "../components/Footer";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -128,69 +129,89 @@ export default function Login() {
         }
     };
 
+    const handleHomeRedirect = () => {
+        window.location.href = '/';
+    };
+
     return (
-        <main className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-950 via-gray-900 to-gray-800 text-slate-100 relative overflow-hidden p-6">
-            {/* Background glow */}
-            <div aria-hidden className="pointer-events-none fixed inset-0 -z-10">
-                <div className="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-white/5 blur-3xl" />
-                <div className="absolute -bottom-32 -right-32 w-[30rem] h-[30rem] rounded-full bg-white/3 blur-3xl" />
-            </div>
-
-            {/* Glass login card */}
-            <section className="w-full max-w-md rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md shadow-2xl p-8">
-                <h1 className="text-3xl font-semibold tracking-tight">Welcome back</h1>
-                <p className="mt-2 text-sm text-slate-300/80">
-                    Sign in to your account
-                </p>
-
-                <form onSubmit={handleSubmit} className="mt-6 space-y-4">
-                    <input
-                        type="email"
-                        placeholder="Email"
-                        className="w-full rounded-3xl px-4 py-3 bg-white/10 border border-white/10 placeholder:text-slate-400 text-slate-100 focus:outline-none focus:ring-2 focus:ring-white/20 backdrop-blur-sm"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                    />
-                    <input
-                        type="password"
-                        placeholder="Password"
-                        className="w-full rounded-3xl px-4 py-3 bg-white/10 border border-white/10 placeholder:text-slate-400 text-slate-100 focus:outline-none focus:ring-2 focus:ring-white/20 backdrop-blur-sm"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                    />
-
-                    {info && (
-                        <div className="text-sm text-blue-300 bg-blue-900/20 px-3 py-2 rounded-md border border-blue-900/30">
-                            {info}
-                        </div>
-                    )}
-
-                    {error && (
-                        <div className="flex items-center justify-between text-sm text-rose-400 bg-rose-900/20 px-3 py-2 rounded-md border border-rose-900/30">
-                            <span>{error}</span>
-                            {canResend && <a href="#" onClick={handleResend} className="text-zinc-300 underline">Resend</a>}
-                        </div>
-                    )}
-
-                    <button
-                        type="submit"
-                        disabled={loading}
-                        className="w-full py-3 rounded-3xl font-semibold bg-white/10 hover:bg-white/15 border border-white/10 backdrop-blur-sm shadow-lg active:scale-[0.995] transition disabled:opacity-50 disabled:cursor-not-allowed"
+        <>
+            <header className="left-0 w-full z-50 transition-all duration-1500">
+                <div className="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between text-white">
+                    {/* Logo */}
+                    <a
+                        href="#"
+                        onClick={handleHomeRedirect}
+                        className="text-2xl md:text-3xl font-bold tracking-widest uppercase hover:text-zinc-300 transition-colors"
                     >
-                        {loading ? "Signing in…" : "Sign in"}
-                    </button>
-                </form>
-
-                <div className="mt-6 flex items-center justify-between text-xs text-slate-400">
-                    <a href="/register" className="hover:text-slate-200 underline">
-                        Create account
-                    </a>
-                    <a href="#resetPw" className="hover:text-slate-200 underline">
-                        Forgot password?
+                        INKVERSE
                     </a>
                 </div>
+            </header>
+            <main className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-950 via-gray-900 to-gray-800 text-slate-100 relative overflow-hidden p-6">
+                {/* Background glow */}
+                <div aria-hidden className="pointer-events-none fixed inset-0 -z-10">
+                    <div className="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-white/5 blur-3xl" />
+                    <div className="absolute -bottom-32 -right-32 w-[30rem] h-[30rem] rounded-full bg-white/3 blur-3xl" />
+                </div>
 
-            </section>
-        </main>
+                {/* Glass login card */}
+                <section className="w-full max-w-md rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md shadow-2xl p-8">
+                    <h1 className="text-3xl font-semibold tracking-tight">Welcome back</h1>
+                    <p className="mt-2 text-sm text-slate-300/80">
+                        Sign in to your account
+                    </p>
+
+                    <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+                        <input
+                            type="email"
+                            placeholder="Email"
+                            className="w-full rounded-3xl px-4 py-3 bg-white/10 border border-white/10 placeholder:text-slate-400 text-slate-100 focus:outline-none focus:ring-2 focus:ring-white/20 backdrop-blur-sm"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                        />
+                        <input
+                            type="password"
+                            placeholder="Password"
+                            className="w-full rounded-3xl px-4 py-3 bg-white/10 border border-white/10 placeholder:text-slate-400 text-slate-100 focus:outline-none focus:ring-2 focus:ring-white/20 backdrop-blur-sm"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                        />
+
+                        {info && (
+                            <div className="text-sm text-blue-300 bg-blue-900/20 px-3 py-2 rounded-md border border-blue-900/30">
+                                {info}
+                            </div>
+                        )}
+
+                        {error && (
+                            <div className="flex items-center justify-between text-sm text-rose-400 bg-rose-900/20 px-3 py-2 rounded-md border border-rose-900/30">
+                                <span>{error}</span>
+                                {canResend && <a href="#" onClick={handleResend} className="text-zinc-300 underline">Resend</a>}
+                            </div>
+                        )}
+
+                        <button
+                            type="submit"
+                            disabled={loading}
+                            className="w-full py-3 rounded-3xl font-semibold bg-white/10 hover:bg-white/15 border border-white/10 backdrop-blur-sm shadow-lg active:scale-[0.995] transition disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                            {loading ? "Signing in…" : "Sign in"}
+                        </button>
+                    </form>
+
+                    <div className="mt-6 flex items-center justify-between text-xs text-slate-400">
+                        <a href="/register" className="hover:text-slate-200 underline">
+                            Create account
+                        </a>
+                        <a href="/forgot-password" className="hover:text-slate-200 underline">
+                            Forgot password?
+                        </a>
+                    </div>
+
+                </section>
+            </main>
+
+            <Footer />
+        </>
     );
 }
