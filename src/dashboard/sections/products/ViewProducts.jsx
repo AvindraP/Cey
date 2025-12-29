@@ -1,5 +1,6 @@
-import { PencilSquareIcon } from "@heroicons/react/24/outline";
+import { PencilSquareIcon, ArchiveBoxIcon } from "@heroicons/react/24/outline";
 import React, { useEffect, useState } from "react";
+import toast, { Toaster } from "react-hot-toast";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -10,31 +11,68 @@ export default function ViewProducts({ setActiveSection, setID }) {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    async function fetchProducts() {
-      try {
-        const res = await fetch(`${API_BASE_URL}/products/getproducts`, {
-          credentials: "include",
-        });
-        if (!res.ok) throw new Error("Failed to fetch products");
-        const data = await res.json();
-        setProducts(data);
-      } catch (err) {
-        console.error(err);
-        setError("Could not load products");
-      } finally {
-        setLoading(false);
-      }
-    }
     fetchProducts();
   }, []);
+
+  async function fetchProducts() {
+    try {
+      const res = await fetch(`${API_BASE_URL}/products/getproducts?archived=false`, {
+        credentials: "include",
+      });
+      if (!res.ok) throw new Error("Failed to fetch products");
+      const data = await res.json();
+      setProducts(data);
+    } catch (err) {
+      console.error(err);
+      setError("Could not load products");
+    } finally {
+      setLoading(false);
+    }
+  }
 
   const toggleExpand = (id) => {
     setExpanded(expanded === id ? null : id);
   };
 
-  const handleEditProduct = (productId) => {
+  const handleEditProduct = (productId, e) => {
+    e.stopPropagation();
     setID(productId);
     setActiveSection('edit product');
+  };
+
+  const handleArchiveProduct = async (productId, productName, e) => {
+    e.stopPropagation();
+
+    const confirmed = window.confirm(
+      `Are you sure you want to archive "${productName}"?\n\nThis will hide the product from the store but keep its data intact.`
+    );
+
+    if (!confirmed) return;
+
+    const loadingToast = toast.loading("Archiving product...");
+
+    try {
+      const res = await fetch(`${API_BASE_URL}/products/archive/${productId}`, {
+        method: 'PUT',
+        credentials: 'include',
+      });
+
+      const data = await res.json();
+
+      toast.dismiss(loadingToast);
+
+      if (!res.ok) {
+        toast.error(data.error || "Failed to archive product");
+      } else {
+        toast.success("Product archived successfully!");
+        // Refresh the product list
+        fetchProducts();
+      }
+    } catch (error) {
+      toast.dismiss(loadingToast);
+      toast.error("Failed to archive product");
+      console.error(error);
+    }
   };
 
   if (loading) {
@@ -53,6 +91,8 @@ export default function ViewProducts({ setActiveSection, setID }) {
 
   return (
     <div className="min-h-screen p-0">
+      <Toaster position="top-right" />
+
       <div className="mx-auto shadow-md rounded-lg p-0 pt-6 max-w-7xl">
         <h1 className="text-2xl font-semibold mb-4 px-6">
           View Products
@@ -109,13 +149,22 @@ export default function ViewProducts({ setActiveSection, setID }) {
                         : "-"}
                     </td>
                     <td className="px-6 py-3 text-sm text-gray-300">
-                      <button
-                        onClick={() => handleEditProduct(p.product.id)}
-                        className="inline-flex items-center gap-1 text-gray-400 hover:text-gray-300"
-                      >
-                        <PencilSquareIcon className="w-4 h-4" />
-                        <span className="text-sm font-medium">Edit</span>
-                      </button>
+                      <div className="flex items-center gap-3">
+                        <button
+                          onClick={(e) => handleEditProduct(p.product.id, e)}
+                          className="inline-flex items-center gap-1 text-blue-400 hover:text-blue-300 transition-colors"
+                        >
+                          <PencilSquareIcon className="w-4 h-4" />
+                          <span className="text-sm font-medium">Edit</span>
+                        </button>
+                        <button
+                          onClick={(e) => handleArchiveProduct(p.product.id, p.product.name, e)}
+                          className="inline-flex items-center gap-1 text-amber-400 hover:text-amber-300 transition-colors"
+                        >
+                          <ArchiveBoxIcon className="w-4 h-4" />
+                          <span className="text-sm font-medium">Archive</span>
+                        </button>
+                      </div>
                     </td>
                   </tr>
 
