@@ -75,11 +75,11 @@ const ProductCard = ({ product, images }) => {
             </div>
             <div className="flex flex-col items-center p-5 w-40 lg:w-52">
                 <h3 className="text-lg font-semibold text-white mb-2 line-clamp-1">{product.name}</h3>
-                <p className="text-sm text-zinc-400 mb-2 line-clamp-2 leading-snug min-h-[2.8em] text-center">{product.description}</p>
+                <p className="text-sm text-zinc-300 lg:text-zinc-400 mb-2 line-clamp-2 leading-snug min-h-[2.8em] text-center">{product.description}</p>
                 <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-3">
                         <span className="text-xl font-bold text-white">${discountedPrice}</span>
-                        <span className="text-sm text-zinc-500 line-through">{displayPrice ? `$${displayPrice}` : ''}</span>
+                        <span className="text-sm text-zinc-400 lg:text-zinc-500 line-through">{displayPrice ? `$${displayPrice}` : ''}</span>
                     </div>
                 </div>
                 <a
@@ -117,7 +117,7 @@ const ProductsSection = () => {
     return (
         <div className="max-w-7xl w-auto mx-4">
             <h2 className="text-4xl md:text-5xl font-bold mb-4 text-white text-center">Our Products</h2>
-            <p className="text-base md:text-lg text-zinc-400 mb-6 md:mb-12 text-center max-w-2xl mx-auto">
+            <p className="text-base md:text-lg text-zinc-300 lg:text-zinc-400 mb-6 md:mb-12 text-center max-w-2xl mx-auto">
                 Luxury lip blushing artistry for naturally enhanced beauty
             </p>
 
@@ -361,10 +361,10 @@ export const Overlay = ({ onScrollToSection, onActiveIndexChange } = {}) => {
                             <h1 className="text-4xl md:text-5xl lg:text-5xl font-bold mb-6 tracking-tight">
                                 Welcome to theblushculture
                             </h1>
-                            <p className="text-md md:text-lg text-zinc-300 [text-shadow:2px_2px_3px_rgba(0,0,0,1)] mb-8 leading-relaxed max-w-3xl mx-auto">
+                            <p className="text-md md:text-lg text-zinc-200 lg:text-zinc-300 [text-shadow:2px_2px_3px_rgba(0,0,0,1)] mb-8 leading-relaxed max-w-3xl mx-auto">
                                 a modern PMU studio based in Sri Lanka
                             </p>
-                            <p className="text-base md:text-md text-zinc-400 [text-shadow:2px_2px_3px_rgba(0,0,0,1)] mb-10 max-w-2xl mx-auto">
+                            <p className="text-base md:text-md text-zinc-300 lg:text-zinc-400 [text-shadow:2px_2px_3px_rgba(0,0,0,1)] mb-10 max-w-2xl mx-auto">
                                 We specialize in soft, natural, and long-lasting enhancements that elevate your everyday
                                 confidence.
                                 <br /> <br />
@@ -427,15 +427,15 @@ export const Overlay = ({ onScrollToSection, onActiveIndexChange } = {}) => {
                                 About Us
                             </h2>
 
-                            <p className="text-md md:text-lg text-zinc-300 [text-shadow:2px_2px_3px_rgba(0,0,0,1)] mb-6 leading-relaxed">
+                            <p className="text-md md:text-lg text-zinc-200 lg:text-zinc-300 [text-shadow:2px_2px_3px_rgba(0,0,0,1)] mb-6 leading-relaxed">
                                 At <span className="font-semibold text-white">theblushculture</span>, beauty is refined, artistic, and timeless.
                             </p>
 
-                            <p className="text-base md:text-md text-zinc-300 [text-shadow:2px_2px_3px_rgba(0,0,0,1)] mb-8">
+                            <p className="text-base md:text-md text-zinc-200 lg:text-zinc-300 [text-shadow:2px_2px_3px_rgba(0,0,0,1)] mb-8">
                                 Our studio in Sri Lanka offers a calm, professional space where clients receive customized PMU treatments tailored to their features and skin tones.
                             </p>
 
-                            <p className="text-base md:text-md text-zinc-300 [text-shadow:2px_2px_3px_rgba(0,0,0,1)] font-medium">
+                            <p className="text-base md:text-md text-zinc-200 lg:text-zinc-300 [text-shadow:2px_2px_3px_rgba(0,0,0,1)] font-medium">
                                 We focus on results that look effortless and naturally enhancing — never artificial.
                             </p>
                         </div>
@@ -459,11 +459,11 @@ export const Overlay = ({ onScrollToSection, onActiveIndexChange } = {}) => {
                                 Home Visit Services
                             </h2>
 
-                            <p className="text-lg md:text-xl text-zinc-300 mb-8 leading-relaxed">
+                            <p className="text-lg md:text-xl text-zinc-200 lg:text-zinc-300 mb-8 leading-relaxed">
                                 Beauty care at your doorstep.
                             </p>
 
-                            <p className="text-base md:text-lg text-zinc-400 mb-10 leading-relaxed">
+                            <p className="text-base md:text-lg text-zinc-200 lg:text-zinc-400 mb-10 leading-relaxed">
                                 We bring <span className="text-white font-semibold">The Blush Culture</span> services straight to your home for maximum comfort, privacy, and convenience.
                             </p>
 
@@ -472,7 +472,7 @@ export const Overlay = ({ onScrollToSection, onActiveIndexChange } = {}) => {
                                 <h3 className="text-xl font-semibold mb-4 text-white">
                                     What We Offer (Home Visits)
                                 </h3>
-                                <ul className="space-y-2 text-zinc-400">
+                                <ul className="space-y-2 text-zinc-200 lg:text-zinc-400">
                                     <li>• Lip Neutralization</li>
                                     <li>• Lip Blush</li>
                                     <li>• Cheek Blush</li>
@@ -485,7 +485,7 @@ export const Overlay = ({ onScrollToSection, onActiveIndexChange } = {}) => {
                                 <h3 className="text-xl font-semibold mb-4 text-white">
                                     Why Clients Love Home Visits
                                 </h3>
-                                <ul className="space-y-2 text-zinc-400">
+                                <ul className="space-y-2 text-zinc-200 lg:text-zinc-400">
                                     <li>• Comfortable & private</li>
                                     <li>• Ideal for busy clients / new moms</li>
                                     <li>• Professional tools & hygiene</li>
@@ -498,7 +498,7 @@ export const Overlay = ({ onScrollToSection, onActiveIndexChange } = {}) => {
                                 <button className="bg-white text-black font-semibold px-6 py-3 rounded hover:bg-zinc-200 transition-colors">
                                     Book Your Slot
                                 </button>
-                                <p className="text-sm text-zinc-400 max-w-md leading-relaxed">
+                                <p className="text-sm text-zinc-300 lg:text-zinc-400 max-w-md leading-relaxed">
                                     Send your name, location & preferred time.
                                     We will confirm your appointment instantly.
                                 </p>
@@ -582,14 +582,14 @@ export const Overlay = ({ onScrollToSection, onActiveIndexChange } = {}) => {
                 className={`absolute left-0 w-full h-screen px-6 flex justify-center items-center text-white transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]`}
             >
                 <div
-                    className={`flex justify-center items-center w-full h-full mx-auto text-center`}
+                    className={`flex justify-center items-start md:items-center pt-50 md:pt-0 w-full h-full mx-auto text-center`}
                     style={{ maxHeight: "100%" }}
                 >
                     {/* Max width full capped at 7xl */}
                     <div className="max-w-7xl w-full mx-4 flex justify-start items-start">
                         <div className="max-w-2xl">
                             <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white">Vision</h2>
-                            <p className="text-lg md:text-xl text-zinc-400 mb-6 leading-relaxed">
+                            <p className="text-lg md:text-xl text-zinc-200 lg:text-zinc-400 mb-6 leading-relaxed">
                                 To be recognized as a leading PMU studio, providing world-class, natural beauty enhancements within Sri Lanka.
                             </p>
                         </div>
@@ -609,7 +609,7 @@ export const Overlay = ({ onScrollToSection, onActiveIndexChange } = {}) => {
                     <div className="max-w-7xl w-full mx-4 flex justify-start items-start">
                         <div className="max-w-2xl">
                             <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white">Mission</h2>
-                            <ul className="list-disc list-outside pl-6 text-lg md:text-xl text-zinc-400 mb-6 leading-relaxed text-start space-y-4">
+                            <ul className="list-disc list-outside pl-6 text-lg md:text-xl text-zinc-200 lg:text-zinc-400 mb-6 leading-relaxed text-start space-y-4">
                                 <li>
                                     To deliver safe, high-quality, and customized PMU services.
                                 </li>
@@ -641,7 +641,7 @@ export const Overlay = ({ onScrollToSection, onActiveIndexChange } = {}) => {
                             <h2 className="text-xl md:text-3xl lg:text-3xl font-bold mb-6 tracking-tight">
                                 Let's Connect
                             </h2>
-                            <p className="text-base md:text-md text-zinc-400 mb-12">
+                            <p className="text-base md:text-md text-zinc-200 lg:text-zinc-400 mb-12">
                                 Book your appointment or send us your idea – we'll help bring it to life.
                             </p>
 
@@ -650,28 +650,28 @@ export const Overlay = ({ onScrollToSection, onActiveIndexChange } = {}) => {
                                     <div className="flex text-xl mb-2">📍
                                         <h3 className="text-md font-semibold mb-2 ml-2">Visit Us</h3>
                                     </div>
-                                    <p className="text-zinc-400">245 Wythe Ave<br />Brooklyn, NY 11249</p>
+                                    <p className="text-zinc-200 lg:text-zinc-400">245 Wythe Ave<br />Brooklyn, NY 11249</p>
                                 </div>
 
                                 <div className="border border-zinc-800 rounded-lg p-3 sm:p-6 hover:border-zinc-600 transition-colors">
                                     <div className="flex text-xl mb-2">📞
                                         <h3 className="text-md font-semibold mb-2 ml-2">Call</h3>
                                     </div>
-                                    <p className="text-zinc-400">(718) 555-9034</p>
+                                    <p className="text-zinc-200 lg:text-zinc-400">(718) 555-9034</p>
                                 </div>
 
                                 <div className="border border-zinc-800 rounded-lg p-3 sm:p-6 hover:border-zinc-600 transition-colors">
                                     <div className="flex text-xl mb-2">✉️
                                         <h3 className="text-md font-semibold mb-2 ml-2">Email</h3>
                                     </div>
-                                    <p className="text-zinc-400">hello@theblushculturestudio.com</p>
+                                    <p className="text-zinc-200 lg:text-zinc-400">hello@theblushculturestudio.com</p>
                                 </div>
 
                                 <div className="border border-zinc-800 rounded-lg p-3 sm:p-6 hover:border-zinc-600 transition-colors">
                                     <div className="flex text-xl mb-2">🕒
                                         <h3 className="text-md font-semibold mb-2 ml-2">Hours</h3>
                                     </div>
-                                    <p className="text-zinc-400">Mon–Sat: 11 AM – 8 PM<br />Sun: Closed</p>
+                                    <p className="text-zinc-200 lg:text-zinc-400">Mon–Sat: 11 AM – 8 PM<br />Sun: Closed</p>
                                 </div>
                             </div>
 
