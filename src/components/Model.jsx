@@ -32,50 +32,56 @@ export const Model = ({ activeIndex, ...props }) => {
       // Index 0 - Initial state
       {
         rotation: { x: 0, y: -Math.PI / 4 },
-        position: isMobile ? { x: 0.2, z: 0 } : { x: 0.7, z: 0 },
-        camera: { z: 1.5, y: 0 }
+        position: isMobile ? { x: 0.3, z: 0 } : { x: 0.9, z: 0 },
+        camera: { z: 2.2, y: 0 }
       },
-      // Index 1
+      // Index 1 // video
       {
         rotation: { x: Math.PI / 6, y: -Math.PI * 6 / 10 },
-        position: isMobile ? { x: 0.15, y: -0.18, z: 0 } : { x: 0.5, y: -0.18, z: 0.1 },
-        camera: { z: 1.38, y: -0.3 }
+        position: isMobile ? { x: 0.15, y: -0.78, z: 0 } : { x: 0.5, y: -0.78, z: 0.1 },
+        camera: { z: 2.38, y: -0.3 }
       },
-      // Index 2
+      // Index 2 // About us
       {
-        rotation: { x: Math.PI / 4, y: -Math.PI / 2 },
-        position: isMobile ? { x: 0.15, y: -0.25, z: 0 } : { x: 0.5, y: -0.25, z: 0.1 },
-        camera: { z: 1.38, y: -0.3 }
+        rotation: { x: Math.PI / 4, y: -Math.PI / 3 },
+        position: isMobile ? { x: 0.15, y: -0.55, z: 0 } : { x: 0.5, y: -0.55, z: 0.1 },
+        camera: { z: 2.0, y: 0.3 }
       },
-      // Index 3
+      // Index 3 // Home visit
       {
-        rotation: { x: 0, y: -Math.PI * 3 / 4 },
-        position: isMobile ? { x: 0.15, z: 0 } : { x: 0.5, z: 0 },
-        camera: { z: 1.4, y: 0 }
+        rotation: { x: 0, y: -Math.PI / 10 },
+        position: isMobile ? { x: 0.15, z: 0.5 } : { x: 0.3, z: 0.5 },
+        camera: { z: 0.9, y: 0.7 }
       },
-      // Index 4
+      // Index 4 // Product display
       {
-        rotation: { x: 0, y: -Math.PI * 3 / 4 },
+        rotation: { x: 0, y: -Math.PI * 3 / 4},
         position: isMobile ? { x: 0.15, y: -0.25, z: 0 } : { x: 0.5, y: -0.25, z: 0 },
-        camera: { z: 1.4, y: 0 }
+        camera: { z: 2.4, y: 0 }
       },
-      // Index 5 
+      // Index 5 // Products
       {
         rotation: { x: 0, y: -Math.PI / 2 },
-        position: isMobile ? { x: 0.15, z: 0 } : { x: 0.5, z: 0 },
-        camera: { z: 1.4, y: 0 }
+        position: isMobile ? { x: 0.15, z: 0 } : { x: 0.8, z: 0 },
+        camera: { z: 2.4, y: 0 }
       },
       // Index 6
       {
         rotation: { x: Math.PI / 6, y: -Math.PI / 3 },
-        position: isMobile ? { x: 0.15, y: -0.18, z: 0 } : { x: 0.5, y: -0.18, z: 0.1 },
-        camera: { z: 1.38, y: -0.3 }
+        position: isMobile ? { x: 0.15, y: -0.78, z: 0 } : { x: 0.5, y: -0.78, z: 0.1 },
+        camera: { z: 2.38, y: -0.3 }
       },
       // Index 7
       {
         rotation: { x: 0, y: -Math.PI / 4 },
         position: isMobile ? { x: 0.2, z: 0 } : { x: 0.7, z: 0 },
-        camera: { z: 1.5, y: 0 }
+        camera: { z: 2.1, y: 0.5 }
+      },
+      // Index 8
+      {
+        rotation: { x: 0, y: -Math.PI / 5 },
+        position: isMobile ? { x: 0.2, z: 0 } : { x: 0.7, z: 0 },
+        camera: { z: 1.5, y: 1.0 }
       },
     ]
 
@@ -95,7 +101,7 @@ export const Model = ({ activeIndex, ...props }) => {
       duration,
       x: targetState.position.x,
       z: targetState.position.z,
-      y: targetState.position.y ?? -0.1,
+      y: targetState.position.y ?? -0.7,
       ease: 'power2.inOut'
     })
 
@@ -110,38 +116,38 @@ export const Model = ({ activeIndex, ...props }) => {
   }, [activeIndex, camera, viewport.aspect])
 
   // Convert all materials to grayscale (existing)
-  useEffect(() => {
-    Object.values(materials).forEach((material) => {
-      if (material.color) {
-        const c = material.color
-        let gray = c.r * 0.299 + c.g * 0.587 + c.b * 0.114
+  // useEffect(() => {
+  //   Object.values(materials).forEach((material) => {
+  //     if (material.color) {
+  //       const c = material.color
+  //       let gray = c.r * 0.299 + c.g * 0.587 + c.b * 0.114
 
-        const contrast = 1.5
-        const brightness = 0.1
-        gray = (gray - 0.5) * contrast + 0.5 + brightness
-        gray = Math.min(Math.max(gray, 0), 1)
-        material.color = new THREE.Color(gray, gray, gray)
-      }
+  //       const contrast = 1.5
+  //       const brightness = 0.1
+  //       gray = (gray - 0.5) * contrast + 0.5 + brightness
+  //       gray = Math.min(Math.max(gray, 0), 1)
+  //       material.color = new THREE.Color(gray, gray, gray)
+  //     }
 
-      if (material.map) {
-        material.onBeforeCompile = (shader) => {
-          shader.fragmentShader = shader.fragmentShader.replace(
-            '#include <map_fragment>',
-            `
-              vec4 texelColor = texture2D(map, vMapUv);
-              float gray = dot(texelColor.rgb, vec3(0.299, 0.587, 0.114));
-              float contrast = 1.5;
-              float brightness = 0.1;
-              gray = (gray - 0.5) * contrast + 0.5 + brightness;
-              gray = clamp(gray, 0.0, 1.0);
-              diffuseColor *= vec4(vec3(gray), texelColor.a);
-            `
-          )
-        }
-        material.needsUpdate = true
-      }
-    })
-  }, [materials])
+  //     if (material.map) {
+  //       material.onBeforeCompile = (shader) => {
+  //         shader.fragmentShader = shader.fragmentShader.replace(
+  //           '#include <map_fragment>',
+  //           `
+  //             vec4 texelColor = texture2D(map, vMapUv);
+  //             float gray = dot(texelColor.rgb, vec3(0.299, 0.587, 0.114));
+  //             float contrast = 1.5;
+  //             float brightness = 0.1;
+  //             gray = (gray - 0.5) * contrast + 0.5 + brightness;
+  //             gray = clamp(gray, 0.0, 1.0);
+  //             diffuseColor *= vec4(vec3(gray), texelColor.a);
+  //           `
+  //         )
+  //       }
+  //       material.needsUpdate = true
+  //     }
+  //   })
+  // }, [materials])
 
   // Responsive positioning + entry animation
   useEffect(() => {
@@ -151,14 +157,14 @@ export const Model = ({ activeIndex, ...props }) => {
       let cameraPos = new THREE.Vector3()
 
       if (aspect < 1) {                       // Tablet / Mobile (portrait)
-        targetPos.set(0.2, -0.1, 0)
-        cameraPos.set(-0.3, 0, 1.5)
+        targetPos.set(0.3, -0.7, 0)
+        cameraPos.set(-0.3, 0, 2.2)
       } else if (aspect < 1.5) {              // Small laptop / landscape tablet
-        targetPos.set(0.5, -0.1, 0)
-        cameraPos.set(0, 0, 1.5)
+        targetPos.set(0.7, -0.7, 0)
+        cameraPos.set(0, 0, 2.2)
       } else {                                // Desktop / wide screens
-        targetPos.set(0.7, -0.1, 0)
-        cameraPos.set(0.2, 0, 1.5)
+        targetPos.set(0.9, -0.7, 0)
+        cameraPos.set(0.2, 0, 2.2)
       }
 
       // Initial off-screen position before animation
@@ -201,10 +207,27 @@ export const Model = ({ activeIndex, ...props }) => {
 
   return (
     <group {...props} dispose={null} ref={ref}>
-      <mesh
-        geometry={nodes['tripo_node_a78418c3-2df1-4bb1-87dc-aa978a6a6054'].geometry}
-        material={materials['tripo_mat_a78418c3-2df1-4bb1-87dc-aa978a6a6054']}
-      />
+      <group position={[0, 0.471, 0]}>
+        <mesh geometry={nodes.geometry_0.geometry} material={materials.geometry_0_material} position={[0, -0.051, -0.078]} scale={1.041} />
+      </group>
+      <group position={[-0.229, 0.373, -0.441]} scale={0.681}>
+        <mesh geometry={nodes.geometry_0001.geometry} material={materials['geometry_0_material.001']} position={[-0.117, -0.002, 0.059]} rotation={[0, 0.13, 0.018]} scale={1.1} />
+      </group>
+      <group position={[-0.359, 1.141, -0.441]} scale={0.331}>
+        <mesh geometry={nodes.geometry_0002.geometry} material={materials['geometry_0_material.002']} position={[0.667, 0.246, 0.114]} rotation={[-0.044, -0.023, -0.697]} scale={1.043} />
+      </group>
+      <group position={[-0.272, 1.008, -0.417]} rotation={[0, -0.107, 0]} scale={0.594}>
+        <mesh geometry={nodes.geometry_0003.geometry} material={materials['geometry_0_material.004']} position={[0.046, -0.024, 0.026]} rotation={[-0.007, 0.131, -0.065]} />
+      </group>
+      <group position={[-0.103, 0.953, -0.297]} rotation={[0.272, 0, 0]} scale={-0.122}>
+        <mesh geometry={nodes.geometry_0004.geometry} material={materials['geometry_0_material.005']} position={[-0.424, 0.173, 0.01]} rotation={[1.048, -0.606, 1.163]} />
+      </group>
+      <group position={[0.002, 0.654, 0.027]} rotation={[-2.799, -0.006, -Math.PI]}>
+        <mesh geometry={nodes.geometry_0005.geometry} material={materials['geometry_0_material.006']} position={[0, -0.057, -0.001]} rotation={[0.037, 0, 0]} scale={0.968} />
+      </group>
+      <group position={[-0.001, 0.926, -0.385]} rotation={[0.282, -1.564, 0.962]} scale={0.28}>
+        <mesh geometry={nodes.geometry_0006.geometry} material={materials['geometry_0_material.007']} position={[-0.208, -0.157, 0.001]} rotation={[0, 0, 0.037]} scale={0.968} />
+      </group>
     </group>
   )
 }

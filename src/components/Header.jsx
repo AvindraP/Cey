@@ -18,24 +18,31 @@ export const Header = ({ scrollToSection }) => {
           onClick={(e) => handleNavClick(e, 0)}
           className="text-2xl md:text-3xl font-bold tracking-widest uppercase hover:text-zinc-300 transition-colors"
         >
-          INKVERSE
+          theblushculture
         </a>
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex space-x-10 text-sm font-medium tracking-wide">
           <a
             href="#hero"
-            onClick={(e) => handleNavClick(e, 1)}
+            onClick={(e) => handleNavClick(e, 0)}
             className="hover:text-zinc-300 transition-colors cursor-pointer"
           >
             Home
           </a>
           <a
             href="#about"
-            onClick={(e) => handleNavClick(e, 3)}
+            onClick={(e) => handleNavClick(e, 2)}
             className="hover:text-zinc-300 transition-colors cursor-pointer"
           >
             About Us
+          </a>
+          <a
+            href="#home-visits"
+            onClick={(e) => handleNavClick(e, 3)}
+            className="hover:text-zinc-300 transition-colors cursor-pointer"
+          >
+            Home Visit Services
           </a>
           <a
             href="#products"
@@ -46,7 +53,7 @@ export const Header = ({ scrollToSection }) => {
           </a>
           <a
             href="#contact"
-            onClick={(e) => handleNavClick(e, 7)}
+            onClick={(e) => handleNavClick(e, 8)}
             className="hover:text-zinc-300 transition-colors cursor-pointer"
           >
             Contact Us

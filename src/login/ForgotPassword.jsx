@@ -65,7 +65,7 @@ export default function ForgotPassword() {
                         onClick={handleHomeRedirect}
                         className="text-2xl md:text-3xl font-bold tracking-widest uppercase hover:text-zinc-300 transition-colors"
                     >
-                        INKVERSE
+                        theblushculture
                     </a>
                 </div>
             </header>

@@ -8,7 +8,7 @@ export const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
           {/* Brand */}
           <div>
-            <h3 className="text-2xl font-bold text-white mb-4 tracking-widest">INKVERSE</h3>
+            <h3 className="text-2xl font-bold text-white mb-4 tracking-widest">theblushculture</h3>
             <p className="text-sm text-zinc-400 leading-relaxed">
               Premium tattoo supplies and essentials for artists and enthusiasts.
             </p>
@@ -54,8 +54,8 @@ export const Footer = () => {
                 </a>
               </li>
               <li>
-                <a href="mailto:hello@inkversestudio.com" className="hover:text-white transition-colors">
-                  hello@inkversestudio.com
+                <a href="mailto:hello@theblushculturestudio.com" className="hover:text-white transition-colors">
+                  hello@theblushculturestudio.com
                 </a>
               </li>
             </ul>
@@ -63,7 +63,7 @@ export const Footer = () => {
         </div>
 
         <div className="pt-8 border-t border-zinc-800 text-center text-sm text-zinc-500">
-          © 2025 INKVERSE. All rights reserved.
+          © 2025 theblushculture. All rights reserved.
         </div>
       </div>
     </footer>

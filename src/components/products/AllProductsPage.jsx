@@ -233,7 +233,7 @@ export default function AllProductsPage() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch(`${API_BASE_URL}/products/getproducts`);
+        const response = await fetch(`${API_BASE_URL}/products/getproducts?archived=false`);
         const data = await response.json();
         setProducts(data);
         setFilteredProducts(data);
@@ -361,7 +361,7 @@ export default function AllProductsPage() {
               Our Products
             </h1>
             <p className="text-lg md:text-xl text-zinc-400 max-w-2xl mx-auto">
-              Premium tattoo supplies, inks, and aftercare essentials trusted by professionals
+              Luxury lip blushing artistry for naturally enhanced beauty
             </p>
           </div>
 

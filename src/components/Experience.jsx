@@ -8,7 +8,7 @@ export const Experience = ({ onScrollToSection }) => {
 
     return (
         <>
-            <directionalLight intensity={3} position={[5,5,6]} castShadow />
+            <directionalLight intensity={1} position={[-0.3,0.3,0.5]} castShadow />
             <OrbitControls enableZoom={false} enableRotate={false} enablePan={false} />
             <ScrollControls damping={0.50}>
                 <Overlay onScrollToSection={onScrollToSection} onActiveIndexChange={setCurrentIndex} />
