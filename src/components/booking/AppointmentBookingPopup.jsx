@@ -12,7 +12,6 @@ import toast, { Toaster } from 'react-hot-toast';
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const AppointmentBookingPopup = ({ isOpen, onClose }) => {
-    const [mode, setMode] = useState('guest'); // 'guest' or 'login'
     const [loading, setLoading] = useState(false);
 
     // Guest booking state
@@ -24,20 +23,9 @@ const AppointmentBookingPopup = ({ isOpen, onClose }) => {
         phone: '',
     });
 
-    // Login state
-    const [loginData, setLoginData] = useState({
-        email: '',
-        password: '',
-    });
-
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
-    };
-
-    const handleLoginInputChange = (e) => {
-        const { name, value } = e.target;
-        setLoginData(prev => ({ ...prev, [name]: value }));
     };
 
     const validateGuestForm = () => {
@@ -128,45 +116,6 @@ const AppointmentBookingPopup = ({ isOpen, onClose }) => {
         }
     };
 
-    const handleLoginSubmit = async () => {
-        if (!loginData.email || !loginData.password) {
-            toast.error('Please enter email and password');
-            return;
-        }
-
-        setLoading(true);
-
-        try {
-            const response = await fetch(`${API_BASE_URL}/auth/login`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                credentials: 'include',
-                body: JSON.stringify(loginData),
-            });
-
-            const data = await response.json();
-
-            if (!response.ok) {
-                throw new Error(data.message || 'Login failed');
-            }
-
-            toast.success('Logged in successfully!');
-
-            // Reset login
-            setLoginData({ email: '', password: '' });
-
-            // Switch to guest mode (now as logged in user)
-            setMode('guest');
-        } catch (error) {
-            console.error('Login error:', error);
-            toast.error(error.message);
-        } finally {
-            setLoading(false);
-        }
-    };
-
     const handleClose = () => {
         // Reset forms
         setFormData({
@@ -176,8 +125,6 @@ const AppointmentBookingPopup = ({ isOpen, onClose }) => {
             email: '',
             phone: '',
         });
-        setLoginData({ email: '', password: '' });
-        setMode('guest');
         onClose();
     };
 
@@ -207,196 +154,123 @@ const AppointmentBookingPopup = ({ isOpen, onClose }) => {
                     {/* Mode Tabs */}
                     <div className="flex border-b border-zinc-800">
                         <button
-                            onClick={() => setMode('guest')}
-                            className={`flex-1 px-6 py-4 font-medium transition-colors ${mode === 'guest'
-                                ? 'text-white border-b-2 border-white bg-zinc-800/50'
-                                : 'text-zinc-400 hover:text-zinc-300 hover:bg-zinc-800/30'
-                                }`}
+                            className={`flex-1 px-6 py-4 font-medium transition-colors text-white border-b-2 border-white bg-zinc-800/50`}
                         >
                             Guest Booking
                         </button>
-                        <button
-                            onClick={() => setMode('login')}
-                            className={`flex-1 px-6 py-4 font-medium transition-colors ${mode === 'login'
-                                ? 'text-white border-b-2 border-white bg-zinc-800/50'
-                                : 'text-zinc-400 hover:text-zinc-300 hover:bg-zinc-800/30'
-                                }`}
+                        <a href="/login"
+                            className={`flex-1 px-6 py-4 font-medium transition-colors text-zinc-400 hover:text-zinc-300 hover:bg-zinc-800/30`}
                         >
                             Login
-                        </button>
+                        </a>
                     </div>
 
                     {/* Content */}
                     <div className="p-6">
-                        {mode === 'guest' ? (
-                            <div className="space-y-5">
-                                {/* Name Field */}
-                                <div>
-                                    <label className="block text-sm font-medium text-zinc-300 mb-2">
-                                        Name <span className="text-red-400">*</span>
-                                    </label>
-                                    <div className="relative">
-                                        <UserIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-500" />
-                                        <input
-                                            type="text"
-                                            name="name"
-                                            value={formData.name}
-                                            onChange={handleInputChange}
-                                            className="w-full pl-11 pr-4 py-3 bg-zinc-800/50 border border-zinc-700 rounded-lg text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-white/50"
-                                            placeholder="John Doe"
-                                        />
-                                    </div>
-                                </div>
-
-                                {/* Location Field */}
-                                <div>
-                                    <label className="block text-sm font-medium text-zinc-300 mb-2">
-                                        Location <span className="text-red-400">*</span>
-                                    </label>
-                                    <div className="relative">
-                                        <MapPinIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-500" />
-                                        <input
-                                            type="text"
-                                            name="location"
-                                            value={formData.location}
-                                            onChange={handleInputChange}
-                                            className="w-full pl-11 pr-4 py-3 bg-zinc-800/50 border border-zinc-700 rounded-lg text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-white/50"
-                                            placeholder="123 Main St, New York, NY"
-                                        />
-                                    </div>
-                                </div>
-
-                                {/* Preferred Time Field */}
-                                <div>
-                                    <label className="block text-sm font-medium text-zinc-300 mb-2">
-                                        Preferred Time <span className="text-red-400">*</span>
-                                    </label>
-                                    <div className="relative">
-                                        <ClockIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-500" />
-                                        <input
-                                            type="datetime-local"
-                                            name="preferred_time"
-                                            value={formData.preferred_time}
-                                            onChange={handleInputChange}
-                                            className="w-full pl-11 pr-4 py-3 bg-zinc-800/50 border border-zinc-700 rounded-lg text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-white/50"
-                                        />
-                                    </div>
-                                </div>
-
-                                {/* Email Field */}
-                                <div>
-                                    <label className="block text-sm font-medium text-zinc-300 mb-2">
-                                        Email
-                                    </label>
-                                    <div className="relative">
-                                        <EnvelopeIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-500" />
-                                        <input
-                                            type="email"
-                                            name="email"
-                                            value={formData.email}
-                                            onChange={handleInputChange}
-                                            className="w-full pl-11 pr-4 py-3 bg-zinc-800/50 border border-zinc-700 rounded-lg text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-white/50"
-                                            placeholder="your.email@example.com"
-                                        />
-                                    </div>
-                                </div>
-
-                                {/* Phone Field */}
-                                <div>
-                                    <label className="block text-sm font-medium text-zinc-300 mb-2">
-                                        Phone Number
-                                    </label>
-                                    <div className="relative">
-                                        <PhoneIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-500" />
-                                        <input
-                                            type="tel"
-                                            name="phone"
-                                            value={formData.phone}
-                                            onChange={handleInputChange}
-                                            className="w-full pl-11 pr-4 py-3 bg-zinc-800/50 border border-zinc-700 rounded-lg text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-white/50"
-                                            placeholder="+1 (555) 123-4567"
-                                        />
-                                    </div>
-                                </div>
-
-                                {/* Note */}
-                                <p className="text-sm text-zinc-400">
-                                    <span className="text-red-400">*</span> Required fields. At least one contact method (email or phone) is required.
-                                </p>
-
-                                {/* Submit Button */}
-                                <button
-                                    onClick={handleGuestSubmit}
-                                    disabled={loading}
-                                    className="w-full py-3.5 rounded-lg bg-gradient-to-r from-gray-200 to-gray-400 hover:from-gray-300 hover:to-gray-500 text-black font-semibold transition-all shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
-                                >
-                                    {loading ? 'Booking...' : 'Book Appointment'}
-                                </button>
-                            </div>
-                        ) : (
-                            <div className="space-y-5">
-                                {/* Login Email */}
-                                <div>
-                                    <label className="block text-sm font-medium text-zinc-300 mb-2">
-                                        Email <span className="text-red-400">*</span>
-                                    </label>
-                                    <div className="relative">
-                                        <EnvelopeIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-500" />
-                                        <input
-                                            type="email"
-                                            name="email"
-                                            value={loginData.email}
-                                            onChange={handleLoginInputChange}
-                                            className="w-full pl-11 pr-4 py-3 bg-zinc-800/50 border border-zinc-700 rounded-lg text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-white/50"
-                                            placeholder="your.email@example.com"
-                                        />
-                                    </div>
-                                </div>
-
-                                {/* Login Password */}
-                                <div>
-                                    <label className="block text-sm font-medium text-zinc-300 mb-2">
-                                        Password <span className="text-red-400">*</span>
-                                    </label>
+                        <div className="space-y-5">
+                            {/* Name Field */}
+                            <div>
+                                <label className="block text-sm font-medium text-zinc-300 mb-2">
+                                    Name <span className="text-red-400">*</span>
+                                </label>
+                                <div className="relative">
+                                    <UserIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-500" />
                                     <input
-                                        type="password"
-                                        name="password"
-                                        value={loginData.password}
-                                        onChange={handleLoginInputChange}
-                                        className="w-full px-4 py-3 bg-zinc-800/50 border border-zinc-700 rounded-lg text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-white/50"
-                                        placeholder="••••••••"
+                                        type="text"
+                                        name="name"
+                                        value={formData.name}
+                                        onChange={handleInputChange}
+                                        className="w-full pl-11 pr-4 py-3 bg-zinc-800/50 border border-zinc-700 rounded-lg text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-white/50"
+                                        placeholder="John Doe"
                                     />
                                 </div>
+                            </div>
 
-                                {/* Login Button */}
-                                <button
-                                    onClick={handleLoginSubmit}
-                                    disabled={loading}
-                                    className="w-full py-3.5 rounded-lg bg-gradient-to-r from-gray-200 to-gray-400 hover:from-gray-300 hover:to-gray-500 text-black font-semibold transition-all shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
-                                >
-                                    {loading ? 'Logging in...' : 'Login'}
-                                </button>
-
-                                {/* Additional Links */}
-                                <div className="text-center space-y-2">
-                                    <a
-                                        href='/forgot-password'
-                                        className="text-sm text-zinc-400 hover:text-white transition-colors"
-                                    >
-                                        Forgot password?
-                                    </a>
-                                    <p className="text-sm text-zinc-400">
-                                        Don't have an account?{' '}
-                                        <a
-                                            href='/register'
-                                            className="text-white hover:underline"
-                                        >
-                                            Sign up
-                                        </a>
-                                    </p>
+                            {/* Location Field */}
+                            <div>
+                                <label className="block text-sm font-medium text-zinc-300 mb-2">
+                                    Location <span className="text-red-400">*</span>
+                                </label>
+                                <div className="relative">
+                                    <MapPinIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-500" />
+                                    <input
+                                        type="text"
+                                        name="location"
+                                        value={formData.location}
+                                        onChange={handleInputChange}
+                                        className="w-full pl-11 pr-4 py-3 bg-zinc-800/50 border border-zinc-700 rounded-lg text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-white/50"
+                                        placeholder="123 Main St, New York, NY"
+                                    />
                                 </div>
                             </div>
-                        )}
+
+                            {/* Preferred Time Field */}
+                            <div>
+                                <label className="block text-sm font-medium text-zinc-300 mb-2">
+                                    Preferred Time <span className="text-red-400">*</span>
+                                </label>
+                                <div className="relative">
+                                    <ClockIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-500" />
+                                    <input
+                                        type="datetime-local"
+                                        name="preferred_time"
+                                        value={formData.preferred_time}
+                                        onChange={handleInputChange}
+                                        className="w-full pl-11 pr-4 py-3 bg-zinc-800/50 border border-zinc-700 rounded-lg text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-white/50"
+                                    />
+                                </div>
+                            </div>
+
+                            {/* Email Field */}
+                            <div>
+                                <label className="block text-sm font-medium text-zinc-300 mb-2">
+                                    Email
+                                </label>
+                                <div className="relative">
+                                    <EnvelopeIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-500" />
+                                    <input
+                                        type="email"
+                                        name="email"
+                                        value={formData.email}
+                                        onChange={handleInputChange}
+                                        className="w-full pl-11 pr-4 py-3 bg-zinc-800/50 border border-zinc-700 rounded-lg text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-white/50"
+                                        placeholder="your.email@example.com"
+                                    />
+                                </div>
+                            </div>
+
+                            {/* Phone Field */}
+                            <div>
+                                <label className="block text-sm font-medium text-zinc-300 mb-2">
+                                    Phone Number
+                                </label>
+                                <div className="relative">
+                                    <PhoneIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-500" />
+                                    <input
+                                        type="tel"
+                                        name="phone"
+                                        value={formData.phone}
+                                        onChange={handleInputChange}
+                                        className="w-full pl-11 pr-4 py-3 bg-zinc-800/50 border border-zinc-700 rounded-lg text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-white/50"
+                                        placeholder="+1 (555) 123-4567"
+                                    />
+                                </div>
+                            </div>
+
+                            {/* Note */}
+                            <p className="text-sm text-zinc-400">
+                                <span className="text-red-400">*</span> Required fields. At least one contact method (email or phone) is required.
+                            </p>
+
+                            {/* Submit Button */}
+                            <button
+                                onClick={handleGuestSubmit}
+                                disabled={loading}
+                                className="w-full py-3.5 rounded-lg bg-gradient-to-r from-gray-200 to-gray-400 hover:from-gray-300 hover:to-gray-500 text-black font-semibold transition-all shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                                {loading ? 'Booking...' : 'Book Appointment'}
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
