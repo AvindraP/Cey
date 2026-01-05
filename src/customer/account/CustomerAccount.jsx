@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { AuthContext } from '../../middleware/AuthProvider';
-import { EyeIcon, UserCircleIcon, ShoppingBagIcon } from '@heroicons/react/24/outline';
+import { EyeIcon, UserCircleIcon, ShoppingBagIcon, CalendarDaysIcon } from '@heroicons/react/24/outline';
 import toast, { Toaster } from 'react-hot-toast';
 import { ProductHeader } from '../../components/products/ProductHeader';
 import { Footer } from '../../components/Footer';
+import AppointmentBookingPopup from '../../components/booking/AppointmentBookingPopup';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -216,6 +217,7 @@ const CustomerAccount = () => {
   const [loading, setLoading] = useState(true);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [orderItems, setOrderItems] = useState([]);
+  const [showBooking, setShowBooking] = useState(false);
 
   // Profile edit state
   const [isEditing, setIsEditing] = useState(false);
@@ -364,6 +366,20 @@ const CustomerAccount = () => {
                     Profile
                   </div>
                   {activeTab === 'profile' && (
+                    <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-white" />
+                  )}
+                </button>
+
+                <button
+                  onClick={() => setActiveTab('appointments')}
+                  className={`pb-4 text-sm font-medium transition-colors relative ${activeTab === 'appointments' ? 'text-white' : 'text-zinc-400 hover:text-zinc-300'
+                    }`}
+                >
+                  <div className="flex items-center gap-2">
+                    <CalendarDaysIcon className="w-5 h-5" />
+                    Appointments
+                  </div>
+                  {activeTab === 'appointments' && (
                     <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-white" />
                   )}
                 </button>
@@ -545,6 +561,17 @@ const CustomerAccount = () => {
                     </div>
                   </div>
                 )}
+
+                {/* Profile Tab */}
+                {activeTab === 'appointments' && (
+                  <div className="max-w-2xl">
+                    <div className="bg-zinc-900/50 border border-zinc-800 rounded-lg p-6">
+                      <button onClick={() => setShowBooking(true)} className="bg-white text-black font-semibold px-6 py-3 rounded hover:bg-zinc-200 transition-colors">
+                        Book Your Slot
+                      </button>
+                    </div>
+                  </div>
+                )}
               </>
             )}
           </div>
@@ -564,6 +591,12 @@ const CustomerAccount = () => {
           }}
         />
       )}
+
+      <AppointmentBookingPopup
+        isOpen={showBooking}
+        isLoggedIn = {true}
+        onClose={() => setShowBooking(false)}
+      />
     </>
   );
 };

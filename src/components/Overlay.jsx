@@ -736,6 +736,7 @@ export const Overlay = ({ onScrollToSection, onActiveIndexChange } = {}) => {
 
             <AppointmentBookingPopup
                 isOpen={showBooking}
+                isLoggedIn = {false}
                 onClose={() => setShowBooking(false)}
             />
         </Scroll>

@@ -11,7 +11,7 @@ import toast, { Toaster } from 'react-hot-toast';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-const AppointmentBookingPopup = ({ isOpen, onClose }) => {
+const AppointmentBookingPopup = ({ isOpen, onClose, isLoggedIn }) => {
     const [loading, setLoading] = useState(false);
 
     // Guest booking state
@@ -152,18 +152,20 @@ const AppointmentBookingPopup = ({ isOpen, onClose }) => {
                     </div>
 
                     {/* Mode Tabs */}
-                    <div className="flex border-b border-zinc-800">
-                        <button
-                            className={`flex-1 px-6 py-4 font-medium transition-colors text-white border-b-2 border-white bg-zinc-800/50`}
-                        >
-                            Guest Booking
-                        </button>
-                        <a href="/login"
-                            className={`flex-1 px-6 py-4 font-medium transition-colors text-zinc-400 hover:text-zinc-300 hover:bg-zinc-800/30`}
-                        >
-                            Login
-                        </a>
-                    </div>
+                    {!isLoggedIn && (
+                        <div className="flex border-b border-zinc-800">
+                            <button
+                                className={`flex-1 px-6 py-4 font-medium transition-colors text-white border-b-2 border-white bg-zinc-800/50`}
+                            >
+                                Guest Booking
+                            </button>
+                            <a href="/login"
+                                className={`flex-1 px-6 py-4 font-medium transition-colors text-zinc-400 hover:text-zinc-300 hover:bg-zinc-800/30`}
+                            >
+                                Login
+                            </a>
+                        </div>
+                    )}
 
                     {/* Content */}
                     <div className="p-6">
