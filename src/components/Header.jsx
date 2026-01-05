@@ -16,13 +16,13 @@ export const Header = ({ scrollToSection }) => {
         <a
           href="#"
           onClick={(e) => handleNavClick(e, 0)}
-          className="text-2xl md:text-3xl font-bold tracking-widest uppercase hover:text-zinc-300 transition-colors"
+          className="text-2xl lg:text-3xl font-bold tracking-widest uppercase hover:text-zinc-300 transition-colors"
         >
           theblushculture
         </a>
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex space-x-10 text-sm font-medium tracking-wide">
+        <nav className="hidden lg:flex space-x-10 text-sm font-medium tracking-wide">
           <a
             href="#hero"
             onClick={(e) => handleNavClick(e, 0)}
@@ -62,7 +62,7 @@ export const Header = ({ scrollToSection }) => {
 
         {/* Mobile Menu Button */}
         <button
-          className="md:hidden focus:outline-none hover:text-zinc-300 transition-colors"
+          className="lg:hidden focus:outline-none hover:text-zinc-300 transition-colors"
           onClick={() => setMenuOpen(!menuOpen)}
           aria-label="Toggle menu"
         >
@@ -92,7 +92,7 @@ export const Header = ({ scrollToSection }) => {
 
       {/* Mobile Dropdown Menu */}
       {menuOpen && (
-        <div className="md:hidden bg-black/95 backdrop-blur-md border-t border-zinc-800">
+        <div className="lg:hidden bg-black/95 backdrop-blur-lg border-t border-zinc-800">
           <nav className="flex flex-col items-center py-6 space-y-4 text-sm font-medium tracking-wide text-white">
             <a
               href="#hero"

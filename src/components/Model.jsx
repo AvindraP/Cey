@@ -32,7 +32,7 @@ export const Model = ({ activeIndex, ...props }) => {
       // Index 0 - Initial state
       {
         rotation: { x: 0, y: -Math.PI / 4 },
-        position: isMobile ? { x: 0.3, z: 0 } : { x: 0.9, z: 0 },
+        position: isMobile ? { x: 0.1, z: 0 } : { x: 0.9, z: 0 },
         camera: { z: 2.2, y: 0 }
       },
       // Index 1 // video
@@ -44,13 +44,13 @@ export const Model = ({ activeIndex, ...props }) => {
       // Index 2 // About us
       {
         rotation: { x: Math.PI / 4, y: -Math.PI / 3 },
-        position: isMobile ? { x: 0.15, y: -0.55, z: 0 } : { x: 0.5, y: -0.55, z: 0.1 },
+        position: isMobile ? { x: -0.15, y: -0.55, z: 0 } : { x: 0.5, y: -0.55, z: 0.1 },
         camera: { z: 2.0, y: 0.3 }
       },
       // Index 3 // Home visit
       {
         rotation: { x: 0, y: -Math.PI / 10 },
-        position: isMobile ? { x: 0.15, z: 0.5 } : { x: 0.3, z: 0.5 },
+        position: isMobile ? { x: -0.05, z: 0.5 } : { x: 0.3, z: 0.5 },
         camera: { z: 0.9, y: 0.7 }
       },
       // Index 4 // Product display
@@ -62,25 +62,25 @@ export const Model = ({ activeIndex, ...props }) => {
       // Index 5 // Products
       {
         rotation: { x: 0, y: -Math.PI / 2 },
-        position: isMobile ? { x: 0.15, z: 0 } : { x: 0.8, z: 0 },
+        position: isMobile ? { x: -0.05, z: 0 } : { x: 0.8, z: 0 },
         camera: { z: 2.4, y: 0 }
       },
-      // Index 6
+      // Index 6 // Vision
       {
         rotation: { x: Math.PI / 6, y: -Math.PI / 3 },
-        position: isMobile ? { x: 0.15, y: -0.78, z: 0 } : { x: 0.5, y: -0.78, z: 0.1 },
+        position: isMobile ? { x: -0.05, y: -0.78, z: 0 } : { x: 0.5, y: -0.78, z: 0.1 },
         camera: { z: 2.38, y: -0.3 }
       },
-      // Index 7
+      // Index 7 // Mission
       {
         rotation: { x: 0, y: -Math.PI / 4 },
-        position: isMobile ? { x: 0.2, z: 0 } : { x: 0.7, z: 0 },
+        position: isMobile ? { x: 0.1, z: 0 } : { x: 0.7, z: 0 },
         camera: { z: 2.1, y: 0.5 }
       },
       // Index 8
       {
         rotation: { x: 0, y: -Math.PI / 5 },
-        position: isMobile ? { x: 0.2, z: 0 } : { x: 0.7, z: 0 },
+        position: isMobile ? { x: 0.1, z: 0 } : { x: 0.7, z: 0 },
         camera: { z: 1.5, y: 1.0 }
       },
     ]
@@ -157,7 +157,7 @@ export const Model = ({ activeIndex, ...props }) => {
       let cameraPos = new THREE.Vector3()
 
       if (aspect < 1) {                       // Tablet / Mobile (portrait)
-        targetPos.set(0.3, -0.7, 0)
+        targetPos.set(0.1, -0.7, 0)
         cameraPos.set(-0.3, 0, 2.2)
       } else if (aspect < 1.5) {              // Small laptop / landscape tablet
         targetPos.set(0.7, -0.7, 0)
