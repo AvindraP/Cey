@@ -2,6 +2,7 @@
 import { Scroll, useScroll } from "@react-three/drei";
 import { useEffect, useRef, useState } from "react";
 import { Footer } from "./Footer";
+import AppointmentBookingPopup from "./booking/AppointmentBookingPopup";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -152,6 +153,7 @@ export const Overlay = ({ onScrollToSection, onActiveIndexChange } = {}) => {
     const [activeIndex, setActiveIndex] = useState(-1);
     const isAnimatingRef = useRef(false);
     const containerRef = useRef(null);
+    const [showBooking, setShowBooking] = useState(false);
 
     // Update to your real number of sections (0..7 => 8 sections)
     const SECTION_COUNT = 9;
@@ -495,7 +497,7 @@ export const Overlay = ({ onScrollToSection, onActiveIndexChange } = {}) => {
 
                             {/* CTA */}
                             <div className="flex flex-col items-center gap-4">
-                                <button className="bg-white text-black font-semibold px-6 py-3 rounded hover:bg-zinc-200 transition-colors">
+                                <button onClick={() => setShowBooking(true)} className="bg-white text-black font-semibold px-6 py-3 rounded hover:bg-zinc-200 transition-colors">
                                     Book Your Slot
                                 </button>
                                 <p className="text-sm text-zinc-300 lg:text-zinc-400 max-w-md leading-relaxed">
@@ -675,8 +677,8 @@ export const Overlay = ({ onScrollToSection, onActiveIndexChange } = {}) => {
                                 </div>
                             </div>
 
-                            <button className="bg-white text-black font-semibold px-5 py-3 rounded hover:bg-zinc-200 transition-colors text-lg mb-20">
-                                Book Appointment
+                            <button onClick={() => setShowBooking(true)} className="bg-white text-black font-semibold px-5 py-3 rounded hover:bg-zinc-200 transition-colors text-lg mb-20">
+                                Book Your Slot
                             </button>
                         </div>
 
@@ -731,6 +733,11 @@ export const Overlay = ({ onScrollToSection, onActiveIndexChange } = {}) => {
                     );
                 })}
             </div>
+
+            <AppointmentBookingPopup
+                isOpen={showBooking}
+                onClose={() => setShowBooking(false)}
+            />
         </Scroll>
     );
 };
