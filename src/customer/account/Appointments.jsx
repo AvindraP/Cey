@@ -49,16 +49,15 @@ const Appointments = ({
                                         <div className="text-sm text-zinc-400">
                                             {appt.scheduled_time ?
                                                 (
-                                                    <span className={`
-                                                    ${appt.status == 'confirmed' ? 'text-green-300' : 'bg-zinc-700 text-zinc-300'}
-                                                    `}>
-                                                        <div className="text-sm font-medium">
+                                                    <>
+                                                        <div
+                                                            className={`text-sm font-medium ${appt.status == 'confirmed' ? 'text-green-300' : 'text-zinc-300'}`}>
                                                             {new Date(appt.created_at).toLocaleDateString()}
                                                         </div>
-                                                        <div className="text-xs">
+                                                        <div className={`text-xs ${appt.status == 'confirmed' ? 'text-green-500' : 'text-zinc-500'}`}>
                                                             {new Date(appt.preferred_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                                         </div>
-                                                    </span>
+                                                    </>
                                                 )
                                                 : '-'}
                                         </div>
