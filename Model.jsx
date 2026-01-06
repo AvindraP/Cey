@@ -11,25 +11,25 @@ export function Model(props) {
   return (
     <group {...props} dispose={null}>
       <group position={[0, 0.471, 0]}>
-        <mesh geometry={nodes.geometry_0.geometry} material={materials.geometry_0_material} position={[0, -0.051, -0.078]} scale={1.041} />
+        <mesh geometry={nodes.geometry_0.geometry} material={materials.geometry_0_material} position={[0, -0.013, -0.078]} scale={0.521} />
       </group>
       <group position={[-0.229, 0.373, -0.441]} scale={0.681}>
-        <mesh geometry={nodes.geometry_0001.geometry} material={materials['geometry_0_material.001']} position={[-0.117, -0.002, 0.059]} rotation={[0, 0.13, 0.018]} scale={1.1} />
+        <mesh geometry={nodes.geometry_0001.geometry} material={materials['geometry_0_material.001']} position={[-0.117, -0.002, 0.059]} rotation={[0, 0.13, 0.018]} scale={0.55} />
       </group>
       <group position={[-0.359, 1.141, -0.441]} scale={0.331}>
-        <mesh geometry={nodes.geometry_0002.geometry} material={materials['geometry_0_material.002']} position={[0.667, 0.246, 0.114]} rotation={[-0.044, -0.023, -0.697]} scale={1.043} />
+        <mesh geometry={nodes.geometry_0002.geometry} material={materials['geometry_0_material.002']} position={[0.727, 0.22, 0.113]} rotation={[-0.044, -0.023, -0.697]} scale={0.411} />
       </group>
       <group position={[-0.272, 1.008, -0.417]} rotation={[0, -0.107, 0]} scale={0.594}>
-        <mesh geometry={nodes.geometry_0003.geometry} material={materials['geometry_0_material.004']} position={[0.046, -0.024, 0.026]} rotation={[-0.007, 0.131, -0.065]} />
+        <mesh geometry={nodes.geometry_0003.geometry} material={materials['geometry_0_material.004']} position={[0.043, -0.063, 0.027]} rotation={[-0.007, 0.131, -0.065]} scale={0.461} />
       </group>
-      <group position={[-0.103, 0.953, -0.297]} rotation={[0.272, 0, 0]} scale={-0.122}>
-        <mesh geometry={nodes.geometry_0004.geometry} material={materials['geometry_0_material.005']} position={[-0.424, 0.173, 0.01]} rotation={[1.048, -0.606, 1.163]} />
+      <group position={[-0.103, 0.953, -0.297]} rotation={[-2.869, 0, 0]} scale={[-0.122, 0.122, 0.122]}>
+        <mesh geometry={nodes.geometry_0004.geometry} material={materials['geometry_0_material.005']} position={[-0.424, 0.173, 0.01]} rotation={[1.048, -0.606, 1.163]} scale={0.5} />
       </group>
       <group position={[0.002, 0.654, 0.027]} rotation={[-2.799, -0.006, -Math.PI]}>
-        <mesh geometry={nodes.geometry_0005.geometry} material={materials['geometry_0_material.006']} position={[0, -0.057, -0.001]} rotation={[0.037, 0, 0]} scale={0.968} />
+        <mesh geometry={nodes.geometry_0005.geometry} material={materials['geometry_0_material.006']} position={[0, -0.099, -0.015]} rotation={[0.037, 0, 0]} scale={0.472} />
       </group>
       <group position={[-0.001, 0.926, -0.385]} rotation={[0.282, -1.564, 0.962]} scale={0.28}>
-        <mesh geometry={nodes.geometry_0006.geometry} material={materials['geometry_0_material.007']} position={[-0.208, -0.157, 0.001]} rotation={[0, 0, 0.037]} scale={0.968} />
+        <mesh geometry={nodes.geometry_0006.geometry} material={materials['geometry_0_material.007']} position={[-0.208, -0.157, 0.012]} rotation={[0, 0, 0.037]} scale={0.443} />
       </group>
     </group>
   )
