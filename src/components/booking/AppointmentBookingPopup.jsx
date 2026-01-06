@@ -201,7 +201,7 @@ const AppointmentBookingPopup = ({ isOpen, onClose, isLoggedIn }) => {
                                         value={formData.location}
                                         onChange={handleInputChange}
                                         className="w-full pl-11 pr-4 py-3 bg-zinc-800/50 border border-zinc-700 rounded-lg text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-white/50"
-                                        placeholder="123 Main St, New York, NY"
+                                        placeholder="123 Main St, Colombo, SL"
                                     />
                                 </div>
                             </div>
@@ -254,7 +254,7 @@ const AppointmentBookingPopup = ({ isOpen, onClose, isLoggedIn }) => {
                                         value={formData.phone}
                                         onChange={handleInputChange}
                                         className="w-full pl-11 pr-4 py-3 bg-zinc-800/50 border border-zinc-700 rounded-lg text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-white/50"
-                                        placeholder="+1 (555) 123-4567"
+                                        placeholder="+94 7X XX XXXXX"
                                     />
                                 </div>
                             </div>

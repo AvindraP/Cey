@@ -195,7 +195,7 @@ const ShippingForm = ({ onSubmit, isLoading }) => {
                 onChange={handleChange}
                 required
                 className="w-full bg-zinc-800/50 border border-zinc-700 rounded-lg px-4 py-3 text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-white/50"
-                placeholder="+1 (555) 123-4567"
+                placeholder="+94 7X XX XXXXX"
               />
             </div>
           </div>
@@ -211,7 +211,7 @@ const ShippingForm = ({ onSubmit, isLoading }) => {
               onChange={handleChange}
               required
               className="w-full bg-zinc-800/50 border border-zinc-700 rounded-lg px-4 py-3 text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-white/50"
-              placeholder="123 Main Street"
+              placeholder="123 Main Street, Colombo"
             />
           </div>
 
