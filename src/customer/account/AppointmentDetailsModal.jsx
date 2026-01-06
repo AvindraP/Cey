@@ -89,8 +89,8 @@ const AppointmentDetailsModal = ({ appointment, onClose, StatusBadge }) => {
                                 {appointment.scheduled_time && (
                                     <div className="pt-3 border-t border-zinc-700/50">
                                         <p className="text-emerald-500 text-xs uppercase tracking-wider mb-1">Confirmed Time</p>
-                                        <p className="text-white font-medium">{formatDate(appointment.scheduled_time)}</p>
-                                        <p className="text-zinc-300">{formatTime(appointment.scheduled_time)}</p>
+                                        <p className="text-emerald-300 font-medium">{formatDate(appointment.scheduled_time)}</p>
+                                        <p className="text-emerald-200">{formatTime(appointment.scheduled_time)}</p>
                                     </div>
                                 )}
                             </div>
