@@ -7,7 +7,8 @@ import {
     ChevronRightIcon,
     ChevronLeftIcon,
     ArrowRightStartOnRectangleIcon,
-    TruckIcon
+    TruckIcon,
+    CalendarIcon
 } from "@heroicons/react/24/outline";
 
 const menuItems = [
@@ -22,6 +23,7 @@ const menuItems = [
         ],
     },
     { name: "Orders", icon: TruckIcon, href: "#"},
+    { name: "Appointments", icon: CalendarIcon, href: "#"},
     // { name: "Settings", icon: Cog6ToothIcon, href: "#" },
 ];
 

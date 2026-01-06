@@ -11,6 +11,7 @@ import SessionWarningModal from "./SessionWarningModal";
 import { Toaster } from "react-hot-toast";
 import ViewOrders from "./sections/orders/ViewOrders";
 import EditProduct from "./sections/products/EditProduct";
+import ViewAppointments from "./sections/appointments/ViewAppointments";
 
 export default function Dashboard() {
   const { user, logout } = useContext(AuthContext);
@@ -81,6 +82,7 @@ export default function Dashboard() {
           {activeSection === "edit product" && <EditProduct setActiveSection={setActiveSection} id={id} />}
           {activeSection === "view products" && <ViewProducts setActiveSection={setActiveSection} setID={setID} />}
           {activeSection === "orders" && <ViewOrders />}
+          {activeSection === "appointments" && <ViewAppointments />}
         </div>
       </main>
     </div>
