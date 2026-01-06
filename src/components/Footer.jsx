@@ -2,10 +2,18 @@
 import 'react';
 
 export const Footer = () => {
+
+  const section1 = [
+    { text: 'Home', link: '/' },
+    { text: 'Products', link: '/products' },
+    { text: 'Home Visits', link: '/#home-visit' },
+    { text: 'About Us', link: '/#about-us' },
+  ]
+
   return (
-    <footer className="border-t border-zinc-800 bg-black">
+    <footer className="border-t border-zinc-800 bg-black text-left">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
           {/* Brand */}
           <div>
             <h3 className="text-2xl font-bold text-white mb-4 tracking-widest">theblushculture</h3>
@@ -18,10 +26,10 @@ export const Footer = () => {
           <div>
             <h4 className="text-sm font-semibold text-white mb-4 uppercase tracking-wide">Quick Links</h4>
             <ul className="space-y-2">
-              {['Home', 'All Products', 'About Us', 'Contact'].map((link) => (
-                <li key={link}>
-                  <a href="#" className="text-sm text-zinc-400 hover:text-white transition-colors">
-                    {link}
+              {section1.map((item) => (
+                <li key={item.text}>
+                  <a href={item.link} className="text-sm text-zinc-400 hover:text-white transition-colors">
+                    {item.text}
                   </a>
                 </li>
               ))}
@@ -63,7 +71,7 @@ export const Footer = () => {
         </div>
 
         <div className="pt-8 border-t border-zinc-800 text-center text-sm text-zinc-500">
-          © 2025 theblushculture. All rights reserved.
+          © {new Date().getFullYear()} theblushculture. All rights reserved.
         </div>
       </div>
     </footer>

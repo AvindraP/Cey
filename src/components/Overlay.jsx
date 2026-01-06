@@ -3,6 +3,7 @@ import { Scroll, useScroll } from "@react-three/drei";
 import { useEffect, useRef, useState } from "react";
 import { Footer } from "./Footer";
 import AppointmentBookingPopup from "./booking/AppointmentBookingPopup";
+import { useLocation } from "react-router-dom";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -154,6 +155,7 @@ export const Overlay = ({ onScrollToSection, onActiveIndexChange } = {}) => {
     const isAnimatingRef = useRef(false);
     const containerRef = useRef(null);
     const [showBooking, setShowBooking] = useState(false);
+    const { hash } = useLocation();
 
     // Update to your real number of sections (0..7 => 8 sections)
     const SECTION_COUNT = 9;
@@ -167,8 +169,12 @@ export const Overlay = ({ onScrollToSection, onActiveIndexChange } = {}) => {
     useEffect(() => {
         setTimeout(() => {
             setActiveIndex(0);
+            if (hash.replace('#', '') == 'about-us')
+                setActiveIndex(2);
+            else if (hash.replace('#', '') == 'home-visit')
+                setActiveIndex(3);
         }, 500);
-    }, [setActiveIndex]);
+    }, [setActiveIndex, hash]);
 
     useEffect(() => {
         if (onActiveIndexChange) {
