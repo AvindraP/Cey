@@ -96,7 +96,7 @@ export const Header = ({ scrollToSection }) => {
           <nav className="flex flex-col items-center py-6 space-y-4 text-sm font-medium tracking-wide text-white">
             <a
               href="#hero"
-              onClick={(e) => handleNavClick(e, 1)}
+              onClick={(e) => handleNavClick(e, 0)}
               className="hover:text-zinc-300 transition-colors w-full text-center py-2"
             >
               Home
@@ -109,15 +109,22 @@ export const Header = ({ scrollToSection }) => {
               About Us
             </a>
             <a
-              href="#products"
+              href="#about"
               onClick={(e) => handleNavClick(e, 3)}
+              className="hover:text-zinc-300 transition-colors w-full text-center py-2"
+            >
+              Home Visit Services
+            </a>
+            <a
+              href="#products"
+              onClick={(e) => handleNavClick(e, 5)}
               className="hover:text-zinc-300 transition-colors w-full text-center py-2"
             >
               Our Products
             </a>
             <a
               href="#contact"
-              onClick={(e) => handleNavClick(e, 5)}
+              onClick={(e) => handleNavClick(e, 8)}
               className="hover:text-zinc-300 transition-colors w-full text-center py-2"
             >
               Contact Us
