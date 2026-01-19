@@ -396,7 +396,7 @@ export const Overlay = ({ onScrollToSection, onActiveIndexChange } = {}) => {
                     {/* Background GIF */}
                     <div className="absolute flex justify-center items-center inset-0 py-12 px-4 md:px-8 lg:px-12 mt-20">
                         <video
-                            src="/video/Whisk_utzwymmifjyjnjn00sy0iwotcjnhrtl5ymy30cn.mp4"
+                            src="/video/videoloop.mp4"
                             className="w-full h-full object-cover rounded-4xl"
                             autoPlay
                             loop
