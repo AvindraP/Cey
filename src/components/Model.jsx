@@ -39,7 +39,7 @@ export const Model = ({ activeIndex, ...props }) => {
     {
       label: "About Us",
       rotation: { x: 3.141, y: -1.590, z: 3.11 },
-      position: isMobile ? { x: 0.800, y: -0.200, z: 0.000 } : { x: -1.50, y: 0.750, z: 1.50 },
+      position: isMobile ? { x: -2.025, y: 0.950, z: 1.50 } : { x: -1.50, y: 0.750, z: 1.50 },
       camera: { x: -2.00, y: 1.8, z: 1.700 },
       light: { x: -1.50, y: 1.350, z: 0.450 }
     },
@@ -47,7 +47,7 @@ export const Model = ({ activeIndex, ...props }) => {
     {
       label: "Home Visit",
       rotation: { x: 3.141, y: -1.570, z: 3.141 },
-      position: isMobile ? { x: -2.000, y: 0.900, z: 1.700 } : { x: -2.000, y: 0.900, z: 1.700 },
+      position: isMobile ? { x: -2.5, y: 1.250, z: 1.700 } : { x: -2.000, y: 0.900, z: 1.700 },
       camera: { x: -2.300, y: 2.000, z: 1.800 },
       light: { x: -2.000, y: 2.500, z: 0.300 }
     },
@@ -63,7 +63,7 @@ export const Model = ({ activeIndex, ...props }) => {
     {
       label: "Our Products",
       rotation: { x: 3.440, y: -3.00, z: 3.550 },
-      position: isMobile ? { x: 1.450, y: 2.000, z: 3.700 } : { x: 1.450, y: 2.000, z: 3.700 },
+      position: isMobile ? { x: 1.175, y: 2.000, z: 3.700 } : { x: 1.450, y: 2.000, z: 3.700 },
       camera: { x: 1.100, y: 3.000, z: 4.000 },
       light: { x: 0.000, y: 7.000, z: 4.000 }
     },
@@ -71,7 +71,7 @@ export const Model = ({ activeIndex, ...props }) => {
     {
       label: "Vision",
       rotation: { x: 3.540, y: -3.100, z: 3.350 },
-      position: isMobile ? { x: 1.300, y: 2.000, z: 3.700 } : { x: 1.300, y: 2.000, z: 3.700 },
+      position: isMobile ? { x: 1.100, y: 2.000, z: 3.700 } : { x: 1.300, y: 2.000, z: 3.700 },
       camera: { x: 1.100, y: 3.000, z: 4.000 },
       light: { x: 0.000, y: 7.000, z: 4.000 }
     },
@@ -79,7 +79,7 @@ export const Model = ({ activeIndex, ...props }) => {
     {
       label: "Mission",
       rotation: { x: 3.640, y: -3.100, z: 3.350 },
-      position: isMobile ? { x: 1.325, y: 2.200, z: 3.700 } : { x: 1.325, y: 2.200, z: 3.700 },
+      position: isMobile ? { x: 1.175, y: 2.200, z: 3.700 } : { x: 1.325, y: 2.200, z: 3.700 },
       camera: { x: 1.150, y: 3.100, z: 3.950 },
       light: { x: 0.000, y: 8.500, z: 5.500 }
     },
@@ -87,7 +87,7 @@ export const Model = ({ activeIndex, ...props }) => {
     {
       label: "Contact Us",
       rotation: { x: 3.740, y: -3.100, z: 3.375 },
-      position: isMobile ? { x: 1.350, y: 2.400, z: 3.700 } : { x: 1.350, y: 2.400, z: 3.700 },
+      position: isMobile ? { x: 1.275, y: 2.400, z: 3.700 } : { x: 1.350, y: 2.400, z: 3.700 },
       camera: { x: 1.200, y: 3.200, z: 3.900 },
       light: { x: 0.000, y: 10.000, z: 7.000 }
     },
